@@ -1,0 +1,226 @@
+import { StyleSheet } from "react-native";
+
+import { FONTS } from "@/src/theme";
+
+export const loginStyles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: "#FFF9F6",
+  },
+  keyboardView: {
+    flex: 1,
+  },
+  screen: {
+    flex: 1,
+    width: "100%",
+    overflow: "hidden",
+    backgroundColor: "#FFF9F6",
+  },
+  topGlow: {
+    position: "absolute",
+    backgroundColor: "#FFB58E",
+  },
+  bottomGlow: {
+    position: "absolute",
+    backgroundColor: "#BDE5C9",
+  },
+  topBar: {
+    width: "100%",
+    minHeight: 58,
+    flexDirection: "row-reverse",
+    alignItems: "center",
+    justifyContent: "space-between",
+    paddingTop: 4,
+  },
+  topBarSpacer: {
+    width: 46,
+    height: 46,
+  },
+  backButton: {
+    width: 46,
+    height: 46,
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 23,
+    backgroundColor: "#EFEFF1",
+  },
+  backButtonPressed: {
+    opacity: 0.65,
+    transform: [{ scale: 0.94 }],
+  },
+  scrollContent: {
+    flexGrow: 1,
+    width: "100%",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  content: {
+    alignSelf: "center",
+  },
+  header: {
+    width: "100%",
+    alignItems: "center",
+    marginBottom: 30,
+  },
+  iconWrapper: {
+    alignItems: "center",
+    justifyContent: "center",
+    marginBottom: 14,
+  },
+  iconHalo: {
+    width: 72,
+    height: 72,
+    alignItems: "center",
+    justifyContent: "center",
+    borderRadius: 24,
+    backgroundColor: "#FFF0E8",
+    borderWidth: 1,
+    borderColor: "#FFDCCC",
+    shadowColor: "#D77844",
+    shadowOffset: {
+      width: 0,
+      height: 8,
+    },
+    shadowOpacity: 0.12,
+    shadowRadius: 14,
+    elevation: 4,
+  },
+  title: {
+    fontFamily: FONTS.bold,
+    color: "#252525",
+    textAlign: "center",
+  },
+  subtitle: {
+    maxWidth: 360,
+    marginTop: 6,
+    fontFamily: FONTS.regular,
+    color: "#6E615B",
+    textAlign: "center",
+  },
+  form: {
+    width: "100%",
+  },
+  emailInput: {
+    marginBottom: 10,
+  },
+  passwordInput: {
+    marginBottom: 4,
+  },
+  forgotPasswordButton: {
+    alignSelf: "flex-start",
+    minHeight: 36,
+    justifyContent: "center",
+    marginBottom: 20,
+    borderRadius: 8,
+  },
+  forgotPasswordText: {
+    fontFamily: FONTS.medium,
+    fontSize: 13,
+    color: "#A94D17",
+    textAlign: "right",
+  },
+  generalError: {
+    width: "100%",
+    flexDirection: "row-reverse",
+    alignItems: "center",
+    gap: 8,
+    marginBottom: 14,
+    paddingHorizontal: 13,
+    paddingVertical: 11,
+    borderRadius: 13,
+    backgroundColor: "#FFF0EA",
+    borderWidth: 1,
+    borderColor: "#F3C5B5",
+  },
+  generalErrorText: {
+    flex: 1,
+    fontFamily: FONTS.regular,
+    fontSize: 12,
+    lineHeight: 20,
+    color: "#9D3A20",
+    textAlign: "right",
+  },
+  loginButton: {
+    direction: "ltr",
+    width: "100%",
+    paddingVertical: 0,
+    shadowColor: "#E66F30",
+    shadowOffset: {
+      width: 0,
+      height: 9,
+    },
+    shadowOpacity: 0.22,
+    shadowRadius: 13,
+    elevation: 7,
+  },
+  loginButtonText: {
+    fontFamily: FONTS.medium,
+    fontSize: 17,
+    color: "#5F2B12",
+    textAlign: "center",
+  },
+  footer: {
+    width: "100%",
+  },
+  divider: {
+    width: "100%",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 13,
+    marginVertical: 26,
+  },
+  dividerLine: {
+    flex: 1,
+    height: 1,
+    backgroundColor: "#EADFD9",
+  },
+  dividerText: {
+    fontFamily: FONTS.regular,
+    fontSize: 13,
+    color: "#A79891",
+    textAlign: "center",
+  },
+  guestButton: {
+    direction: "ltr",
+    width: "100%",
+    paddingVertical: 0,
+  },
+  guestButtonText: {
+    fontFamily: FONTS.medium,
+    fontSize: 16,
+    color: "#24723E",
+    textAlign: "center",
+  },
+  registerRow: {
+    direction: "rtl",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    flexWrap: "wrap",
+    gap: 5,
+    marginTop: 24,
+    paddingBottom: 4,
+  },
+  registerPrompt: {
+    fontFamily: FONTS.regular,
+    fontSize: 13,
+    color: "#5F5550",
+    textAlign: "center",
+  },
+  registerButton: {
+    minHeight: 34,
+    justifyContent: "center",
+    borderRadius: 7,
+  },
+  registerText: {
+    fontFamily: FONTS.medium,
+    fontSize: 13,
+    color: "#A94D17",
+    textAlign: "center",
+  },
+  linkPressed: {
+    opacity: 0.55,
+    transform: [{ scale: 0.96 }],
+  },
+});

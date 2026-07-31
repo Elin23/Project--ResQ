@@ -1,0 +1,180 @@
+import { StyleSheet } from "react-native";
+
+import { FONTS } from "@/src/theme";
+
+export const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: "#FAFAFE",
+  },
+  screen: {
+    flex: 1,
+    width: "100%",
+    overflow: "hidden",
+    backgroundColor: "#FAFAFE",
+  },
+  topGlow: {
+    position: "absolute",
+    backgroundColor: "#FFE3D7",
+  },
+  bottomGlow: {
+    position: "absolute",
+    backgroundColor: "#BDF4CC",
+  },
+  header: {
+    width: "100%",
+    minHeight: 54,
+    alignItems: "flex-start",
+    justifyContent: "center",
+    zIndex: 10,
+  },
+  skipButton: {
+    alignSelf: "flex-start",
+    minWidth: 68,
+    minHeight: 42,
+    paddingHorizontal: 14,
+    paddingVertical: 0,
+  },
+  skipText: {
+    fontFamily: FONTS.medium,
+    fontSize: 15,
+    color: "#A94D12",
+    textAlign: "center",
+  },
+  mainContent: {
+    flex: 1,
+    width: "100%",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  imageCard: {
+    overflow: "hidden",
+    backgroundColor: "#FFF9F4",
+    borderWidth: 1,
+    borderColor: "rgba(255, 188, 151, 0.22)",
+    shadowColor: "#B45A2B",
+    shadowOffset: {
+      width: 0,
+      height: 12,
+    },
+    shadowOpacity: 0.08,
+    shadowRadius: 22,
+    elevation: 4,
+  },
+  imageCardHighlight: {
+    position: "absolute",
+    width: "80%",
+    height: "55%",
+    top: "-20%",
+    left: "-15%",
+    borderRadius: 999,
+    backgroundColor: "rgba(255, 255, 255, 0.45)",
+    transform: [{ rotate: "-12deg" }],
+    zIndex: 2,
+  },
+  image: {
+    width: "100%",
+    height: "100%",
+  },
+  textSection: {
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  firstTitleRow: {
+    width: "100%",
+    direction: "ltr",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    flexWrap: "wrap",
+    columnGap: 8,
+  },
+  firstTitle: {
+    fontFamily: FONTS.bold,
+    color: "#242424",
+    textAlign: "center",
+    writingDirection: "rtl",
+  },
+  title: {
+    fontFamily: FONTS.bold,
+    color: "#242424",
+    textAlign: "center",
+  },
+  brandRow: {
+    direction: "ltr",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 6,
+  },
+  brandNameRow: {
+    direction: "ltr",
+    flexDirection: "row-reverse",
+    alignItems: "center",
+  },
+  brandText: {
+    fontFamily: FONTS.bold,
+    color: "#242424",
+    textAlign: "center",
+    includeFontPadding: false,
+  },
+  brandAccent: {
+    fontFamily: FONTS.bold,
+    color: "#FF8248",
+    textAlign: "center",
+    includeFontPadding: false,
+  },
+  description: {
+    maxWidth: 470,
+    fontFamily: FONTS.regular,
+    color: "#6B5C55",
+    textAlign: "center",
+  },
+  footer: {
+    width: "100%",
+    alignItems: "center",
+    justifyContent: "flex-end",
+    gap: 20,
+  },
+  indicators: {
+    minHeight: 24,
+    direction: "ltr",
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 3,
+  },
+  indicatorTouchArea: {
+    minWidth: 16,
+    minHeight: 24,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  indicatorPressed: {
+    opacity: 0.6,
+    transform: [{ scale: 0.9 }],
+  },
+  indicator: {
+    height: 8,
+    borderRadius: 999,
+  },
+  nextButton: {
+    direction: "ltr",
+    maxWidth: 520,
+    paddingVertical: 0,
+    shadowColor: "#E8783C",
+    shadowOffset: {
+      width: 0,
+      height: 10,
+    },
+    shadowOpacity: 0.22,
+    shadowRadius: 14,
+    elevation: 7,
+  },
+  nextButtonText: {
+    fontFamily: FONTS.medium,
+    fontSize: 17,
+    color: "#673015",
+    textAlign: "center",
+  },
+});
