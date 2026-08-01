@@ -33,6 +33,7 @@ type Props = TextInputProps & {
   containerStyle?: StyleProp<ViewStyle>;
   fieldStyle?: StyleProp<ViewStyle>;
   inputStyle?: StyleProp<TextStyle>;
+  iconPosition?: "leading" | "trailing";
   onIconPress?: () => void;
 };
 

@@ -5,6 +5,7 @@ export const COLORS = {
   accent: "#2BB5F6",
   neutral: "#E2E2E5",
   danger: "#D32F2F",
+  warning: "#C2410C",
   lightgray: "#F3F3F6",
   darkgray: "#E8E8EA",
   brown: "#9B4500",
@@ -30,6 +31,28 @@ export const COLORS = {
   statusPending: "#FF8C42",
   statusApproved: "#2BB5F6",
   statusClosed: "#4CAF50",
+
+  rating: "#FFB020",
+
+  /** أحمر تنبيه "هام جداً" — أغمق من danger، مخصص لبطاقات التنبيه العاجل. من الفيغما */
+  urgent: "#BA1A1A",
+  /** خلفية دافئة لبطاقة التنبيه العاجل. من الفيغما */
+  peach: "#FFB68D",
+
+  /** بني غامق دافئ — نص/أيقونة حالة "متوسط". من الفيغما */
+  brownMuted: "#564338",
+  /** أسود دافئ تقريباً — نص أساسي بديل. من الفيغما */
+  ink: "#1A1C1E",
+  /** أزرق داكن — بديل غامق لـ bgblue/accent. من الفيغما */
+  navy: "#004360",
+  /** بيج فاتح — خلفية شارة حالة "متوسط". من الفيغما */
+  tan: "#DDC1B3",
+  /** رمادي فاتح جداً — بديل خفيف لـ lightgray/darkgray. من الفيغما */
+  offwhite: "#EEEEF0",
+  /** أخضر غامق — نسخة من bggreen/textgreen. من الفيغما */
+  successDark: "#00731E",
+  /** أخضر فاتح — نسخة من success. من الفيغما */
+  successLight: "#94F990",
 };
 
 export const FONTS = {

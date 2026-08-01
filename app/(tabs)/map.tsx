@@ -1,1 +1,1 @@
-export { default } from "@/src/features/map/screens/MapScreen";
+export { default } from "../../src/features/feeding-points/screens/FeedingPointsScreen";
