@@ -18,7 +18,7 @@ import {
     useWindowDimensions,
     View,
 } from "react-native";
-import MapView, { MapPressEvent, Marker, Region } from "react-native-maps";
+import type { MapPressEvent, Region } from "react-native-maps";
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import AppText from "@/src/components/ui/AppText";

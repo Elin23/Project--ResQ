@@ -11,6 +11,7 @@ export { default as FilterSheet } from "./FilterSheet";
 export { default as GuestPromoCard } from "./GuestPromoCard";
 export { default as Input } from "./Input";
 export { default as QuickActionGrid } from "./QuickActionGrid";
+export { default as RatingStars } from "./RatingStars";
 export { default as Screen } from "./Screen";
 export { default as SectionHeader } from "./SectionHeader";
 export { default as TopBar } from "./TopBar";

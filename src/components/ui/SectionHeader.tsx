@@ -1,4 +1,4 @@
-import { Pressable, StyleSheet, View } from "react-native";
+import { Pressable, StyleProp, StyleSheet, View, ViewStyle } from "react-native";
 
 import { COLORS, FONT_SIZES, SPACING } from "@/src/theme";
 import AppText from "./AppText";
@@ -7,15 +7,17 @@ type Props = {
   title: string;
   actionLabel?: string;
   onActionPress?: () => void;
+  style?: StyleProp<ViewStyle>;
 };
 
 export default function SectionHeader({
   title,
   actionLabel,
   onActionPress,
+  style,
 }: Props) {
   return (
-    <View style={styles.row}>
+    <View style={[styles.row, style]}>
       <AppText weight="bold" size={FONT_SIZES.title}>
         {title}
       </AppText>

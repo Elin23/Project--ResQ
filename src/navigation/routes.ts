@@ -24,3 +24,8 @@ export const ROUTES = {
 } as const;
 
 export type AppRoute = (typeof ROUTES)[keyof typeof ROUTES];
+
+/** مسار ديناميكي — تفاصيل نقطة إطعام محددة. app/feeding-points/[id].tsx */
+export function feedingPointDetailsRoute(id: string) {
+  return { pathname: "/feeding-points/[id]", params: { id } } as const;
+}
