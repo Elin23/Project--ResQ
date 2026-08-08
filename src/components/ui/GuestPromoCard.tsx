@@ -49,7 +49,7 @@ export default function GuestPromoCard({ onCreateAccount, onLogin }: Props) {
         backgroundColor={COLORS.brown}
         borderColor={COLORS.brown}
         borderWidth={1}
-        textColor="#FFFFFF"
+        textColor={COLORS.onColor}
         radius={14}
         style={styles.primaryButton}
         textStyle={styles.buttonText}

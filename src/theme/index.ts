@@ -24,11 +24,49 @@ export const COLORS = {
   black: "#000000",
   transparent: "transparent",
 
+  /** طبقة تعتيم موحّدة للنوافذ المنبثقة. */
+  backdrop: "#00000066",
+  /** لون الظلال على iOS. */
+  shadow: "#000000",
+  /** نص أو أيقونة فوق خلفية ملوّنة. */
+  onColor: "#FFFFFF",
+  /** ألوان دلالية لحالة قوة كلمة المرور. */
+  strengthStrong: "#17823A",
+  strengthMedium: "#E38A2E",
+  strengthWeak: "#C92335",
+  /** ألوان أيقونات وحقول ثانوية. */
+  iconMuted: "#7B877B",
+  textMuted: "#646A64",
+
   border: "#E2E2E5",
   placeholder: "#9E9E9E",
   disabled: "#BDBDBD",
 
   statusPending: "#FF8C42",
+  statusPendingLight: "#FFE7A8",
+  orgStatOrangeBg: "#FFF0E8",
+  orgStatOrangeBorder: "#FFC9AE",
+  orgStatGreenBg: "#E7FAE9",
+  orgStatGreenBorder: "#A6E7AE",
+  orgStatBlueBg: "#E4F5FC",
+  orgStatBlueBorder: "#A9DDF1",
+  orgStatYellowBg: "#FFF2D9",
+  orgStatYellowBorder: "#FFD08C",
+  contactPhoneBg: "#FFF0E8",
+  contactEmailBg: "#E9F7FD",
+
+  /** لوحة ألوان لوحة الجمعية. */
+  orgDashboardHeroBg: "#FFF2EA",
+  orgDashboardHeroBorder: "#F3CDB8",
+  orgDashboardHeroMark: "#F3E4DD",
+  orgAchievementGreenBg: "#EFF9EF",
+  orgAchievementGreenBorder: "#B8E3BC",
+  orgAchievementOrangeBg: "#FFF3EA",
+  orgAchievementOrangeBorder: "#FFD0B5",
+  orgAchievementBlueBg: "#EAF7FD",
+  orgAchievementBlueBorder: "#B3E2F6",
+  orgAchievementLockedBg: "#F3F1F1",
+  orgAchievementLockedBorder: "#DCC7BA",
   statusApproved: "#2BB5F6",
   statusClosed: "#4CAF50",
 

@@ -35,7 +35,7 @@ export default function LoginScreen() {
               <View style={[styles.content, { width: contentWidth }]}> 
                 <LoginHeader opacity={animation.headerOpacity} translateY={animation.headerTranslateY} titleSize={titleSize} subtitleSize={subtitleSize} />
                 <LoginFormSection opacity={animation.formOpacity} translateY={animation.formTranslateY} email={form.email} password={form.password} errors={form.errors} isSubmitting={form.isSubmitting} disabled={form.disabled} buttonHeight={buttonHeight} onEmailChange={form.handleEmailChange} onPasswordChange={form.handlePasswordChange} onEmailBlur={form.handleEmailBlur} onPasswordBlur={form.handlePasswordBlur} onForgotPassword={() => form.navigateWithFade("/forgot-password")} onSubmit={form.handleLogin} />
-                <LoginFooter opacity={animation.footerOpacity} translateY={animation.footerTranslateY} disabled={form.disabled} buttonHeight={buttonHeight} onContinueAsGuest={() => form.navigateWithFade("/(tabs)")} onRegister={() => form.navigateWithFade("/choose-account")} />
+                <LoginFooter opacity={animation.footerOpacity} translateY={animation.footerTranslateY} disabled={form.disabled} buttonHeight={buttonHeight} onContinueAsGuest={form.handleContinueAsGuest} onRegister={() => form.navigateWithFade("/choose-account")} />
               </View>
             </ScrollView>
           </Animated.View>

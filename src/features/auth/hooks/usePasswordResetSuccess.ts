@@ -269,7 +269,7 @@ export function usePasswordResetSuccess() {
     }).start();
 
     navigationTimer.current = setTimeout(() => {
-      router.replace(path as never);
+      router.replace(path);
     }, 200);
   };
 

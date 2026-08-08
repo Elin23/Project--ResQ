@@ -28,6 +28,8 @@ export default function QuickActionGrid({ actions, columns = 2 }: Props) {
         <Card
           key={action.key}
           onPress={action.onPress}
+          accessibilityRole="button"
+          accessibilityLabel={action.label}
           padding={SPACING.md}
           backgroundColor={COLORS.lightgray}
           style={[

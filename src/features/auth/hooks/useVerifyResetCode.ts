@@ -132,7 +132,7 @@ export function useVerifyResetCode() {
       return;
     }
 
-    router.replace("/forgot-password" as never);
+    router.replace("/forgot-password");
   };
 
   const handleChangePhone = () => {
@@ -151,7 +151,7 @@ export function useVerifyResetCode() {
     }).start();
 
     navigationTimer.current = setTimeout(() => {
-      router.replace("/forgot-password" as never);
+      router.replace("/forgot-password");
     }, 200);
   };
 
@@ -219,7 +219,7 @@ export function useVerifyResetCode() {
             phone: normalizedPhone,
             code,
           },
-        } as never);
+        });
       }, 850);
     } catch {
       setErrors({

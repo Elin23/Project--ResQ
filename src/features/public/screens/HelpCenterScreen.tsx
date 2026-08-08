@@ -87,11 +87,11 @@ export default function HelpCenterScreen() {
       return;
     }
 
-    router.replace("/" as never);
+    router.replace("/");
   };
 
   const handleContactUs = () => {
-    router.push("/contact-us" as never);
+    router.push("/contact-us");
   };
 
   const handleReportProblem = async () => {

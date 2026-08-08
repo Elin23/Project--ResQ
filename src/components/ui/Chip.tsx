@@ -23,7 +23,7 @@ export default function Chip({
   const isFilled = onPress ? selected : !soft;
 
   const backgroundColor = isFilled ? color : color + '22';
-  const contentColor = isFilled ? '#FFFFFF' : color;
+  const contentColor = isFilled ? COLORS.onColor : color;
 
   return (
     <Pressable

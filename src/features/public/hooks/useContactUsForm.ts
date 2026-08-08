@@ -35,9 +35,9 @@ export function useContactUsForm() {
   );
 
   const handleBack = () =>
-    router.canGoBack() ? router.back() : router.replace("/help-center" as never);
+    router.canGoBack() ? router.back() : router.replace("/help-center");
 
-  const handleHelpCenter = () => router.push("/help-center" as never);
+  const handleHelpCenter = () => router.push("/help-center");
 
   const openExternalUrl = async (url: string) => {
     if (!(await Linking.canOpenURL(url))) {

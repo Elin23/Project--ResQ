@@ -7,7 +7,7 @@ import { styles } from "../../screens/RegisterUser.styles";
 import type { RegisterUserForm } from "../../hooks/useRegisterUserForm";
 
 export default function UserPasswordSection({ form }: { form: RegisterUserForm }) {
-  const { password,setPassword,showPassword,setShowPassword,passwordStrength,passwordStrengthLabel,passwordStrengthColor,confirmPassword,setConfirmPassword,showConfirmPassword,setShowConfirmPassword,errors,setErrors,renderError,handleSubmit } = form;
+  const { password,setPassword,passwordRequirements,showPassword,setShowPassword,passwordStrength,passwordStrengthLabel,passwordStrengthColor,confirmPassword,setConfirmPassword,showConfirmPassword,setShowConfirmPassword,errors,setErrors,renderError,handleSubmit } = form;
   return (<>
 <View style={[styles.sectionHeader, styles.passwordHeader]}>
   <View style={styles.sectionMarker} />
@@ -97,37 +97,22 @@ export default function UserPasswordSection({ form }: { form: RegisterUserForm }
 </View>
 
 <View style={styles.requirements}>
-  <View style={styles.requirementRow}>
-    <Ionicons
-      name={
-        password.length >= 8
-          ? "checkmark-circle"
-          : "checkmark-circle-outline"
-      }
-      size={18}
-      color={password.length >= 8 ? "#16833A" : "#60665F"}
-    />
-
-    <AppText style={styles.requirementText}>
-      8 أحرف على الأقل
-    </AppText>
-  </View>
-
-  <View style={styles.requirementRow}>
-    <Ionicons
-      name={
-        /\d/.test(password)
-          ? "checkmark-circle"
-          : "checkmark-circle-outline"
-      }
-      size={18}
-      color={/\d/.test(password) ? "#16833A" : "#60665F"}
-    />
-
-    <AppText style={styles.requirementText}>
-      رقم واحد على الأقل
-    </AppText>
-  </View>
+  {passwordRequirements.map((requirement) => (
+    <View key={requirement.id} style={styles.requirementRow}>
+      <Ionicons
+        name={
+          requirement.isValid
+            ? "checkmark-circle"
+            : "checkmark-circle-outline"
+        }
+        size={18}
+        color={requirement.isValid ? "#16833A" : "#60665F"}
+      />
+      <AppText style={styles.requirementText}>
+        {requirement.label}
+      </AppText>
+    </View>
+  ))}
 </View>
 
 <View style={styles.fieldGroup}>

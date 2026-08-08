@@ -74,7 +74,7 @@ export default function RegistrationPendingScreen() {
 
           <Button
             title="متابعة إلى التطبيق"
-            onPress={() => router.replace("/(tabs)" as never)}
+            onPress={() => router.replace("/(tabs)")}
             variant="custom"
             size="large"
             fullWidth
@@ -88,7 +88,7 @@ export default function RegistrationPendingScreen() {
           />
 
           <Pressable
-            onPress={() => router.replace("/login" as never)}
+            onPress={() => router.replace("/login")}
             style={({ pressed }) => [
               styles.secondaryLink,
               pressed && styles.secondaryLinkPressed,

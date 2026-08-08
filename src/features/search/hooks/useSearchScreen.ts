@@ -1,9 +1,12 @@
 import { useMemo, useRef, useState } from "react";
-import { Alert, TextInput } from "react-native";
+import { TextInput } from "react-native";
 import type { SearchFilterKey, SearchResult } from "@/src/types/search";
+import { useRouter } from "expo-router";
+import { ROUTES, searchResultDetailsRoute } from "@/src/navigation/routes";
 import { SEARCH_RESULTS } from "../constants/search";
 
 export function useSearchScreen() {
+  const router = useRouter();
   const searchInputRef = useRef<TextInput>(null);
   const [selectedFilter, setSelectedFilter] = useState<SearchFilterKey>("all");
   const [searchQuery, setSearchQuery] = useState("");
@@ -18,15 +21,17 @@ export function useSearchScreen() {
     });
   }, [searchQuery, selectedFilter]);
 
-  const handleResultPress = (result: SearchResult) => Alert.alert(result.title, result.type === "clinic" ? "سيتم ربط هذه النتيجة بصفحة تفاصيل العيادة عند إنشاء الصفحة." : "سيتم ربط هذه النتيجة بصفحة تفاصيل الحيوان عند إنشاء الصفحة.");
+  const handleResultPress = (result: SearchResult) => {
+    router.push(searchResultDetailsRoute(result.id));
+  };
   const focusSearch = () => searchInputRef.current?.focus();
   const clearSearch = () => { setSearchQuery(""); focusSearch(); };
 
   return {
     searchInputRef, selectedFilter, setSelectedFilter, searchQuery, setSearchQuery,
     filteredResults, handleResultPress, focusSearch, clearSearch,
-    handleOpenMap: () => Alert.alert("الخريطة", "سيتم فتح صفحة الخريطة بعد إنشاء وربط صفحة الخريطة."),
-    handleNotificationsPress: () => Alert.alert("الإشعارات", "سيتم فتح صفحة الإشعارات بعد إنشاء وربط صفحة الإشعارات."),
+    handleOpenMap: () => router.push(ROUTES.map),
+    handleNotificationsPress: () => router.push(ROUTES.notifications),
   };
 }
 export type SearchScreenController = ReturnType<typeof useSearchScreen>;

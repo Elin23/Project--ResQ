@@ -9,10 +9,12 @@
     "web": "expo start --web",
     "lint": "expo lint",
     "typecheck": "tsc --noEmit",
-    "check": "npm run check:integrity && npm run typecheck && npm run lint && npm run test",
+    "check": "npm run check:integrity && npm run check:theme && npm run check:buttons && npm run typecheck && npm run lint && npm run test",
     "check:integrity": "node scripts/check-project-integrity.mjs",
     "test": "vitest run",
-    "test:watch": "vitest"
+    "test:watch": "vitest",
+    "check:theme": "node scripts/check-theme-usage.mjs",
+    "check:buttons": "node scripts/check-button-props.mjs"
   },
   "dependencies": {
     "@expo-google-fonts/ibm-plex-sans-arabic": "^0.4.2",

@@ -201,7 +201,7 @@ export function useCreateNewPasswordForm() {
       return;
     }
 
-    router.replace("/forgot-password" as never);
+    router.replace("/forgot-password");
   };
 
   const navigateToSuccess = () => {
@@ -219,7 +219,7 @@ export function useCreateNewPasswordForm() {
     }).start();
 
     navigationTimer.current = setTimeout(() => {
-      router.replace("/password-reset-success" as never);
+      router.replace("/password-reset-success");
     }, 180);
   };
 

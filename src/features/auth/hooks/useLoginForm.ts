@@ -1,6 +1,7 @@
 import { useRouter } from "expo-router";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Animated, Easing, Keyboard } from "react-native";
+import { useSession } from "@/src/features/session/SessionContext";
 
 import {
   LoginFormErrors,
@@ -13,6 +14,7 @@ type NavigationPath = "/forgot-password" | "/choose-account" | "/(tabs)";
 
 export function useLoginForm() {
   const router = useRouter();
+  const { continueAsGuest, signInAsMember } = useSession();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errors, setErrors] = useState<LoginFormErrors>({});
@@ -78,15 +80,14 @@ export function useLoginForm() {
     if (disabled) return;
     Keyboard.dismiss();
     setIsNavigating(true);
-    Animated.timing(screenOpacity, { toValue: 0, duration: 200, easing: Easing.inOut(Easing.cubic), useNativeDriver: true }).start();
-    navigationTimer.current = setTimeout(() => router.push(path as never), 200);
-  }, [disabled, router, screenOpacity]);
+    router.push(path);
+  }, [disabled, router]);
 
   const handleBack = useCallback(() => {
     if (disabled) return;
     Keyboard.dismiss();
     if (router.canGoBack()) router.back();
-    else router.replace("/welcome" as never);
+    else router.replace("/welcome");
   }, [disabled, router]);
 
   const handleEmailChange = useCallback((value: string) => {
@@ -117,17 +118,24 @@ export function useLoginForm() {
       setIsSubmitting(true);
       setErrors({});
       await new Promise((resolve) => setTimeout(resolve, 900));
-      router.replace("/(tabs)" as never);
+      await signInAsMember();
+      router.replace("/(tabs)");
     } catch {
       setErrors({ general: "تعذر تسجيل الدخول. تحقق من بياناتك واتصالك بالإنترنت ثم حاول مجددًا." });
     } finally {
       setIsSubmitting(false);
     }
-  }, [disabled, email, password, router]);
+  }, [disabled, email, password, router, signInAsMember]);
+
+  const handleContinueAsGuest = useCallback(async () => {
+    if (disabled) return;
+    await continueAsGuest();
+    router.replace("/(tabs)");
+  }, [continueAsGuest, disabled, router]);
 
   return {
     email, password, errors, isSubmitting, isNavigating, disabled,
     animations: { screenOpacity, screenTranslateY, headerOpacity, headerTranslateY, formOpacity, formTranslateY, footerOpacity, footerTranslateY, glowScale, glowOpacity },
-    handleEmailChange, handlePasswordChange, handleEmailBlur, handlePasswordBlur, handleLogin, handleBack, navigateWithFade,
+    handleEmailChange, handlePasswordChange, handleEmailBlur, handlePasswordBlur, handleLogin, handleBack, navigateWithFade, handleContinueAsGuest,
   };
 }

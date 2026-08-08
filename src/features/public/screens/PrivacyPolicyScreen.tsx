@@ -1,6 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import { useMemo, useRef } from "react";
+import { useRef } from "react";
 import {
     Linking,
     Pressable,
@@ -14,51 +14,12 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import AppText from "@/src/components/ui/AppText";
 import { styles } from "./PrivacyPolicy.styles";
 
-type IoniconName = keyof typeof Ionicons.glyphMap;
-
-type TableItem = {
-  id: string;
-  title: string;
-};
-
-type InformationItem = {
-  id: string;
-  title: string;
-  description: string;
-  icon: IoniconName;
-};
-
-const SUPPORT_EMAIL = "support@resq.app";
-
-const TABLE_ITEMS: TableItem[] = [
-  { id: "introduction", title: "مقدمة" },
-  { id: "information", title: "المعلومات التي نجمعها" },
-  { id: "usage", title: "كيفية استخدام المعلومات" },
-  { id: "sharing", title: "مشاركة البيانات" },
-  { id: "protection", title: "حماية المعلومات" },
-  { id: "rights", title: "حقوق المستخدم" },
-];
-
-const INFORMATION_ITEMS: InformationItem[] = [
-  {
-    id: "account",
-    title: "بيانات الحساب",
-    description: "الاسم، البريد الإلكتروني، ورقم الهاتف لتوثيق الهوية.",
-    icon: "person-outline",
-  },
-  {
-    id: "location",
-    title: "الموقع الجغرافي",
-    description: "نحتاج لموقعك عند تقديم بلاغ إنقاذ لتحديد مكان الحيوان بدقة.",
-    icon: "location-outline",
-  },
-  {
-    id: "volunteering",
-    title: "بيانات التبرع والتطوع",
-    description: "تُستخدم مساهماتك لتعزيز ملفك الشخصي كعضو فعّال في المجتمع.",
-    icon: "hand-left-outline",
-  },
-];
+import {
+  INFORMATION_ITEMS,
+  PRIVACY_LAST_UPDATED,
+  SUPPORT_EMAIL,
+  TABLE_ITEMS,
+} from "../constants/privacyPolicy";
 
 export default function PrivacyPolicyScreen() {
   const router = useRouter();
@@ -70,7 +31,6 @@ export default function PrivacyPolicyScreen() {
   const horizontalPadding = width >= 700 ? Math.min(width * 0.15, 120) : 18;
   const contentWidth = Math.min(width - horizontalPadding * 2, 620);
 
-  const lastUpdated = useMemo(() => "15 مايو 2026", []);
 
   const handleBack = () => {
     if (router.canGoBack()) {
@@ -78,7 +38,7 @@ export default function PrivacyPolicyScreen() {
       return;
     }
 
-    router.replace("/register-entity" as never);
+    router.replace("/register-entity");
   };
 
   const handleShare = async () => {
@@ -101,7 +61,7 @@ export default function PrivacyPolicyScreen() {
   };
 
   const handleHelpCenter = () => {
-    router.push("/help-center" as never);
+    router.push("/help-center");
   };
 
   const handleScrollToSection = (id: string) => {
@@ -170,7 +130,7 @@ export default function PrivacyPolicyScreen() {
               <AppText style={styles.title}>سياسة الخصوصية</AppText>
 
               <AppText style={styles.updatedText}>
-                آخر تحديث: {lastUpdated}
+                آخر تحديث: {PRIVACY_LAST_UPDATED}
               </AppText>
 
               <AppText style={styles.introText}>

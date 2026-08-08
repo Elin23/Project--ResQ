@@ -103,7 +103,7 @@ export default function ChooseAccountScreen() {
       return;
     }
 
-    router.replace("/welcome" as never);
+    router.replace("/welcome");
   };
 
   const handleContinue = () => {
@@ -112,7 +112,7 @@ export default function ChooseAccountScreen() {
     }
 
     if (selectedOption === "user") {
-      router.push("/register-user" as never);
+      router.push("/register-user");
       return;
     }
 
@@ -121,11 +121,11 @@ export default function ChooseAccountScreen() {
       params: {
         entityType: selectedOption,
       },
-    } as never);
+    });
   };
 
   const handleLogin = () => {
-    router.replace("/login" as never);
+    router.replace("/login");
   };
 
   const renderOption = (option: AccountOption) => {

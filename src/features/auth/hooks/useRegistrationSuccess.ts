@@ -22,7 +22,7 @@ export function useRegistrationSuccess() {
 
   return {
     content, displayName, horizontalPadding, contentWidth,
-    openPrimary: () => router.replace(content.primaryButtonPathname as never),
-    openSecondary: () => content.secondaryButtonPathname && router.push(content.secondaryButtonPathname as never),
+    openPrimary: () => router.replace(content.primaryButtonPathname),
+    openSecondary: () => content.secondaryButtonPathname && router.push(content.secondaryButtonPathname),
   };
 }

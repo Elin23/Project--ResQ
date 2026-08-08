@@ -64,7 +64,7 @@ export default function FilterSheet({ visible, onApply, onClose }: Props) {
 const styles = StyleSheet.create({
   backdrop: {
     flex: 1,
-    backgroundColor: '#00000066',
+    backgroundColor: COLORS.backdrop,
     justifyContent: 'flex-end',      
   },
   sheet: {

@@ -1,1 +1,1 @@
-export { default } from "@/src/features/adoption/screens/AdoptionScreen";
+export { default } from "@/src/features/explore/screens/ExploreScreen";

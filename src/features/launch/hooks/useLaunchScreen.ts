@@ -3,9 +3,11 @@ import { useEffect, useRef } from "react";
 import { Animated, Easing, useWindowDimensions } from "react-native";
 
 import { hasCompletedOnboarding } from "@/src/utils/onboardingStorage";
+import { useSession } from "@/src/features/session/SessionContext";
 
 export function useLaunchScreen() {
   const router = useRouter();
+  const { mode, isReady } = useSession();
   const { width, height } = useWindowDimensions();
 
   const screenOpacity = useRef(new Animated.Value(0)).current;
@@ -50,6 +52,7 @@ export function useLaunchScreen() {
   const loaderWidth = Math.min(width * 0.38, 155);
 
   useEffect(() => {
+    if (!isReady) return;
     let isMounted = true;
 
     const navigateFromSplash = async () => {
@@ -60,7 +63,7 @@ export function useLaunchScreen() {
       }
 
       if (onboardingCompleted) {
-        router.replace("/login");
+        router.replace(mode === "member" || mode === "guest" ? "/(tabs)" : "/login");
         return;
       }
 
@@ -224,16 +227,12 @@ export function useLaunchScreen() {
         }),
       ]),
     ]).start(() => {
-      floatingAnimation.start();
-      pulseAnimation.start();
-      particleAnimationOne.start();
-      particleAnimationTwo.start();
-      particleAnimationThree.start();
+      // Static decorative values are kept to avoid continuous animation work on low-end devices.
     });
 
     Animated.timing(progress, {
       toValue: 1,
-      duration: 3400,
+      duration: 1200,
       easing: Easing.inOut(Easing.cubic),
       useNativeDriver: false,
     }).start();
@@ -241,7 +240,7 @@ export function useLaunchScreen() {
     const navigationTimer = setTimeout(() => {
       Animated.timing(screenOpacity, {
         toValue: 0,
-        duration: 350,
+        duration: 120,
         easing: Easing.inOut(Easing.cubic),
         useNativeDriver: true,
       }).start(({ finished }) => {
@@ -249,7 +248,7 @@ export function useLaunchScreen() {
           void navigateFromSplash();
         }
       });
-    }, 3600);
+    }, 1350);
 
     return () => {
       isMounted = false;
@@ -288,6 +287,8 @@ export function useLaunchScreen() {
     illustrationOpacity,
     illustrationScale,
     illustrationTranslateY,
+    isReady,
+    mode,
     loaderOpacity,
     particleOne,
     particleThree,

@@ -9,7 +9,7 @@ import { SYRIAN_GOVERNORATES as GOVERNORATES } from "../../constants/governorate
 import type { RegisterUserForm } from "../../hooks/useRegisterUserForm";
 
 export default function UserPersonalInfoSection({ form }: { form: RegisterUserForm }) {
-  const { fullName,setFullName,email,setEmail,birthDate,formattedBirthDate,openBirthDatePicker,phone,setPhone,governorate,setGovernorate,showGovernorates,setShowGovernorates,showBirthDatePicker,temporaryBirthDate,minimumBirthDate,maximumBirthDate,handleBirthDateChange,errors,setErrors,renderError } = form;
+  const { fullName,setFullName,email,setEmail,birthDate,formattedBirthDate,openBirthDatePicker,phone,setPhone,normalizeSyrianMobile,governorate,setGovernorate,showGovernorates,setShowGovernorates,showBirthDatePicker,temporaryBirthDate,minimumBirthDate,maximumBirthDate,handleBirthDateChange,errors,setErrors,renderError } = form;
   return (<>
 <View style={styles.sectionHeader}>
   <View style={styles.sectionMarker} />
@@ -138,7 +138,7 @@ export default function UserPersonalInfoSection({ form }: { form: RegisterUserFo
       <TextInput
         value={phone}
         onChangeText={(value) => {
-          setPhone(value.replace(/\D/g, "").slice(0, 9));
+          setPhone(normalizeSyrianMobile(value));
           setErrors((current) => ({
             ...current,
             phone: undefined,

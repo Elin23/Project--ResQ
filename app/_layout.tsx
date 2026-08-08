@@ -6,12 +6,14 @@ import {
 } from "@expo-google-fonts/ibm-plex-sans-arabic";
 import { DefaultTheme, ThemeProvider } from "@react-navigation/native";
 import { Stack } from "expo-router";
+import { useEffect } from "react";
 import * as SplashScreen from "expo-splash-screen";
 import { StatusBar } from "expo-status-bar";
 import { I18nManager } from "react-native";
 import "react-native-reanimated";
 
 import { COLORS } from "@/src/theme";
+import { SessionProvider } from "@/src/features/session/SessionContext";
 
 SplashScreen.preventAutoHideAsync().catch(() => {
   // The splash screen may already be controlled by Expo during fast refresh.
@@ -41,15 +43,22 @@ export default function RootLayout() {
     IBMPlexSansArabic_700Bold,
   });
 
+  useEffect(() => {
+    if (!fontsLoaded) {
+      return;
+    }
+
+    SplashScreen.hideAsync().catch(() => {
+      // Safe fallback when the native splash screen has already been hidden.
+    });
+  }, [fontsLoaded]);
+
   if (!fontsLoaded) {
     return null;
   }
 
-  SplashScreen.hideAsync().catch(() => {
-    // Safe fallback when the native splash screen has already been hidden.
-  });
-
   return (
+    <SessionProvider>
     <ThemeProvider value={LightNavigationTheme}>
       <Stack
         screenOptions={{
@@ -85,5 +94,6 @@ export default function RootLayout() {
 
       <StatusBar style="dark" />
     </ThemeProvider>
+    </SessionProvider>
   );
 }

@@ -1,11 +1,13 @@
 import { useRouter } from "expo-router";
 import { useEffect, useRef, useState } from "react";
 import { Animated, Easing, useWindowDimensions } from "react-native";
+import { useSession } from "@/src/features/session/SessionContext";
 
 type NavigationPath = "/choose-account" | "/login" | "/(tabs)";
 
 export function useWelcomeScreen() {
   const router = useRouter();
+  const { continueAsGuest } = useSession();
   const { width, height } = useWindowDimensions();
 
   const [isNavigating, setIsNavigating] = useState(false);
@@ -346,22 +348,15 @@ export function useWelcomeScreen() {
   ]);
 
   const navigateWithFade = (path: NavigationPath) => {
-    if (isNavigating) {
-      return;
-    }
-
+    if (isNavigating) return;
     setIsNavigating(true);
+    router.push(path);
+  };
 
-    Animated.timing(screenOpacity, {
-      toValue: 0,
-      duration: 220,
-      easing: Easing.inOut(Easing.cubic),
-      useNativeDriver: true,
-    }).start();
-
-    navigationTimer.current = setTimeout(() => {
-      router.push(path as never);
-    }, 220);
+  const enterAsGuest = async () => {
+    if (isNavigating) return;
+    await continueAsGuest();
+    navigateWithFade("/(tabs)");
   };
 
 
@@ -372,6 +367,6 @@ export function useWelcomeScreen() {
     panelScale, titleOpacity, titleTranslateY, descriptionOpacity, descriptionTranslateY,
     createButtonOpacity, createButtonTranslateY, loginButtonOpacity, loginButtonTranslateY,
     guestOpacity, guestTranslateY, termsOpacity, glowScale, glowOpacity, shimmerTranslateX,
-    navigateWithFade, router,
+    navigateWithFade, enterAsGuest, router,
   };
 }

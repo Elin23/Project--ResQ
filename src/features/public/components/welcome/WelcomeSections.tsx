@@ -36,7 +36,7 @@ export function WelcomeHero({ model }: { model: WelcomeModel }) {
 }
 
 export function WelcomePanel({ model }: { model: WelcomeModel }) {
-  const { isCompact, horizontalPadding, contentWidth, panelTopMargin, titleSize, descriptionSize, buttonHeight, panelOpacity, panelTranslateY, panelScale, titleOpacity, titleTranslateY, descriptionOpacity, descriptionTranslateY, createButtonOpacity, createButtonTranslateY, loginButtonOpacity, loginButtonTranslateY, guestOpacity, guestTranslateY, termsOpacity, shimmerTranslateX, isNavigating, navigateWithFade, router } = model;
+  const { isCompact, horizontalPadding, contentWidth, panelTopMargin, titleSize, descriptionSize, buttonHeight, panelOpacity, panelTranslateY, panelScale, titleOpacity, titleTranslateY, descriptionOpacity, descriptionTranslateY, createButtonOpacity, createButtonTranslateY, loginButtonOpacity, loginButtonTranslateY, guestOpacity, guestTranslateY, termsOpacity, shimmerTranslateX, isNavigating, navigateWithFade, enterAsGuest, router } = model;
   return (
     <Animated.View style={[styles.panel, { width: "100%", marginTop: panelTopMargin, paddingHorizontal: horizontalPadding, paddingTop: isCompact ? 34 : 42, paddingBottom: isCompact ? 24 : 34, opacity: panelOpacity, transform: [{ translateY: panelTranslateY }, { scale: panelScale }] }]}>
       <Animated.View style={[styles.titleContainer, { opacity: titleOpacity, transform: [{ translateY: titleTranslateY }] }]}>
@@ -67,15 +67,15 @@ export function WelcomePanel({ model }: { model: WelcomeModel }) {
           <Button title="تسجيل الدخول" onPress={() => navigateWithFade("/login")} variant="custom" size="large" icon="log-in-outline" iconPosition="end" iconSize={23} disabled={isNavigating} fullWidth backgroundColor="#FAFAFE" borderColor="#FFD0BA" borderWidth={1.5} textColor="#FF7945" radius={17} style={[styles.secondaryButton, { height: buttonHeight, minHeight: buttonHeight }]} textStyle={styles.secondaryButtonText} />
         </Animated.View>
         <Animated.View style={[styles.guestContainer, { opacity: guestOpacity, transform: [{ translateY: guestTranslateY }] }]}>
-          <Button title="المتابعة كزائر" onPress={() => navigateWithFade("/(tabs)")} variant="text" size="small" icon="arrow-forward-outline" iconPosition="end" iconSize={18} disabled={isNavigating} fullWidth={false} textColor="#554842" radius={14} style={styles.guestButton} textStyle={styles.guestText} />
+          <Button title="المتابعة كزائر" onPress={enterAsGuest} variant="text" size="small" icon="arrow-forward-outline" iconPosition="end" iconSize={18} disabled={isNavigating} fullWidth={false} textColor="#554842" radius={14} style={styles.guestButton} textStyle={styles.guestText} />
         </Animated.View>
       </View>
 
       <Animated.View style={[styles.termsContainer, { width: contentWidth, opacity: termsOpacity }]}>
         <AppText style={styles.termsText}>باستمرارك فإنك توافق على</AppText>
-        <Pressable accessibilityRole="link" accessibilityLabel="عرض الشروط" onPress={() => router.push("/terms-and-conditions" as never)} style={({ pressed, hovered }) => [styles.inlineLink, hovered && styles.inlineLinkHovered, pressed && styles.inlineLinkPressed]}><AppText style={styles.termsLink}>الشروط</AppText></Pressable>
+        <Pressable accessibilityRole="link" accessibilityLabel="عرض الشروط" onPress={() => router.push("/terms-and-conditions")} style={({ pressed }) => [styles.inlineLink, pressed && styles.inlineLinkPressed]}><AppText style={styles.termsLink}>الشروط</AppText></Pressable>
         <AppText style={styles.termsText}>و</AppText>
-        <Pressable accessibilityRole="link" accessibilityLabel="عرض سياسة الخصوصية" onPress={() => router.push("/privacy-policy" as never)} style={({ pressed, hovered }) => [styles.inlineLink, hovered && styles.inlineLinkHovered, pressed && styles.inlineLinkPressed]}><AppText style={styles.termsLink}>سياسة الخصوصية</AppText></Pressable>
+        <Pressable accessibilityRole="link" accessibilityLabel="عرض سياسة الخصوصية" onPress={() => router.push("/privacy-policy")} style={({ pressed }) => [styles.inlineLink, pressed && styles.inlineLinkPressed]}><AppText style={styles.termsLink}>سياسة الخصوصية</AppText></Pressable>
       </Animated.View>
     </Animated.View>
   );

@@ -89,7 +89,7 @@ export default function UserAgreementsSection({ form }: { form: RegisterUserForm
 />
 
 <Pressable
-  onPress={() => router.replace("/login" as never)}
+  onPress={() => router.replace("/login")}
   style={({ pressed }) => [
     styles.loginLink,
     pressed && styles.loginLinkPressed,

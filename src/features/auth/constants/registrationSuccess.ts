@@ -1,3 +1,5 @@
+import { ROUTES, type AppRoute } from "@/src/navigation/routes";
+
 import { Ionicons } from "@expo/vector-icons";
 
 export type AccountType = "user" | "entity";
@@ -24,9 +26,9 @@ export type RoleContent = {
   capabilitiesDescription: string;
   capabilities: Capability[];
   primaryButtonTitle: string;
-  primaryButtonPathname: string;
+  primaryButtonPathname: AppRoute;
   secondaryButtonTitle?: string;
-  secondaryButtonPathname?: string;
+  secondaryButtonPathname?: AppRoute;
 };
 
 const USER_CAPABILITIES: Capability[] = [
@@ -47,10 +49,10 @@ const CLINIC_CAPABILITIES: Capability[] = [
 ];
 
 const ORGANIZATION_CAPABILITIES: Capability[] = [
+  { id: "rescue", title: "إدارة حالات الإنقاذ", description: "استقبال الحالات الطارئة وإسنادها لفريق الجمعية ومتابعة تقدمها", icon: "medical-outline" },
   { id: "adoption", title: "عرض حيوانات للتبني", description: "إضافة الحالات ومتابعة طلبات التبني الواردة", icon: "paw-outline" },
   { id: "ads", title: "نشر وإدارة الإعلانات", description: "التعريف بأنشطة الجمعية وأخبارها وخدماتها", icon: "megaphone-outline" },
   { id: "campaigns", title: "إضافة حملات التبرع", description: "إنشاء الحملات ومتابعة المساهمات المالية", icon: "heart-circle-outline" },
-  { id: "volunteers", title: "استقبال طلبات المتطوعين", description: "مراجعة الطلبات وتنظيم فريق المتطوعين", icon: "people-outline" },
   { id: "map", title: "الظهور على الخريطة التفاعلية", description: "إظهار موقع الجمعية وبيانات التواصل للمستخدمين", icon: "map-outline" },
 ];
 
@@ -76,11 +78,11 @@ export function createRoleContent(accountType: AccountType, entityType: EntityTy
 
   return {
     roleLabel: "حساب جمعية", welcomeTitle: isActive ? "تم اعتماد الجمعية" : "تم إرسال طلب تسجيل الجمعية",
-    welcomeDescription: isActive ? "أصبحت الجمعية جاهزة لإدارة الحالات والمتطوعين والحملات داخل ResQ." : "تم تأكيد رقم هاتف مسؤول الجمعية. سنراجع البيانات والوثائق قبل تفعيل ميزات الجمعية.",
+    welcomeDescription: isActive ? "أصبحت الجمعية جاهزة لإدارة حالات الإنقاذ والتبني والحملات داخل ResQ." : "تم تأكيد رقم هاتف مسؤول الجمعية. سنراجع البيانات والوثائق قبل تفعيل ميزات الجمعية.",
     statusTitle: isActive ? "الجمعية معتمدة ونشطة" : "الجمعية قيد المراجعة",
-    statusDescription: isActive ? "يمكن للجمعية استقبال المتطوعين وإدارة الحملات" : "سيتم إشعارك فور اكتمال مراجعة الطلب",
+    statusDescription: isActive ? "يمكن للجمعية استقبال حالات الإنقاذ وإدارة الحملات" : "سيتم إشعارك فور اكتمال مراجعة الطلب",
     status: isActive ? "active" : "pending", heroIcon: "people", capabilitiesTitle: isActive ? "أدوات الجمعية" : "الميزات بعد الاعتماد",
-    capabilitiesDescription: "كل ما تحتاجه الجمعية لإدارة التبني والتطوع والتبرعات", capabilities: ORGANIZATION_CAPABILITIES,
-    primaryButtonTitle: "فتح لوحة الجمعية", primaryButtonPathname: "/(tabs)", secondaryButtonTitle: "معاينة الملف العام", secondaryButtonPathname: "/profile",
+    capabilitiesDescription: "كل ما تحتاجه الجمعية لإدارة الإنقاذ والتبني والتبرعات", capabilities: ORGANIZATION_CAPABILITIES,
+    primaryButtonTitle: "فتح لوحة الجمعية", primaryButtonPathname: ROUTES.organizationDashboard, secondaryButtonTitle: "معاينة الملف العام", secondaryButtonPathname: ROUTES.organizations,
   };
 }

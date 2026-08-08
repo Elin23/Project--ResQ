@@ -18,8 +18,23 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 import AppText from "@/src/components/ui/AppText";
 import Button from "@/src/components/ui/Button";
-import { FONTS } from "@/src/theme";
+import { COLORS, FONTS } from "@/src/theme";
 import { styles } from "@/src/features/auth/screens/RegisterUser.styles";
+import {
+  formatSyrianMobileInternational,
+  getMaximumBirthDate,
+  getMinimumBirthDate,
+  getRegistrationPasswordRequirements,
+  getRegistrationPasswordStrength,
+  normalizeSyrianMobile,
+  USER_MINIMUM_AGE,
+  validateBirthDate,
+  validateEmail,
+  validateFullName,
+  validatePasswordConfirmation,
+  validateRegistrationPassword,
+  validateSyrianMobile,
+} from "@/src/features/auth/utils/registrationValidation";
 
 type FormErrors = {
   fullName?: string;
@@ -84,8 +99,11 @@ export function useRegisterUserForm() {
 
   const accountTitle = "إنشاء حساب مستخدم";
 
-  const maximumBirthDate = useMemo(() => new Date(), []);
-  const minimumBirthDate = useMemo(() => new Date(1900, 0, 1), []);
+  const maximumBirthDate = useMemo(
+    () => getMaximumBirthDate(USER_MINIMUM_AGE),
+    [],
+  );
+  const minimumBirthDate = useMemo(() => getMinimumBirthDate(), []);
 
   const formattedBirthDate = useMemo(() => {
     if (!birthDate) {
@@ -99,23 +117,15 @@ export function useRegisterUserForm() {
     }).format(birthDate);
   }, [birthDate]);
 
-  const passwordStrength = useMemo(() => {
-    let score = 0;
+  const passwordRequirements = useMemo(
+    () => getRegistrationPasswordRequirements(password),
+    [password],
+  );
 
-    if (password.length >= 8) {
-      score += 1;
-    }
-
-    if (/[A-Za-z]/.test(password)) {
-      score += 1;
-    }
-
-    if (/\d/.test(password)) {
-      score += 1;
-    }
-
-    return score;
-  }, [password]);
+  const passwordStrength = useMemo(
+    () => getRegistrationPasswordStrength(password),
+    [password],
+  );
 
   const passwordStrengthLabel =
     passwordStrength === 3
@@ -126,16 +136,16 @@ export function useRegisterUserForm() {
 
   const passwordStrengthColor =
     passwordStrength === 3
-      ? "#17823A"
+      ? COLORS.strengthStrong
       : passwordStrength === 2
-        ? "#E38A2E"
-        : "#C92335";
+        ? COLORS.strengthMedium
+        : COLORS.strengthWeak;
 
   const canSubmit =
-    fullName.trim().length >= 3 &&
-    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim()) &&
-    birthDate !== null &&
-    phone.length >= 8 &&
+    !validateFullName(fullName) &&
+    !validateEmail(email) &&
+    !validateBirthDate(birthDate, USER_MINIMUM_AGE) &&
+    !validateSyrianMobile(phone) &&
     governorate.length > 0 &&
     passwordStrength === 3 &&
     confirmPassword === password &&
@@ -148,7 +158,7 @@ export function useRegisterUserForm() {
       return;
     }
 
-    router.replace("/choose-account" as never);
+    router.replace("/choose-account");
   };
 
   const openBirthDatePicker = () => {
@@ -194,36 +204,20 @@ export function useRegisterUserForm() {
   const validateForm = () => {
     const nextErrors: FormErrors = {};
 
-    if (fullName.trim().length < 3) {
-      nextErrors.fullName = "يرجى إدخال الاسم الكامل";
-    }
-
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
-      nextErrors.email = "يرجى إدخال بريد إلكتروني صحيح";
-    }
-
-    if (!birthDate) {
-      nextErrors.birthDate = "يرجى اختيار تاريخ الميلاد";
-    }
-
-    if (phone.length < 8) {
-      nextErrors.phone = "يرجى إدخال رقم هاتف صحيح";
-    }
+    nextErrors.fullName = validateFullName(fullName);
+    nextErrors.email = validateEmail(email);
+    nextErrors.birthDate = validateBirthDate(birthDate, USER_MINIMUM_AGE);
+    nextErrors.phone = validateSyrianMobile(phone);
 
     if (!governorate) {
       nextErrors.governorate = "يرجى اختيار المحافظة";
     }
 
-    if (passwordStrength < 3) {
-      nextErrors.password =
-        "يجب أن تتكون كلمة المرور من 8 أحرف على الأقل وتحتوي على حرف ورقم";
-    }
-
-    if (!confirmPassword) {
-      nextErrors.confirmPassword = "يرجى تأكيد كلمة المرور";
-    } else if (confirmPassword !== password) {
-      nextErrors.confirmPassword = "كلمتا المرور غير متطابقتين";
-    }
+    nextErrors.password = validateRegistrationPassword(password);
+    nextErrors.confirmPassword = validatePasswordConfirmation(
+      confirmPassword,
+      password,
+    );
 
     if (!acceptedTerms) {
       nextErrors.terms = "يجب الموافقة على شروط الاستخدام وسياسة الخصوصية";
@@ -231,7 +225,7 @@ export function useRegisterUserForm() {
 
     setErrors(nextErrors);
 
-    return Object.keys(nextErrors).length === 0;
+    return Object.values(nextErrors).every((message) => !message);
   };
 
   const handleSubmit = async () => {
@@ -247,7 +241,7 @@ export function useRegisterUserForm() {
         fullName: fullName.trim(),
         email: email.trim(),
         birthDate: birthDate?.toISOString() ?? "",
-        phone: `+963${phone}`,
+        phone: formatSyrianMobileInternational(phone),
         governorate,
         password,
         acceptedUpdates,
@@ -260,10 +254,10 @@ export function useRegisterUserForm() {
       router.push({
         pathname: "/verify-registration-phone",
         params: {
-          phone: `+963${phone}`,
+          phone: formatSyrianMobileInternational(phone),
           accountType: "user",
         },
-      } as never);
+      });
     } finally {
       setIsSubmitting(false);
     }
@@ -279,8 +273,8 @@ export function useRegisterUserForm() {
 
   const form = {
     router, fullName, setFullName, email, setEmail, birthDate, formattedBirthDate, openBirthDatePicker,
-    phone, setPhone, governorate, setGovernorate, showGovernorates, setShowGovernorates, showBirthDatePicker,
-    password, setPassword, showPassword, setShowPassword, passwordStrength, passwordStrengthLabel,
+    phone, setPhone, normalizeSyrianMobile, governorate, setGovernorate, showGovernorates, setShowGovernorates, showBirthDatePicker,
+    password, setPassword, showPassword, setShowPassword, passwordRequirements, passwordStrength, passwordStrengthLabel,
     passwordStrengthColor, confirmPassword, setConfirmPassword, showConfirmPassword, setShowConfirmPassword,
     acceptedTerms, setAcceptedTerms, acceptedUpdates, setAcceptedUpdates, errors, setErrors, renderError,
     handleSubmit, isSubmitting, canSubmit, setShowBirthDatePicker, confirmBirthDate,

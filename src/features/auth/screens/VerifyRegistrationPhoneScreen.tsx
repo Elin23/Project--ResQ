@@ -18,6 +18,7 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import AppText from "@/src/components/ui/AppText";
 import Button from "@/src/components/ui/Button";
 import { FONTS } from "@/src/theme";
+import { useSession } from "@/src/features/session/SessionContext";
 
 const CODE_LENGTH = 6;
 const RESEND_SECONDS = 45;
@@ -34,6 +35,7 @@ type VerificationError = {
 
 export default function VerifyRegistrationPhoneScreen() {
   const router = useRouter();
+  const { signInAsMember } = useSession();
   const params = useLocalSearchParams<{
     phone?: string;
     accountType?: string;
@@ -195,7 +197,7 @@ export default function VerifyRegistrationPhoneScreen() {
       return;
     }
 
-    router.replace("/choose-account" as never);
+    router.replace("/choose-account");
   };
 
   const handleChangePhone = () => {
@@ -224,7 +226,8 @@ export default function VerifyRegistrationPhoneScreen() {
     }
   };
 
-  const navigateAfterSuccess = () => {
+  const navigateAfterSuccess = async () => {
+    await signInAsMember();
     setIsNavigating(true);
 
     if (accountType === "user") {
@@ -234,7 +237,7 @@ export default function VerifyRegistrationPhoneScreen() {
           accountType: "user",
           status: "active",
         },
-      } as never);
+      });
 
       return;
     }
@@ -246,7 +249,7 @@ export default function VerifyRegistrationPhoneScreen() {
         entityType,
         status: "active",
       },
-    } as never);
+    });
   };
   const handleVerifyCode = async () => {
     if (isSubmitting || isNavigating) {
@@ -279,7 +282,7 @@ export default function VerifyRegistrationPhoneScreen() {
       await animateResult("success");
 
       navigationTimer.current = setTimeout(() => {
-        navigateAfterSuccess();
+        void navigateAfterSuccess();
       }, 850);
     } catch {
       setErrors({

@@ -7,132 +7,51 @@ import * as Location from "expo-location";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useMemo, useRef, useState } from "react";
 import {
-    Image,
-    KeyboardAvoidingView,
-    Modal,
-    Platform,
-    Pressable,
-    ScrollView,
-      Switch,
-    TextInput,
-    useWindowDimensions,
-    View,
+  Image,
+  Platform,
+  Pressable,
+  ScrollView,
+  useWindowDimensions,
+  View,
 } from "react-native";
 import type { MapPressEvent, Region } from "react-native-maps";
-import { SafeAreaView } from "react-native-safe-area-context";
-
 import AppText from "@/src/components/ui/AppText";
-import Button from "@/src/components/ui/Button";
-import { FONTS } from "@/src/theme";
+import { COLORS } from "@/src/theme";
 import { styles } from "@/src/features/auth/screens/RegisterEntity.styles";
-
-type EntityType = "clinic" | "organization";
-type UploadKey = "logo" | "license" | "manager" | "extra";
-type Errors = Partial<
-  Record<
-    | "fullName"
-    | "email"
-    | "birthDate"
-    | "phone"
-    | "entityName"
-    | "entityCategory"
-    | "licenseNumber"
-    | "issuingAuthority"
-    | "description"
-    | "serviceGovernorate"
-    | "serviceDistrict"
-    | "mapLocation"
-    | "activities"
-    | "animals"
-    | "workingHours"
-    | "shelterCapacity"
-    | "volunteerRequirements"
-    | "licenseDocument"
-    | "password"
-    | "confirmPassword"
-    | "information"
-    | "verification"
-    | "terms",
-    string
-  >
->;
-
-type ChipOption = {
-  id: string;
-  label: string;
-  icon: keyof typeof Ionicons.glyphMap;
-};
-
-const GOVERNORATES = [
-  "دمشق",
-  "ريف دمشق",
-  "حلب",
-  "حمص",
-  "حماة",
-  "اللاذقية",
-  "طرطوس",
-  "إدلب",
-  "درعا",
-  "السويداء",
-  "القنيطرة",
-  "دير الزور",
-  "الرقة",
-  "الحسكة",
-];
-
-const ORGANIZATION_TYPES = [
-  "جمعية مرخصة",
-  "منظمة غير ربحية",
-  "فريق إنقاذ مسجل",
-  "مأوى حيوانات",
-  "مبادرة مجتمعية",
-];
-
-const CLINIC_TYPES = [
-  "عيادة بيطرية عامة",
-  "مشفى بيطري",
-  "مركز لقاحات ورعاية",
-  "عيادة تخصصية",
-  "مركز إسعاف بيطري",
-];
-
-const ORGANIZATION_ACTIVITIES: ChipOption[] = [
-  { id: "rescue", label: "إنقاذ ميداني", icon: "paw-outline" },
-  { id: "shelter", label: "إيواء", icon: "home-outline" },
-  { id: "adoption", label: "تبنّي", icon: "heart-outline" },
-  { id: "awareness", label: "توعية", icon: "megaphone-outline" },
-  { id: "treatment", label: "علاج", icon: "medkit-outline" },
-];
-
-const CLINIC_SERVICES: ChipOption[] = [
-  { id: "emergency", label: "إسعاف", icon: "medical-outline" },
-  { id: "examination", label: "فحص", icon: "search-outline" },
-  { id: "vaccination", label: "لقاحات", icon: "shield-checkmark-outline" },
-  { id: "surgery", label: "جراحة", icon: "cut-outline" },
-  { id: "laboratory", label: "تحاليل", icon: "flask-outline" },
-  { id: "imaging", label: "تصوير", icon: "scan-outline" },
-];
-
-const ORGANIZATION_ANIMALS: ChipOption[] = [
-  { id: "cats", label: "قطط", icon: "paw-outline" },
-  { id: "dogs", label: "كلاب", icon: "paw-outline" },
-  { id: "birds", label: "طيور", icon: "leaf-outline" },
-  { id: "other", label: "أخرى", icon: "add-circle-outline" },
-];
-
-const CLINIC_ANIMALS: ChipOption[] = [
-  { id: "pets", label: "حيوانات أليفة", icon: "paw-outline" },
-  { id: "birds", label: "طيور", icon: "leaf-outline" },
-  { id: "farm", label: "حيوانات مزرعة", icon: "nutrition-outline" },
-  { id: "other", label: "أخرى", icon: "add-circle-outline" },
-];
+import { SYRIAN_GOVERNORATES } from "@/src/features/auth/constants/governorates";
+import {
+  ENTITY_CLINIC_ANIMALS,
+  ENTITY_CLINIC_SERVICES,
+  ENTITY_CLINIC_TYPES,
+  ENTITY_ORGANIZATION_ACTIVITIES,
+  ENTITY_ORGANIZATION_ANIMALS,
+  ENTITY_ORGANIZATION_TYPES,
+} from "@/src/features/auth/constants/registerEntity";
+import type {
+  RegisterEntityChipOption,
+  RegisterEntityErrors,
+  RegisterEntityType,
+  RegisterEntityUploadKey,
+} from "@/src/features/auth/types/registerEntity";
+import {
+  buildRegisterEntityPayload,
+  getRegisterEntityErrors,
+} from "@/src/features/auth/utils/registerEntityForm";
+import {
+  ENTITY_MANAGER_MINIMUM_AGE,
+  getMaximumBirthDate,
+  getMinimumBirthDate,
+  getRegistrationPasswordRequirements,
+  getRegistrationPasswordStrength,
+  normalizeSyrianMobile,
+} from "@/src/features/auth/utils/registrationValidation";
 
 export function useRegisterEntityForm() {
   const router = useRouter();
   const params = useLocalSearchParams<{ entityType?: string }>();
   const { width } = useWindowDimensions();
 
-  const entityType: EntityType =
+  const entityType: RegisterEntityType =
     params.entityType === "clinic" ? "clinic" : "organization";
   const isClinic = entityType === "clinic";
   const entityTitle = isClinic ? "عيادة" : "جمعية / منظمة";
@@ -199,13 +118,16 @@ export function useRegisterEntityForm() {
     longitude: number;
   } | null>(null);
   const [isLocating, setIsLocating] = useState(false);
-  const [errors, setErrors] = useState<Errors>({});
+  const [errors, setErrors] = useState<RegisterEntityErrors>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitAttempted, setSubmitAttempted] = useState(false);
   const scrollViewRef = useRef<ScrollView>(null);
 
-  const maximumBirthDate = useMemo(() => new Date(), []);
-  const minimumBirthDate = useMemo(() => new Date(1900, 0, 1), []);
+  const maximumBirthDate = useMemo(
+    () => getMaximumBirthDate(ENTITY_MANAGER_MINIMUM_AGE),
+    [],
+  );
+  const minimumBirthDate = useMemo(() => getMinimumBirthDate(), []);
 
   const formattedBirthDate = useMemo(() => {
     if (!birthDate) return "";
@@ -216,17 +138,23 @@ export function useRegisterEntityForm() {
     }).format(birthDate);
   }, [birthDate]);
 
-  const categories = isClinic ? CLINIC_TYPES : ORGANIZATION_TYPES;
-  const activityOptions = isClinic ? CLINIC_SERVICES : ORGANIZATION_ACTIVITIES;
-  const animalOptions = isClinic ? CLINIC_ANIMALS : ORGANIZATION_ANIMALS;
+  const categories = isClinic ? ENTITY_CLINIC_TYPES : ENTITY_ORGANIZATION_TYPES;
+  const activityOptions = isClinic
+    ? ENTITY_CLINIC_SERVICES
+    : ENTITY_ORGANIZATION_ACTIVITIES;
+  const animalOptions = isClinic
+    ? ENTITY_CLINIC_ANIMALS
+    : ENTITY_ORGANIZATION_ANIMALS;
 
-  const passwordStrength = useMemo(() => {
-    let score = 0;
-    if (password.length >= 8) score += 1;
-    if (/[A-Za-z\u0600-\u06FF]/.test(password)) score += 1;
-    if (/\d/.test(password)) score += 1;
-    return score;
-  }, [password]);
+  const passwordRequirements = useMemo(
+    () => getRegistrationPasswordRequirements(password),
+    [password],
+  );
+
+  const passwordStrength = useMemo(
+    () => getRegistrationPasswordStrength(password),
+    [password],
+  );
 
   const passwordStrengthLabel =
     passwordStrength === 3
@@ -236,34 +164,47 @@ export function useRegisterEntityForm() {
         : "ضعيفة";
   const passwordStrengthColor =
     passwordStrength === 3
-      ? "#18833B"
+      ? COLORS.strengthStrong
       : passwordStrength === 2
-        ? "#E28B2D"
-        : "#C92835";
+        ? COLORS.strengthMedium
+        : COLORS.strengthWeak;
+
+  const validationInput = {
+    entityType,
+    entityTitle,
+    fullName,
+    email,
+    birthDate,
+    phone,
+    entityName,
+    entityCategory,
+    licenseNumber,
+    issuingAuthority,
+    description,
+    serviceGovernorate,
+    serviceDistrict,
+    selectedLocation,
+    selectedActivities,
+    selectedAnimals,
+    open24Hours,
+    workingHours,
+    hasShelter,
+    shelterCapacity,
+    acceptsVolunteers,
+    volunteerRequirements,
+    licenseDocument,
+    password,
+    confirmPassword,
+    informationConfirmed,
+    verificationConfirmed,
+    termsAccepted,
+  };
 
   const canSubmit =
-    fullName.trim().length >= 3 &&
-    /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim()) &&
-    birthDate !== null &&
-    /^9\d{8}$/.test(phone) &&
-    entityName.trim().length >= 3 &&
-    entityCategory.length > 0 &&
-    licenseNumber.trim().length >= 3 &&
-    issuingAuthority.trim().length >= 3 &&
-    description.trim().length >= 20 &&
-    serviceGovernorate.length > 0 &&
-    serviceDistrict.trim().length >= 2 &&
-    selectedLocation !== null &&
-    selectedActivities.length > 0 &&
-    selectedAnimals.length > 0 &&
-    licenseDocument !== null &&
+    Object.values(getRegisterEntityErrors(validationInput)).every(
+      (message) => !message,
+    ) &&
     passwordStrength === 3 &&
-    confirmPassword === password &&
-    (!isClinic || open24Hours || workingHours.trim().length >= 3) &&
-    (isClinic || !hasShelter || Number(shelterCapacity) > 0) &&
-    informationConfirmed &&
-    verificationConfirmed &&
-    termsAccepted &&
     !isSubmitting;
 
   const closeDropdowns = () => {
@@ -276,7 +217,7 @@ export function useRegisterEntityForm() {
       router.back();
       return;
     }
-    router.replace("/choose-account" as never);
+    router.replace("/choose-account");
   };
 
   const openBirthDatePicker = () => {
@@ -320,7 +261,7 @@ export function useRegisterEntityForm() {
     setErrors((state) => ({ ...state, [key]: undefined }));
   };
 
-  const pickImage = async (key: UploadKey) => {
+  const pickImage = async (key: RegisterEntityUploadKey) => {
     const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
     if (!permission.granted) return;
 
@@ -406,84 +347,14 @@ export function useRegisterEntityForm() {
   };
 
   const validateForm = () => {
-    const nextErrors: Errors = {};
-
-    if (!fullName.trim()) nextErrors.fullName = "الاسم الكامل مطلوب";
-    else if (fullName.trim().length < 3)
-      nextErrors.fullName = "يجب أن يتكون الاسم من 3 أحرف على الأقل";
-    if (!email.trim()) nextErrors.email = "البريد الإلكتروني مطلوب";
-    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim()))
-      nextErrors.email =
-        "صيغة البريد الإلكتروني غير صحيحة، مثال: name@example.com";
-    if (!birthDate) nextErrors.birthDate = "يرجى اختيار تاريخ الميلاد";
-    if (!phone) nextErrors.phone = "رقم الهاتف مطلوب";
-    else if (!/^9\d{8}$/.test(phone))
-      nextErrors.phone = "أدخل 9 أرقام ويجب أن يبدأ الرقم بالرقم 9";
-    if (entityName.trim().length < 3)
-      nextErrors.entityName = `يرجى إدخال اسم ${entityTitle}`;
-    if (!entityCategory)
-      nextErrors.entityCategory = `يرجى اختيار نوع ${entityTitle}`;
-    if (!licenseNumber.trim()) nextErrors.licenseNumber = "رقم الترخيص مطلوب";
-    else if (licenseNumber.trim().length < 3)
-      nextErrors.licenseNumber = "رقم الترخيص قصير جدًا";
-    if (!issuingAuthority.trim())
-      nextErrors.issuingAuthority = "جهة إصدار الترخيص مطلوبة";
-    else if (issuingAuthority.trim().length < 3)
-      nextErrors.issuingAuthority = "يرجى كتابة اسم جهة الإصدار بشكل أوضح";
-    if (description.trim().length < 20)
-      nextErrors.description = "يرجى إضافة نبذة لا تقل عن 20 حرفًا";
-    if (!serviceGovernorate)
-      nextErrors.serviceGovernorate = "يرجى اختيار محافظة موقع الجهة";
-    if (!serviceDistrict.trim())
-      nextErrors.serviceDistrict = "المنطقة أو الحي مطلوب";
-    else if (serviceDistrict.trim().length < 2)
-      nextErrors.serviceDistrict = "يرجى كتابة اسم المنطقة أو الحي بشكل صحيح";
-    if (!selectedLocation)
-      nextErrors.mapLocation = "يرجى تحديد الموقع بدقة على الخريطة";
-    if (selectedActivities.length === 0)
-      nextErrors.activities = isClinic
-        ? "يرجى اختيار خدمة واحدة على الأقل"
-        : "يرجى اختيار نشاط واحد على الأقل";
-    if (selectedAnimals.length === 0)
-      nextErrors.animals = "يرجى اختيار الحيوانات التي تخدمها الجهة";
-    if (isClinic && !open24Hours && workingHours.trim().length < 3)
-      nextErrors.workingHours =
-        "يرجى إدخال أوقات دوام العيادة أو تفعيل خيار 24 ساعة";
-    if (!isClinic && hasShelter && Number(shelterCapacity) <= 0)
-      nextErrors.shelterCapacity = "يرجى إدخال سعة صحيحة لمنشأة الإيواء";
-    if (
-      !isClinic &&
-      acceptsVolunteers &&
-      volunteerRequirements.trim().length > 0 &&
-      volunteerRequirements.trim().length < 10
-    )
-      nextErrors.volunteerRequirements =
-        "اكتب متطلبات التطوع بشكل أوضح أو اترك الحقل فارغًا";
-    if (!licenseDocument)
-      nextErrors.licenseDocument = "صورة الترخيص مطلوبة للتحقق";
-    if (passwordStrength < 3)
-      nextErrors.password =
-        "يجب أن تحتوي كلمة المرور على 8 أحرف على الأقل وحرف ورقم";
-    if (!confirmPassword) nextErrors.confirmPassword = "يرجى تأكيد كلمة المرور";
-    else if (confirmPassword !== password)
-      nextErrors.confirmPassword = "كلمتا المرور غير متطابقتين";
-    if (!informationConfirmed)
-      nextErrors.information = "يجب تأكيد صحة المعلومات";
-    if (!verificationConfirmed)
-      nextErrors.verification = "يجب الموافقة على مراجعة واعتماد الجهة";
-    if (!termsAccepted)
-      nextErrors.terms = "يجب الموافقة على الشروط وسياسة الخصوصية";
-
+    const nextErrors = getRegisterEntityErrors(validationInput);
     setErrors(nextErrors);
 
-    const isValid = Object.keys(nextErrors).length === 0;
+    const isValid = Object.values(nextErrors).every((message) => !message);
 
     if (!isValid) {
       requestAnimationFrame(() => {
-        scrollViewRef.current?.scrollTo({
-          y: 0,
-          animated: true,
-        });
+        scrollViewRef.current?.scrollTo({ y: 0, animated: true });
       });
     }
 
@@ -500,57 +371,14 @@ export function useRegisterEntityForm() {
     try {
       setIsSubmitting(true);
 
-      const sharedPayload = {
-        accountType: "entity-admin",
-        entityType,
-        manager: {
-          fullName: fullName.trim(),
-          email: email.trim(),
-          birthDate: birthDate?.toISOString() ?? "",
-          phone: `+963${phone}`,
-        },
-        entity: {
-          name: entityName.trim(),
-          category: entityCategory,
-          licenseNumber: licenseNumber.trim(),
-          issuingAuthority: issuingAuthority.trim(),
-          description: description.trim(),
-          serviceGovernorate,
-          serviceDistrict: serviceDistrict.trim(),
-          location: selectedLocation,
-          supportedAnimals: selectedAnimals,
-          logo,
-          licenseDocument,
-          managerDocument,
-        },
-        password,
-      };
-
-      const payload = isClinic
-        ? {
-            ...sharedPayload,
-            clinicDetails: {
-              services: selectedActivities,
-              open24Hours,
-              workingHours: open24Hours ? "24/7" : workingHours.trim(),
-              homeVisits,
-              emergencyService,
-              doctorLicenseDocument: extraDocument,
-            },
-          }
-        : {
-            ...sharedPayload,
-            organizationDetails: {
-              activities: selectedActivities,
-              hasShelter,
-              shelterCapacity: hasShelter ? shelterCapacity : "",
-              acceptsVolunteers,
-              volunteerRequirements: acceptsVolunteers
-                ? volunteerRequirements.trim()
-                : "",
-              policyDocument: extraDocument,
-            },
-          };
+      const payload = buildRegisterEntityPayload({
+        ...validationInput,
+        logo,
+        managerDocument,
+        extraDocument,
+        homeVisits,
+        emergencyService,
+      });
 
       await new Promise((resolve) => setTimeout(resolve, 900));
       void payload;
@@ -558,13 +386,13 @@ export function useRegisterEntityForm() {
       router.push({
         pathname: "/verify-registration-phone",
         params: {
-          phone: `+963${phone}`,
+          phone: payload.manager.phone,
           accountType: "entity",
           entityType,
           name: entityName.trim(),
           email: email.trim(),
         },
-      } as never);
+      });
     } finally {
       setIsSubmitting(false);
     }
@@ -581,7 +409,7 @@ export function useRegisterEntityForm() {
   );
 
   const renderDropdown = (
-    items: string[],
+    items: readonly string[],
     value: string,
     onSelect: (item: string) => void,
   ) => (
@@ -604,7 +432,7 @@ export function useRegisterEntityForm() {
           >
             <AppText style={styles.dropdownItemText}>{item}</AppText>
             {value === item ? (
-              <Ionicons name="checkmark-circle" size={20} color="#16833A" />
+              <Ionicons name="checkmark-circle" size={20} color={COLORS.strengthStrong} />
             ) : null}
           </Pressable>
         ))}
@@ -613,7 +441,7 @@ export function useRegisterEntityForm() {
   );
 
   const renderChips = (
-    options: ChipOption[],
+    options: RegisterEntityChipOption[],
     selected: string[],
     onToggle: (id: string) => void,
   ) => (
@@ -629,7 +457,7 @@ export function useRegisterEntityForm() {
             <Ionicons
               name={item.icon}
               size={18}
-              color={active ? "#FFFFFF" : "#646A64"}
+              color={active ? COLORS.onColor : COLORS.textMuted}
             />
             <AppText
               style={[styles.choiceText, active && styles.selectedChoiceText]}
@@ -643,7 +471,7 @@ export function useRegisterEntityForm() {
   );
 
   const renderUploadCard = (
-    key: UploadKey,
+    key: RegisterEntityUploadKey,
     title: string,
     subtitle: string,
     uri: string | null,
@@ -659,7 +487,7 @@ export function useRegisterEntityForm() {
       {uri ? (
         <Image source={{ uri }} style={styles.uploadPreview} />
       ) : (
-        <Ionicons name="document-attach-outline" size={30} color="#7B877B" />
+        <Ionicons name="document-attach-outline" size={30} color={COLORS.iconMuted} />
       )}
       <View style={styles.uploadTextWrap}>
         <AppText style={styles.uploadTitle}>{title}</AppText>
@@ -674,10 +502,131 @@ export function useRegisterEntityForm() {
   );
 
   const form = {
-    router, entityType, isClinic, entityTitle, horizontalPadding, contentWidth, fullName, setFullName, email, setEmail, birthDate, setBirthDate, temporaryBirthDate, setTemporaryBirthDate, phone, setPhone, entityName, setEntityName, entityCategory, setEntityCategory, licenseNumber, setLicenseNumber, issuingAuthority, setIssuingAuthority, description, setDescription, serviceGovernorate, setServiceGovernorate, serviceDistrict, setServiceDistrict, selectedActivities, setSelectedActivities, selectedAnimals, setSelectedAnimals, hasShelter, setHasShelter, shelterCapacity, setShelterCapacity, acceptsVolunteers, setAcceptsVolunteers, volunteerRequirements, setVolunteerRequirements, open24Hours, setOpen24Hours, workingHours, setWorkingHours, homeVisits, setHomeVisits, emergencyService, setEmergencyService, logo, setLogo, licenseDocument, setLicenseDocument, managerDocument, setManagerDocument, extraDocument, setExtraDocument, password, setPassword, confirmPassword, setConfirmPassword, informationConfirmed, setInformationConfirmed, verificationConfirmed, setVerificationConfirmed, termsAccepted, setTermsAccepted, showBirthDatePicker, setShowBirthDatePicker, showServiceGovernorates, setShowServiceGovernorates, showCategories, setShowCategories, showPassword, setShowPassword, showConfirmPassword, setShowConfirmPassword, showMapPicker, setShowMapPicker, mapRegion, setMapRegion, selectedLocation, setSelectedLocation, temporaryLocation, setTemporaryLocation, isLocating, errors, setErrors, isSubmitting, submitAttempted, maximumBirthDate, minimumBirthDate, formattedBirthDate, categories, activityOptions, animalOptions, passwordStrength, passwordStrengthLabel, passwordStrengthColor, canSubmit, closeDropdowns, handleBack, openBirthDatePicker, handleBirthDateChange, confirmBirthDate, toggleValue, pickImage, openMapPicker, handleMapPress, useCurrentLocation, confirmMapLocation, validateForm, handleSubmit, renderError, renderSectionHeader, renderDropdown, renderChips, renderUploadCard, GOVERNORATES
+    router,
+    entityType,
+    isClinic,
+    entityTitle,
+    horizontalPadding,
+    contentWidth,
+    fullName,
+    setFullName,
+    email,
+    setEmail,
+    birthDate,
+    setBirthDate,
+    temporaryBirthDate,
+    setTemporaryBirthDate,
+    phone,
+    setPhone,
+    normalizeSyrianMobile,
+    entityName,
+    setEntityName,
+    entityCategory,
+    setEntityCategory,
+    licenseNumber,
+    setLicenseNumber,
+    issuingAuthority,
+    setIssuingAuthority,
+    description,
+    setDescription,
+    serviceGovernorate,
+    setServiceGovernorate,
+    serviceDistrict,
+    setServiceDistrict,
+    selectedActivities,
+    setSelectedActivities,
+    selectedAnimals,
+    setSelectedAnimals,
+    hasShelter,
+    setHasShelter,
+    shelterCapacity,
+    setShelterCapacity,
+    acceptsVolunteers,
+    setAcceptsVolunteers,
+    volunteerRequirements,
+    setVolunteerRequirements,
+    open24Hours,
+    setOpen24Hours,
+    workingHours,
+    setWorkingHours,
+    homeVisits,
+    setHomeVisits,
+    emergencyService,
+    setEmergencyService,
+    logo,
+    setLogo,
+    licenseDocument,
+    setLicenseDocument,
+    managerDocument,
+    setManagerDocument,
+    extraDocument,
+    setExtraDocument,
+    password,
+    setPassword,
+    confirmPassword,
+    setConfirmPassword,
+    informationConfirmed,
+    setInformationConfirmed,
+    verificationConfirmed,
+    setVerificationConfirmed,
+    termsAccepted,
+    setTermsAccepted,
+    showBirthDatePicker,
+    setShowBirthDatePicker,
+    showServiceGovernorates,
+    setShowServiceGovernorates,
+    showCategories,
+    setShowCategories,
+    showPassword,
+    setShowPassword,
+    showConfirmPassword,
+    setShowConfirmPassword,
+    showMapPicker,
+    setShowMapPicker,
+    mapRegion,
+    setMapRegion,
+    selectedLocation,
+    setSelectedLocation,
+    temporaryLocation,
+    setTemporaryLocation,
+    isLocating,
+    errors,
+    setErrors,
+    isSubmitting,
+    submitAttempted,
+    maximumBirthDate,
+    minimumBirthDate,
+    formattedBirthDate,
+    categories,
+    activityOptions,
+    animalOptions,
+    passwordRequirements,
+    passwordStrength,
+    passwordStrengthLabel,
+    passwordStrengthColor,
+    canSubmit,
+    closeDropdowns,
+    handleBack,
+    openBirthDatePicker,
+    handleBirthDateChange,
+    confirmBirthDate,
+    toggleValue,
+    pickImage,
+    openMapPicker,
+    handleMapPress,
+    useCurrentLocation,
+    confirmMapLocation,
+    validateForm,
+    handleSubmit,
+    renderError,
+    renderSectionHeader,
+    renderDropdown,
+    renderChips,
+    renderUploadCard,
+    GOVERNORATES: SYRIAN_GOVERNORATES,
   };
 
-  return { ...form, scrollViewRef, horizontalPadding, contentWidth, entityTitle, handleBack };
+  return { ...form, scrollViewRef };
 }
 
 export type RegisterEntityForm = ReturnType<typeof useRegisterEntityForm>;

@@ -12,16 +12,16 @@ import HomeSuggestionsSection from "../sections/HomeSuggestionsSection";
 import { styles } from "./Home.styles";
 
 export default function HomeScreen() {
-  const { router, quickActions, showTemporaryMessage } = useHomeScreen();
+  const { router, quickActions, isGuest } = useHomeScreen();
   return <Screen scroll safeAreaEdges={["left", "right"]}>
     <View style={styles.container}>
-      <UserWelcomeHeader name="أحمد" avatarUrl="https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=300&q=80" />
+      <UserWelcomeHeader name={isGuest ? "زائر" : "أحمد"} avatarUrl={isGuest ? undefined : "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&w=300&q=80"} />
       <ContributionHeroCard />
       <QuickActionGrid actions={quickActions} columns={3} />
       <HomeReportsSection onOpenReports={() => router.push("/reports")} />
-      <HomeAdoptionSection onOpenAdoption={() => router.push("/adoption")} />
+      <HomeAdoptionSection onOpenAdoption={() => router.push("/adoptions")} />
       <CommunityStatsCard stats={[...COMMUNITY_STATS]} />
-      <HomeSuggestionsSection onOpenMap={() => router.push("/map")} onOpenOrganizations={() => showTemporaryMessage("الجمعيات التطوعية")} />
+      <HomeSuggestionsSection onOpenMap={() => router.push("/map")} onOpenOrganizations={() => router.push("/organizations")} />
     </View>
   </Screen>;
 }

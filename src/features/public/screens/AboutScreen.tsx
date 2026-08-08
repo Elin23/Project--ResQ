@@ -15,75 +15,13 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import AppText from "@/src/components/ui/AppText";
 import { styles } from "./About.styles";
 
-type IoniconName = keyof typeof Ionicons.glyphMap;
-
-type FeatureItem = {
-  id: string;
-  title: string;
-  icon: IoniconName;
-};
-
-type InfoItem = {
-  id: string;
-  label: string;
-  value: string;
-};
-
-type SocialItem = {
-  id: string;
-  title: string;
-  icon: IoniconName;
-  url: string;
-};
-
-const APP_VERSION = "1.0.0";
-const LAST_UPDATED = "يناير 2026";
-const PLATFORM = "Android";
-const SUPPORT_EMAIL = "support@resq.app";
-
-const FEATURES: FeatureItem[] = [
-  { id: "reports", title: "الإبلاغ عن حالات", icon: "alert-circle-outline" },
-  { id: "tracking", title: "متابعة البلاغات", icon: "time-outline" },
-  { id: "adoption", title: "التبني", icon: "heart-outline" },
-  { id: "donations", title: "التبرعات", icon: "wallet-outline" },
-  { id: "feeding", title: "نقاط الإطعام", icon: "location-outline" },
-  { id: "clinics", title: "عيادات بيطرية", icon: "medkit-outline" },
-  { id: "organizations", title: "الجمعيات", icon: "people-outline" },
-  { id: "volunteering", title: "التطوع", icon: "hand-left-outline" },
-];
-
-const INFO_ITEMS: InfoItem[] = [
-  { id: "version", label: "الإصدار", value: APP_VERSION },
-  { id: "updated", label: "آخر تحديث", value: LAST_UPDATED },
-  { id: "platform", label: "المنصة", value: PLATFORM },
-];
-
-const SOCIAL_ITEMS: SocialItem[] = [
-  {
-    id: "website",
-    title: "الموقع الإلكتروني",
-    icon: "globe-outline",
-    url: "https://resq.app",
-  },
-  {
-    id: "facebook",
-    title: "فيسبوك",
-    icon: "logo-facebook",
-    url: "https://www.facebook.com",
-  },
-  {
-    id: "instagram",
-    title: "إنستغرام",
-    icon: "logo-instagram",
-    url: "https://www.instagram.com",
-  },
-  {
-    id: "linkedin",
-    title: "لينكد إن",
-    icon: "logo-linkedin",
-    url: "https://www.linkedin.com",
-  },
-];
+import {
+  ABOUT_FEATURES,
+  ABOUT_INFO_ITEMS,
+  ABOUT_SOCIAL_ITEMS,
+  ABOUT_SUPPORT_EMAIL,
+  APP_VERSION,
+} from "../constants/about";
 
 export default function AboutScreen() {
   const router = useRouter();
@@ -99,11 +37,11 @@ export default function AboutScreen() {
       return;
     }
 
-    router.replace("/" as never);
+    router.replace("/");
   };
 
   const openRoute = (route: string) => {
-    router.push(route as never);
+    router.push(route);
   };
 
   const openExternalUrl = async (url: string) => {
@@ -116,7 +54,7 @@ export default function AboutScreen() {
 
   const handleContact = async () => {
     const subject = encodeURIComponent("استفسار حول تطبيق ResQ");
-    const url = `mailto:${SUPPORT_EMAIL}?subject=${subject}`;
+    const url = `mailto:${ABOUT_SUPPORT_EMAIL}?subject=${subject}`;
 
     await openExternalUrl(url);
   };
@@ -230,7 +168,7 @@ export default function AboutScreen() {
               <AppText style={styles.cardTitle}>ماذا يوفر التطبيق؟</AppText>
 
               <View style={styles.featuresGrid}>
-                {FEATURES.map((item) => (
+                {ABOUT_FEATURES.map((item) => (
                   <View key={item.id} style={styles.featureItem}>
                     <View style={styles.featureIcon}>
                       <Ionicons name={item.icon} size={21} color="#18833B" />
@@ -252,12 +190,12 @@ export default function AboutScreen() {
                 <AppText style={styles.cardTitle}>معلومات التطبيق</AppText>
               </View>
 
-              {INFO_ITEMS.map((item, index) => (
+              {ABOUT_INFO_ITEMS.map((item, index) => (
                 <View
                   key={item.id}
                   style={[
                     styles.infoRow,
-                    index < INFO_ITEMS.length - 1 && styles.rowBorder,
+                    index < ABOUT_INFO_ITEMS.length - 1 && styles.rowBorder,
                   ]}
                 >
                   <AppText style={styles.infoLabel}>{item.label}</AppText>
@@ -291,7 +229,7 @@ export default function AboutScreen() {
             <View style={styles.socialCard}>
               <AppText style={styles.socialTitle}>تابعنا على</AppText>
 
-              {SOCIAL_ITEMS.map((item, index) => (
+              {ABOUT_SOCIAL_ITEMS.map((item, index) => (
                 <Pressable
                   key={item.id}
                   accessibilityRole="link"
@@ -299,7 +237,7 @@ export default function AboutScreen() {
                   onPress={() => openExternalUrl(item.url)}
                   style={({ pressed }) => [
                     styles.socialRow,
-                    index < SOCIAL_ITEMS.length - 1 && styles.rowBorder,
+                    index < ABOUT_SOCIAL_ITEMS.length - 1 && styles.rowBorder,
                     pressed && styles.rowPressed,
                   ]}
                 >
@@ -387,7 +325,7 @@ export default function AboutScreen() {
                 ]}
               >
                 <AppText style={styles.footerContactText}>
-                  {SUPPORT_EMAIL}
+                  {ABOUT_SUPPORT_EMAIL}
                 </AppText>
               </Pressable>
             </View>

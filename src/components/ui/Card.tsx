@@ -62,7 +62,7 @@ const styles = StyleSheet.create({
     marginBottom: SPACING.md,
   },
   shadow: {
-    shadowColor: "#000",
+    shadowColor: COLORS.shadow,
     shadowOffset: {
       width: 0,
       height: 4,

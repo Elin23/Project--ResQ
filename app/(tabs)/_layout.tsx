@@ -1,10 +1,11 @@
 import { Ionicons } from "@expo/vector-icons";
 import { Tabs, useRouter } from "expo-router";
-import { Alert, StyleSheet, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import AppText from "@/src/components/ui/AppText";
 import TopBar from "@/src/components/ui/TopBar";
+import { ROUTES } from "@/src/navigation/routes";
 import { COLORS, FONT_SIZES, RADIUS } from "@/src/theme";
 
 type IconName = keyof typeof Ionicons.glyphMap;
@@ -51,7 +52,7 @@ export default function TabsLayout() {
   };
 
   const handleNotificationsPress = () => {
-    Alert.alert("الإشعارات", "صفحة الإشعارات ستتم إضافتها وربطها لاحقاً.");
+    router.push(ROUTES.notifications);
   };
 
   return (
@@ -69,7 +70,7 @@ export default function TabsLayout() {
         tabBarStyle: {
           backgroundColor: COLORS.white,
           borderTopWidth: 1,
-          borderTopColor: "#DDC1B3",
+          borderTopColor: COLORS.tan,
           borderTopLeftRadius: RADIUS.xl,
           borderTopRightRadius: RADIUS.xl,
           height: 73 + insets.bottom,
@@ -140,21 +141,36 @@ export default function TabsLayout() {
       />
 
       <Tabs.Screen
+        name="notifications"
+        options={{
+          headerShown: false,
+          title: "التنبيهات",
+          tabBarIcon: ({ focused, color }) => (
+            <TabIcon focused={focused} color={color} name={focused ? "notifications" : "notifications-outline"} />
+          ),
+          tabBarLabel: ({ focused, color }) => (
+            <TabLabel focused={focused} color={color}>التنبيهات</TabLabel>
+          ),
+        }}
+      />
+
+      <Tabs.Screen
         name="profile"
         options={{
-          title: "المزيد",
+          headerShown: false,
+          title: "حسابي",
           tabBarIcon: ({ focused, color }) => (
             <TabIcon
               focused={focused}
               color={color}
               name={
-                focused ? "ellipsis-horizontal" : "ellipsis-horizontal-outline"
+                focused ? "person" : "person-outline"
               }
             />
           ),
           tabBarLabel: ({ focused, color }) => (
             <TabLabel focused={focused} color={color}>
-              المزيد
+              حسابي
             </TabLabel>
           ),
         }}
@@ -163,6 +179,7 @@ export default function TabsLayout() {
       <Tabs.Screen
         name="reports"
         options={{
+          headerShown: false,
           href: null,
           title: "البلاغات",
         }}

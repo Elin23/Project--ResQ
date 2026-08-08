@@ -1,6 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import { useMemo, useRef } from "react";
+import { useRef } from "react";
 import {
     Pressable,
     ScrollView,
@@ -13,128 +13,11 @@ import { SafeAreaView } from "react-native-safe-area-context";
 import AppText from "@/src/components/ui/AppText";
 import { styles } from "./TermsAndConditions.styles";
 
-type TableItem = {
-  id: string;
-  title: string;
-};
-
-type SectionContent = {
-  id: string;
-  title: string;
-  paragraphs: string[];
-  warning?: string;
-  bullets?: string[];
-};
-
-const TABLE_ITEMS: TableItem[] = [
-  { id: "introduction", title: "مقدمة" },
-  { id: "acceptance", title: "قبول الشروط" },
-  { id: "account", title: "إنشاء الحساب" },
-  { id: "usage", title: "استخدام التطبيق" },
-  { id: "reports", title: "البلاغات" },
-  { id: "adoption", title: "التبني" },
-  { id: "donations", title: "التبرعات" },
-  { id: "prohibited", title: "السلوك المحظور" },
-  { id: "liability", title: "المسؤولية القانونية" },
-  { id: "termination", title: "إنهاء الحساب" },
-  { id: "updates", title: "تعديل الشروط" },
-  { id: "contact", title: "التواصل معنا" },
-];
-
-const SECTIONS: SectionContent[] = [
-  {
-    id: "introduction",
-    title: "مقدمة",
-    paragraphs: [
-      "مرحبًا بك في ResQ. توضح هذه الشروط والأحكام القواعد المنظمة لاستخدام التطبيق والخدمات المرتبطة به.",
-      "باستخدامك للتطبيق فإنك تقر بأنك قرأت هذه الشروط وفهمتها ووافقت على الالتزام بها.",
-    ],
-  },
-  {
-    id: "acceptance",
-    title: "قبول الشروط",
-    paragraphs: [
-      "يُعد إنشاء حساب أو استخدام أي ميزة داخل التطبيق موافقة صريحة على هذه الشروط وسياسة الخصوصية.",
-      "إذا لم توافق على أي بند، يجب التوقف عن استخدام التطبيق وعدم إنشاء حساب.",
-    ],
-  },
-  {
-    id: "account",
-    title: "إنشاء الحساب",
-    paragraphs: [
-      "يجب تقديم معلومات صحيحة وحديثة عند التسجيل، ويقع على المستخدم مسؤولية الحفاظ على سرية بيانات الدخول.",
-      "يجوز لفريق ResQ طلب معلومات إضافية أو وثائق للتحقق من الحسابات التطوعية أو حسابات العيادات والجمعيات.",
-    ],
-  },
-  {
-    id: "usage",
-    title: "استخدام التطبيق",
-    paragraphs: [
-      "يجب استخدام التطبيق فقط للأغراض المرتبطة بإنقاذ الحيوانات ورعايتها والتبني والتبرع والخدمات المساندة.",
-      "لا يجوز إساءة استخدام المنصة أو محاولة تعطيلها أو الوصول غير المصرح به إلى بيانات المستخدمين أو الأنظمة.",
-    ],
-  },
-  {
-    id: "reports",
-    title: "البلاغات والتقارير",
-    paragraphs: [
-      "يجب أن تكون جميع البلاغات المقدمة عبر التطبيق دقيقة ومرفقة بالموقع الجغرافي والصور المناسبة عند توفرها لضمان سرعة الوصول للحالة.",
-    ],
-    warning:
-      "ملاحظة: البلاغات الكاذبة أو المتكررة دون مبرر قد تؤدي إلى حظر الحساب نهائيًا، والمساءلة في حال تسبب ذلك في هدر موارد الإنقاذ.",
-  },
-  {
-    id: "adoption",
-    title: "نظام التبني",
-    paragraphs: [
-      "تطبيق ResQ يعمل كوسيط للربط بين المتبنين والمنظمات أو الأفراد المسؤولين عن الحيوانات، ولا يملك الحيوانات المعروضة.",
-      "القرار النهائي في عملية التبني يعود للجهة المسؤولة عن الحيوان بعد إجراء المقابلات والتحقق من أهلية المتبني.",
-    ],
-  },
-  {
-    id: "donations",
-    title: "التبرعات المالية",
-    paragraphs: [
-      "تتم التحويلات المالية عبر الطرق المتاحة والمعتمدة داخل التطبيق، ويجب على المتبرع التأكد من صحة بيانات المستلم.",
-      "تخضع طلبات التبرع للمراجعة والتدقيق لضمان وصول المساعدات للمستحقين، ويتم نشر تقارير دورية بالشفافية المطلوبة.",
-    ],
-  },
-  {
-    id: "prohibited",
-    title: "السلوك المحظور",
-    paragraphs: [],
-    bullets: [
-      "نشر معلومات مضللة أو إشاعات حول حالات الإنقاذ.",
-      "الإساءة اللفظية أو التحرش بالمتطوعين أو مقدمي البلاغات.",
-      "انتحال صفة طبيب بيطري أو ممثل لمنظمة إنقاذ.",
-      "استخدام التطبيق في أي أغراض تجارية غير مصرح بها.",
-    ],
-  },
-  {
-    id: "liability",
-    title: "المسؤولية القانونية",
-    paragraphs: [
-      "يبذل ResQ جهده لتوفير منصة آمنة وموثوقة، لكنه لا يضمن نتائج عمليات الإنقاذ أو التبني أو المعاملات التي تتم بين المستخدمين.",
-      "يتحمل كل مستخدم مسؤولية قراراته وتصرفاته ومحتواه المنشور داخل التطبيق.",
-    ],
-  },
-  {
-    id: "termination",
-    title: "إنهاء الحساب",
-    paragraphs: [
-      "يجوز للمستخدم طلب حذف حسابه في أي وقت، كما يحق لفريق ResQ تعليق أو إنهاء الحساب عند مخالفة هذه الشروط أو إساءة استخدام المنصة.",
-      "قد يتم الاحتفاظ ببعض السجلات عند الحاجة للامتثال للمتطلبات القانونية أو حماية حقوق الأطراف.",
-    ],
-  },
-  {
-    id: "updates",
-    title: "تعديل الشروط",
-    paragraphs: [
-      "يجوز تحديث هذه الشروط عند تطوير الخدمات أو المتطلبات القانونية، وسيتم إشعار المستخدمين بأي تعديلات جوهرية داخل التطبيق.",
-      "استمرار استخدام التطبيق بعد نشر التعديلات يعني قبول النسخة المحدثة من الشروط.",
-    ],
-  },
-];
+import {
+  TERMS_LAST_UPDATED,
+  TERMS_SECTIONS,
+  TERMS_TABLE_ITEMS,
+} from "../constants/termsAndConditions";
 
 export default function TermsAndConditionsScreen() {
   const router = useRouter();
@@ -144,7 +27,6 @@ export default function TermsAndConditionsScreen() {
 
   const horizontalPadding = width >= 700 ? Math.min(width * 0.15, 120) : 18;
   const contentWidth = Math.min(width - horizontalPadding * 2, 620);
-  const lastUpdated = useMemo(() => "15 مايو 2026", []);
 
   const handleBack = () => {
     if (router.canGoBack()) {
@@ -152,7 +34,7 @@ export default function TermsAndConditionsScreen() {
       return;
     }
 
-    router.replace("/register-entity" as never);
+    router.replace("/register-entity");
   };
 
   const handleShare = async () => {
@@ -163,7 +45,7 @@ export default function TermsAndConditionsScreen() {
   };
 
   const handleHelpCenter = () => {
-    router.push("/help-center" as never);
+    router.push("/help-center");
   };
 
   const scrollToSection = (id: string) => {
@@ -226,7 +108,7 @@ export default function TermsAndConditionsScreen() {
               <AppText style={styles.title}>الشروط والأحكام</AppText>
 
               <AppText style={styles.updatedText}>
-                آخر تحديث: {lastUpdated}
+                آخر تحديث: {TERMS_LAST_UPDATED}
               </AppText>
 
               <AppText style={styles.introText}>
@@ -254,7 +136,7 @@ export default function TermsAndConditionsScreen() {
             <View style={styles.contentsCard}>
               <AppText style={styles.contentsTitle}>المحتويات</AppText>
 
-              {TABLE_ITEMS.map((item, index) => (
+              {TERMS_TABLE_ITEMS.map((item, index) => (
                 <Pressable
                   key={item.id}
                   accessibilityRole="button"
@@ -262,7 +144,7 @@ export default function TermsAndConditionsScreen() {
                   onPress={() => scrollToSection(item.id)}
                   style={({ pressed }) => [
                     styles.contentsRow,
-                    index < TABLE_ITEMS.length - 1 && styles.contentsRowBorder,
+                    index < TERMS_TABLE_ITEMS.length - 1 && styles.contentsRowBorder,
                     pressed && styles.contentsRowPressed,
                   ]}
                 >
@@ -281,7 +163,7 @@ export default function TermsAndConditionsScreen() {
               ))}
             </View>
 
-            {SECTIONS.map((section) => (
+            {TERMS_SECTIONS.map((section) => (
               <View
                 key={section.id}
                 onLayout={(event) => {

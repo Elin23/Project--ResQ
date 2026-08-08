@@ -19,6 +19,7 @@ type ButtonVariant =
   | "outline"
   | "danger"
   | "text"
+  | "ghost"
   | "custom";
 
 type ButtonSize = "small" | "medium" | "large";
@@ -44,6 +45,7 @@ type Props = {
   radius?: number;
   style?: StyleProp<ViewStyle>;
   textStyle?: StyleProp<TextStyle>;
+  accessibilityLabel?: string;
 };
 
 const variantConfig: Record<
@@ -59,13 +61,13 @@ const variantConfig: Record<
     backgroundColor: COLORS.primary,
     borderColor: COLORS.primary,
     borderWidth: 0,
-    textColor: "#FFFFFF",
+    textColor: COLORS.onColor,
   },
   secondary: {
     backgroundColor: COLORS.secondary,
     borderColor: COLORS.secondary,
     borderWidth: 0,
-    textColor: "#FFFFFF",
+    textColor: COLORS.onColor,
   },
   outline: {
     backgroundColor: "transparent",
@@ -77,9 +79,15 @@ const variantConfig: Record<
     backgroundColor: COLORS.danger,
     borderColor: COLORS.danger,
     borderWidth: 0,
-    textColor: "#FFFFFF",
+    textColor: COLORS.onColor,
   },
   text: {
+    backgroundColor: "transparent",
+    borderColor: "transparent",
+    borderWidth: 0,
+    textColor: COLORS.primary,
+  },
+  ghost: {
     backgroundColor: "transparent",
     borderColor: "transparent",
     borderWidth: 0,
@@ -139,11 +147,12 @@ export default function Button({
   radius = 16,
   style,
   textStyle,
+  accessibilityLabel,
 }: Props) {
   const [hovered, setHovered] = useState(false);
 
   const isInactive = loading || disabled;
-  const dimensions = sizeConfig[size];
+  const dimensions = sizeConfig[size] ?? sizeConfig.large;
 
   const selectedVariant =
     variant === "custom"
@@ -153,7 +162,7 @@ export default function Button({
           borderWidth: 0,
           textColor: COLORS.text,
         }
-      : variantConfig[variant];
+      : (variantConfig[variant] ?? variantConfig.primary);
 
   const resolvedBackgroundColor =
     backgroundColor ?? selectedVariant.backgroundColor;
@@ -207,14 +216,15 @@ export default function Button({
   return (
     <Pressable
       accessibilityRole="button"
+      accessibilityLabel={accessibilityLabel ?? title}
       accessibilityState={{
         disabled: isInactive,
         busy: loading,
       }}
       disabled={isInactive}
       onPress={onPress}
-      onHoverIn={() => setHovered(true)}
-      onHoverOut={() => setHovered(false)}
+      onHoverIn={Platform.OS === "web" ? () => setHovered(true) : undefined}
+      onHoverOut={Platform.OS === "web" ? () => setHovered(false) : undefined}
       style={({ pressed }) => [
         styles.base,
         {
@@ -229,7 +239,7 @@ export default function Button({
           borderWidth: resolvedBorderWidth,
           borderRadius: radius,
         },
-        hovered && !isInactive && styles.hovered,
+        Platform.OS === "web" && hovered && !isInactive && styles.hovered,
         pressed && !isInactive && styles.pressed,
         variant === "text" && styles.textButton,
         style,
@@ -257,7 +267,7 @@ const styles = StyleSheet.create({
   hovered: {
     opacity: 0.92,
     transform: [{ translateY: -2 }],
-    shadowColor: "#000000",
+    shadowColor: COLORS.shadow,
     shadowOffset: {
       width: 0,
       height: 5,
@@ -267,8 +277,8 @@ const styles = StyleSheet.create({
     elevation: 5,
   },
   pressed: {
-    opacity: 0.82,
-    transform: [{ scale: 0.98 }],
+    opacity: 0.9,
+    transform: [{ scale: 0.99 }],
   },
   textButton: {
     minHeight: 0,

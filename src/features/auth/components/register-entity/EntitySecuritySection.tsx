@@ -9,7 +9,7 @@ import { styles } from "../../screens/RegisterEntity.styles";
 import type { RegisterEntityForm } from "../../hooks/useRegisterEntityForm";
 
 export default function EntitySecuritySection({ form }: { form: RegisterEntityForm }) {
-  const { router, entityType, isClinic, entityTitle, horizontalPadding, contentWidth, fullName, setFullName, email, setEmail, birthDate, setBirthDate, temporaryBirthDate, setTemporaryBirthDate, phone, setPhone, entityName, setEntityName, entityCategory, setEntityCategory, licenseNumber, setLicenseNumber, issuingAuthority, setIssuingAuthority, description, setDescription, serviceGovernorate, setServiceGovernorate, serviceDistrict, setServiceDistrict, selectedActivities, setSelectedActivities, selectedAnimals, setSelectedAnimals, hasShelter, setHasShelter, shelterCapacity, setShelterCapacity, acceptsVolunteers, setAcceptsVolunteers, volunteerRequirements, setVolunteerRequirements, open24Hours, setOpen24Hours, workingHours, setWorkingHours, homeVisits, setHomeVisits, emergencyService, setEmergencyService, logo, setLogo, licenseDocument, setLicenseDocument, managerDocument, setManagerDocument, extraDocument, setExtraDocument, password, setPassword, confirmPassword, setConfirmPassword, informationConfirmed, setInformationConfirmed, verificationConfirmed, setVerificationConfirmed, termsAccepted, setTermsAccepted, showBirthDatePicker, setShowBirthDatePicker, showServiceGovernorates, setShowServiceGovernorates, showCategories, setShowCategories, showPassword, setShowPassword, showConfirmPassword, setShowConfirmPassword, showMapPicker, setShowMapPicker, mapRegion, setMapRegion, selectedLocation, setSelectedLocation, temporaryLocation, setTemporaryLocation, isLocating, errors, setErrors, isSubmitting, submitAttempted, maximumBirthDate, minimumBirthDate, formattedBirthDate, categories, activityOptions, animalOptions, passwordStrength, passwordStrengthLabel, passwordStrengthColor, canSubmit, closeDropdowns, handleBack, openBirthDatePicker, handleBirthDateChange, confirmBirthDate, toggleValue, pickImage, openMapPicker, handleMapPress, useCurrentLocation, confirmMapLocation, validateForm, handleSubmit, renderError, renderSectionHeader, renderDropdown, renderChips, renderUploadCard, GOVERNORATES } = form;
+  const { router, entityType, isClinic, entityTitle, horizontalPadding, contentWidth, fullName, setFullName, email, setEmail, birthDate, setBirthDate, temporaryBirthDate, setTemporaryBirthDate, phone, setPhone, entityName, setEntityName, entityCategory, setEntityCategory, licenseNumber, setLicenseNumber, issuingAuthority, setIssuingAuthority, description, setDescription, serviceGovernorate, setServiceGovernorate, serviceDistrict, setServiceDistrict, selectedActivities, setSelectedActivities, selectedAnimals, setSelectedAnimals, hasShelter, setHasShelter, shelterCapacity, setShelterCapacity, acceptsVolunteers, setAcceptsVolunteers, volunteerRequirements, setVolunteerRequirements, open24Hours, setOpen24Hours, workingHours, setWorkingHours, homeVisits, setHomeVisits, emergencyService, setEmergencyService, logo, setLogo, licenseDocument, setLicenseDocument, managerDocument, setManagerDocument, extraDocument, setExtraDocument, password, setPassword, passwordRequirements, confirmPassword, setConfirmPassword, informationConfirmed, setInformationConfirmed, verificationConfirmed, setVerificationConfirmed, termsAccepted, setTermsAccepted, showBirthDatePicker, setShowBirthDatePicker, showServiceGovernorates, setShowServiceGovernorates, showCategories, setShowCategories, showPassword, setShowPassword, showConfirmPassword, setShowConfirmPassword, showMapPicker, setShowMapPicker, mapRegion, setMapRegion, selectedLocation, setSelectedLocation, temporaryLocation, setTemporaryLocation, isLocating, errors, setErrors, isSubmitting, submitAttempted, maximumBirthDate, minimumBirthDate, formattedBirthDate, categories, activityOptions, animalOptions, passwordStrength, passwordStrengthLabel, passwordStrengthColor, canSubmit, closeDropdowns, handleBack, openBirthDatePicker, handleBirthDateChange, confirmBirthDate, toggleValue, pickImage, openMapPicker, handleMapPress, useCurrentLocation, confirmMapLocation, validateForm, handleSubmit, renderError, renderSectionHeader, renderDropdown, renderChips, renderUploadCard, GOVERNORATES } = form;
   return (<>
 {renderSectionHeader("كلمة المرور", true)}
 
@@ -85,34 +85,22 @@ export default function EntitySecuritySection({ form }: { form: RegisterEntityFo
 </View>
 
 <View style={styles.requirements}>
-  <View style={styles.requirementRow}>
-    <Ionicons
-      name={
-        password.length >= 8
-          ? "checkmark-circle"
-          : "checkmark-circle-outline"
-      }
-      size={18}
-      color={password.length >= 8 ? "#16833A" : "#60665F"}
-    />
-    <AppText style={styles.requirementText}>
-      8 أحرف على الأقل
-    </AppText>
-  </View>
-  <View style={styles.requirementRow}>
-    <Ionicons
-      name={
-        /\d/.test(password)
-          ? "checkmark-circle"
-          : "checkmark-circle-outline"
-      }
-      size={18}
-      color={/\d/.test(password) ? "#16833A" : "#60665F"}
-    />
-    <AppText style={styles.requirementText}>
-      رقم واحد على الأقل
-    </AppText>
-  </View>
+  {passwordRequirements.map((requirement) => (
+    <View key={requirement.id} style={styles.requirementRow}>
+      <Ionicons
+        name={
+          requirement.isValid
+            ? "checkmark-circle"
+            : "checkmark-circle-outline"
+        }
+        size={18}
+        color={requirement.isValid ? "#16833A" : "#60665F"}
+      />
+      <AppText style={styles.requirementText}>
+        {requirement.label}
+      </AppText>
+    </View>
+  ))}
 </View>
 
 <View style={styles.fieldGroup}>
@@ -275,7 +263,7 @@ export default function EntitySecuritySection({ form }: { form: RegisterEntityFo
 ) : null}
 
 <Pressable
-  onPress={() => router.replace("/login" as never)}
+  onPress={() => router.replace("/login")}
   style={({ pressed }) => [
     styles.loginLink,
     pressed && styles.loginLinkPressed,

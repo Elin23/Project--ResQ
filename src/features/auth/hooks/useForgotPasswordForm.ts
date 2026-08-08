@@ -276,7 +276,7 @@ export function useForgotPasswordForm() {
       return;
     }
 
-    router.replace("/login" as never);
+    router.replace("/login");
   };
 
   const navigateToLogin = () => {
@@ -295,7 +295,7 @@ export function useForgotPasswordForm() {
     }).start();
 
     navigationTimer.current = setTimeout(() => {
-      router.replace("/login" as never);
+      router.replace("/login");
     }, 200);
   };
 

@@ -58,7 +58,7 @@ export default function ConfirmDialog({
 const styles = StyleSheet.create({
   backdrop: {
     flex: 1,
-    backgroundColor: '#00000066',      
+    backgroundColor: COLORS.backdrop,      
     justifyContent: 'center',
     padding: SPACING.lg,
   },
