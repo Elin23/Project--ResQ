@@ -1,0 +1,35 @@
+import { StyleSheet, View } from 'react-native';
+import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useLocalSearchParams, useRouter } from 'expo-router';
+import * as ImagePicker from 'expo-image-picker';
+import AppText from '@/src/components/ui/AppText';
+import Button from '@/src/components/ui/Button';
+import Chip from '@/src/components/ui/Chip';
+import ErrorState from '@/src/components/ui/ErrorState';
+import Input from '@/src/components/ui/Input';
+import LoadingState from '@/src/components/ui/LoadingState';
+import Screen from '@/src/components/ui/Screen';
+import ScreenHeader from '@/src/components/ui/ScreenHeader';
+import { useFeedback } from '@/src/components/ui/FeedbackProvider';
+import MapPlaceLocationPicker, { type MapPlaceLocationValue } from '@/src/features/map-places/components/MapPlaceLocationPicker';
+import OpeningHoursEditor, { defaultOpeningHours } from '@/src/features/map-places/components/OpeningHoursEditor';
+import { canUserManageMapPlaceApplication, SERVICE_PLACE_TYPE_META, validateMapPlaceDraft, type DailyOpeningHours, type ServicePlaceType } from '@/src/domain/service-places';
+import { useSession } from '@/src/features/session/SessionContext';
+import { useAsyncResource } from '@/src/hooks/useAsyncResource';
+import { mapPlaceApplicationDetailsRoute } from '@/src/navigation/routes';
+import { repositories } from '@/src/services/domain/repositories';
+import { COLORS, SPACING } from '@/src/theme';
+
+const USER_PLACE_TYPES=['clinic','pet_store','pet_hotel','cat_cafe','grooming','shelter','other'] as const satisfies readonly Exclude<ServicePlaceType,'organization'>[];
+type UserPlaceType=(typeof USER_PLACE_TYPES)[number];
+export default function EditMapPlaceApplicationScreen(){
+  const {id}=useLocalSearchParams<{id:string}>(); const router=useRouter(); const {account}=useSession(); const { showFeedback } = useFeedback(); const loader=useCallback(()=>repositories.mapPlaceApplications.getById(id),[id]); const resource=useAsyncResource(loader,null,'تعذر تحميل الطلب.');
+  const [type,setType]=useState<UserPlaceType>('clinic'); const [name,setName]=useState(''); const [address,setAddress]=useState(''); const [phone,setPhone]=useState(''); const [responsiblePerson,setResponsiblePerson]=useState(''); const [licenseNumber,setLicenseNumber]=useState(''); const [supportingDocumentUri,setSupportingDocumentUri]=useState<string|undefined>(); const [description,setDescription]=useState(''); const [location,setLocation]=useState<MapPlaceLocationValue>({latitude:33.5138,longitude:36.2765}); const [openingHours,setOpeningHours]=useState<DailyOpeningHours[]>(defaultOpeningHours()); const [saving,setSaving]=useState(false);
+  useEffect(()=>{const item=resource.data;if(!item)return;setType(item.requestedType as UserPlaceType);setName(item.name);setAddress(item.address);setPhone(item.phone);setResponsiblePerson(item.responsiblePerson??'');setLicenseNumber(item.licenseNumber??'');setSupportingDocumentUri(item.supportingDocumentUri);setDescription(item.description??'');setLocation({latitude:item.latitude,longitude:item.longitude});setOpeningHours(item.openingHours?.map(x=>({...x}))??defaultOpeningHours());},[resource.data]);
+  const owned=useMemo(()=>Boolean(resource.data&&account?.kind==='user'&&canUserManageMapPlaceApplication(resource.data,account.id)),[resource.data,account]); const editable=resource.data?.status==='draft'||resource.data?.status==='rejected';
+  const pick=async()=>{const result=await ImagePicker.launchImageLibraryAsync({mediaTypes:['images'],quality:.85});if(!result.canceled&&result.assets[0]?.uri)setSupportingDocumentUri(result.assets[0].uri);};
+  const save=async(submitAfterSave:boolean)=>{if(!resource.data||!account||account.kind!=='user'||!owned||!editable)return;const validationError=validateMapPlaceDraft({requestedType:type,name,address,phone,latitude:location.latitude,longitude:location.longitude,responsiblePerson,licenseNumber,supportingDocumentUri,openingHours},{forSubmission:submitAfterSave});if(validationError){showFeedback({title:'راجع البيانات',message:validationError,tone:'warning'});return;}try{setSaving(true);const next=await repositories.mapPlaceApplications.updateOwnedDraft(resource.data.id,account.id,{requestedType:type,name:name.trim(),address:address.trim(),latitude:location.latitude,longitude:location.longitude,phone:phone.trim(),responsiblePerson:responsiblePerson.trim()||undefined,licenseNumber:licenseNumber.trim()||undefined,supportingDocumentUri,openingHours,description:description.trim()||undefined});if(submitAfterSave)await repositories.mapPlaceApplications.submit(next.id,account.id);router.replace(mapPlaceApplicationDetailsRoute(next.id));}catch(error){showFeedback({title:'تعذر حفظ الطلب',message:error instanceof Error?error.message:'حاول مرة أخرى.',tone:'error'});}finally{setSaving(false);}};
+  if(resource.loading)return <Screen><LoadingState/></Screen>; if(resource.error)return <Screen><ErrorState description={resource.error} onRetry={resource.reload}/></Screen>; if(!resource.data||!owned)return <Screen><ErrorState description="الطلب غير موجود أو لا تملك صلاحية الوصول إليه."/></Screen>;if(!editable)return <Screen><ErrorState description="لا يمكن تعديل الطلب أثناء المراجعة أو بعد اعتماده/إلغائه."/></Screen>;
+  return <Screen scroll padded={false} surface="app"><ScreenHeader title="تعديل طلب الظهور" subtitle="أي إعادة إرسال تعيد الطلب إلى المراجعة" onBack={()=>router.back()}/><View style={styles.content}>{resource.data.rejectionReason?<AppText color={COLORS.danger}>سبب الرفض السابق: {resource.data.rejectionReason}</AppText>:null}<AppText weight="bold">نوع الجهة</AppText><View style={styles.chips}>{USER_PLACE_TYPES.map(item=><Chip key={item} label={SERVICE_PLACE_TYPE_META[item].label} selected={type===item} onPress={()=>setType(item)}/>)}</View><Input label="اسم الجهة" required value={name} onChangeText={setName}/><Input label="العنوان" required value={address} onChangeText={setAddress}/><MapPlaceLocationPicker value={location} onChange={setLocation}/><Input label="رقم الهاتف" required value={phone} onChangeText={setPhone} keyboardType="phone-pad" contentDirection="ltr"/><Input label={type==='clinic'?'الطبيب أو المسؤول':'الشخص المسؤول'} required={['clinic','pet_hotel','grooming','shelter'].includes(type)} value={responsiblePerson} onChangeText={setResponsiblePerson}/>{type==='clinic'?<><Input label="رقم الترخيص" required value={licenseNumber} onChangeText={setLicenseNumber} contentDirection="ltr"/><Button title={supportingDocumentUri?'تغيير صورة الإثبات':'إرفاق صورة الترخيص'} variant="outline" onPress={()=>void pick()}/></>:null}<Input label="الوصف" value={description} onChangeText={setDescription} multiline/><OpeningHoursEditor value={openingHours} onChange={setOpeningHours}/><Button title="حفظ كمسودة" variant="outline" loading={saving} onPress={()=>void save(false)}/><Button title="حفظ وإعادة الإرسال" loading={saving} onPress={()=>void save(true)}/></View></Screen>;
+}
+const styles=StyleSheet.create({content:{padding:SPACING.md,gap:SPACING.md,paddingBottom:SPACING.xl},chips:{flexDirection:'row',direction:'rtl',flexWrap:'wrap',gap:SPACING.xs}});

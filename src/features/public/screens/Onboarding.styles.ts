@@ -1,0 +1,180 @@
+import { StyleSheet } from "react-native";
+
+import { TYPOGRAPHY, RADIUS, COLORS, FONTS } from "@/src/theme";
+
+export const styles = StyleSheet.create({
+  safeArea: {
+    flex: 1,
+    backgroundColor: COLORS.surfaceSubtle,
+  },
+  screen: {
+    flex: 1,
+    width: "100%",
+    overflow: "hidden",
+    backgroundColor: COLORS.surfaceSubtle,
+  },
+  topGlow: {
+    position: "absolute",
+    backgroundColor: COLORS.divider,
+  },
+  bottomGlow: {
+    position: "absolute",
+    backgroundColor: COLORS.infoSoft,
+  },
+  header: {
+    width: "100%",
+    minHeight: 54,
+    alignItems: "flex-start",
+    justifyContent: "center",
+    zIndex: 10,
+  },
+  skipButton: {
+    alignSelf: "flex-start",
+    minWidth: 68,
+    minHeight: 42,
+    paddingHorizontal: 14,
+    paddingVertical: 0,
+  },
+  skipText: {
+    fontFamily: FONTS.medium,
+    fontSize: TYPOGRAPHY.bodyLarge.fontSize,
+    color: COLORS.primaryStrong,
+    textAlign: "center",
+  },
+  mainContent: {
+    flex: 1,
+    width: "100%",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  imageCard: {
+    overflow: "hidden",
+    backgroundColor: COLORS.surfaceSubtle,
+    borderWidth: 1,
+    borderColor: "rgba(255, 188, 151, 0.22)",
+    shadowColor: COLORS.primaryStrong,
+    shadowOffset: {
+      width: 0,
+      height: 12,
+    },
+    shadowOpacity: 0.08,
+    shadowRadius: 22,
+    elevation: 4,
+  },
+  imageCardHighlight: {
+    position: "absolute",
+    width: "80%",
+    height: "55%",
+    top: "-20%",
+    left: "-15%",
+    borderRadius: RADIUS.full,
+    backgroundColor: "rgba(255, 255, 255, 0.45)",
+    transform: [{ rotate: "-12deg" }],
+    zIndex: 2,
+  },
+  image: {
+    width: "100%",
+    height: "100%",
+  },
+  textSection: {
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  firstTitleRow: {
+    width: "100%",
+    flexDirection: "row",
+    direction: "ltr",
+    alignItems: "center",
+    justifyContent: "center",
+    flexWrap: "wrap",
+    columnGap: 8,
+  },
+  firstTitle: {
+    fontFamily: FONTS.bold,
+    color: COLORS.text,
+    textAlign: "center",
+    writingDirection: "rtl",
+  },
+  title: {
+    fontFamily: FONTS.bold,
+    color: COLORS.text,
+    textAlign: "center",
+  },
+  brandRow: {
+    flexDirection: "row",
+    direction: "ltr",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 6,
+  },
+  brandNameRow: {
+    flexDirection: "row",
+    direction: "ltr",
+    alignItems: "center",
+  },
+  brandText: {
+    fontFamily: FONTS.bold,
+    color: COLORS.text,
+    textAlign: "center",
+    includeFontPadding: false,
+  },
+  brandAccent: {
+    fontFamily: FONTS.bold,
+    color: COLORS.primary,
+    textAlign: "center",
+    includeFontPadding: false,
+  },
+  description: {
+    maxWidth: 470,
+    fontFamily: FONTS.regular,
+    color: COLORS.textMuted,
+    textAlign: "center",
+  },
+  footer: {
+    width: "100%",
+    alignItems: "center",
+    justifyContent: "flex-end",
+    gap: 20,
+  },
+  indicators: {
+    minHeight: 24,
+    flexDirection: "row",
+    direction: "ltr",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: 3,
+  },
+  indicatorTouchArea: {
+    minWidth: 16,
+    minHeight: 24,
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  indicatorPressed: {
+    opacity: 0.6,
+    transform: [{ scale: 0.9 }],
+  },
+  indicator: {
+    height: 8,
+    borderRadius: RADIUS.full,
+  },
+  nextButton: {
+    direction: "ltr",
+    maxWidth: 520,
+    paddingVertical: 0,
+    shadowColor: COLORS.primaryPressed,
+    shadowOffset: {
+      width: 0,
+      height: 10,
+    },
+    shadowOpacity: 0.22,
+    shadowRadius: 14,
+    elevation: 7,
+  },
+  nextButtonText: {
+    fontFamily: FONTS.medium,
+    fontSize: TYPOGRAPHY.h3.fontSize,
+    color: COLORS.icon,
+    textAlign: "center",
+  },
+});

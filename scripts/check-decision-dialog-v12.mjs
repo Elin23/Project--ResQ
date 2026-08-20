@@ -1,0 +1,18 @@
+import fs from 'node:fs';
+const read = p => fs.readFileSync(new URL(`../${p}`, import.meta.url), 'utf8');
+const assert=(c,m)=>{if(!c){console.error(`✗ ${m}`);process.exit(1)};console.log(`✓ ${m}`)};
+const hook=read('src/hooks/useDecisionDialog.ts');
+const adoption=read('src/features/adoption/screens/OwnerAdoptionApplicationDetailsScreen.tsx');
+const campaign=read('src/features/donations/screens/OwnedDonationCampaignStatusScreen.tsx');
+const map=read('src/features/map-places/screens/MapPlaceApplicationDetailsScreen.tsx');
+const profile=read('src/features/profile/screens/ProfileScreen.tsx');
+assert(hook.includes('loading') && hook.includes('actionRef'), 'decision hook serializes confirm actions');
+assert(!adoption.includes('Alert.alert'), 'adoption owner decisions use unified dialog');
+assert(adoption.includes('ConfirmDialog') && adoption.includes('decision.request'), 'adoption decisions wire ConfirmDialog');
+assert(!campaign.includes('Alert.alert'), 'campaign lifecycle decisions use unified dialog/feedback');
+assert(campaign.includes('ConfirmDialog') && campaign.includes('decision.request'), 'campaign decisions wire ConfirmDialog');
+assert(!map.includes('Alert.alert'), 'map-place cancellation uses unified dialog');
+assert(map.includes('ConfirmDialog') && map.includes('decision.request'), 'map-place cancellation wires ConfirmDialog');
+assert(!profile.includes('Alert.alert'), 'profile destructive decisions use unified dialog');
+assert(profile.includes('ConfirmDialog') && profile.includes('تسجيل الخروج') && profile.includes('حذف الحساب'), 'profile logout/delete decisions wire ConfirmDialog');
+console.log('\nDecision Dialog V12 passed.');

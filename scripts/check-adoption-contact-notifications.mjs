@@ -1,0 +1,11 @@
+import fs from "node:fs";
+const read=(p)=>fs.readFileSync(p,"utf8");
+const must=(p,t)=>{if(!fs.existsSync(p)||!read(p).includes(t))throw new Error(`${p}: missing ${t}`)};
+must("src/data/repositories/inMemoryAdoptionApplicationRepository.ts","getAcceptedContactForApplicant");
+must("src/data/repositories/inMemoryAdoptionApplicationRepository.ts","[\"accepted\", \"completed\"].includes(item.status)");
+must("src/data/repositories/inMemoryAdoptionApplicationRepository.ts","[\"reserved\", \"adopted\"].includes(listing.status)");
+must("src/data/repositories/inMemoryAdoptionApplicationRepository.ts","notificationRepository?.create");
+must("src/features/adoption/screens/AdoptionApplicationStatusScreen.tsx","اتصال الآن");
+must("src/features/adoption/screens/AdoptionApplicationStatusScreen.tsx","فتح الموقع");
+must("src/features/notifications/screens/NotificationsScreen.tsx","adoptionApplicationDetailsRoute");
+console.log("✓ Package 41 contact unlock + adoption notification contract passed");

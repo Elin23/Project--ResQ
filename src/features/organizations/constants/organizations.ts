@@ -1,0 +1,61 @@
+import type { Organization } from "../types/organization";
+
+export const ORGANIZATIONS: Organization[] = [
+  {
+    id: "resq-syria",
+    name: "جمعية الرفق بالحيوان",
+    city: "دمشق",
+    country: "سوريا",
+    rating: 4.8,
+    reviews: 124,
+    verified: true,
+    description:
+      "نعمل منذ عام 2015 على حماية ورعاية الحيوانات المشردة في دمشق وريفها. نهدف إلى خلق بيئة آمنة لكل روح بريئة من خلال الإنقاذ والعلاج والتوعية المجتمعية.",
+    image: require("@/assets/images/organizations/org-card-main.png"),
+    logo: require("@/assets/images/organizations/org-logo.png"),
+    services: ["إنقاذ", "علاج", "إطعام", "تطوع", "تبني"],
+    successfulCases: 1250,
+    volunteers: 150,
+    activeRescues: 42,
+    animalsTreated: 840,
+  },
+  {
+    id: "hope-animals",
+    name: "مأوى الوفاء للحيوانات",
+    city: "حمص",
+    country: "سوريا",
+    rating: 4.8,
+    reviews: 120,
+    verified: true,
+    description: "متخصصون في إنقاذ القطط والكلاب وتقديم العلاج والرعاية المؤقتة.",
+    image: require("@/assets/images/organizations/org-card-vet.png"),
+    services: ["إنقاذ", "علاج"],
+    successfulCases: 760,
+    volunteers: 74,
+    activeRescues: 19,
+    animalsTreated: 510,
+  },
+  {
+    id: "rescue-light",
+    name: "جمعية نوارة للإنقاذ",
+    city: "اللاذقية",
+    country: "سوريا",
+    rating: 4.8,
+    reviews: 85,
+    verified: true,
+    description: "فريق تطوعي ميداني للاستجابة السريعة وإنقاذ الحيوانات المحتاجة.",
+    image: require("@/assets/images/organizations/org-card-rescue.png"),
+    services: ["إنقاذ", "إطعام", "تطوع"],
+    successfulCases: 420,
+    volunteers: 61,
+    activeRescues: 12,
+    animalsTreated: 280,
+  },
+];
+
+export const COMMUNITY_STATS = [
+  { id: "organizations", value: "42", label: "جمعية مسجلة", icon: "business-outline" as const, tone: "orange" as const },
+  { id: "volunteers", value: "+1,500", label: "متطوع نشط", icon: "people-outline" as const, tone: "green" as const },
+  { id: "rescues", value: "+3,200", label: "عملية إنقاذ ناجحة", icon: "paw-outline" as const, tone: "blue" as const },
+  { id: "treatment", value: "850", label: "حالة تحت العلاج", icon: "shield-checkmark-outline" as const, tone: "yellow" as const },
+];

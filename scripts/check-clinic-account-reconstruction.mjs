@@ -1,0 +1,20 @@
+import fs from "node:fs"; import path from "node:path";
+const root=process.cwd(), failures=[]; const read=f=>fs.readFileSync(path.join(root,f),"utf8");
+const must=(f,t,l=t)=>{if(!fs.existsSync(path.join(root,f))||!read(f).includes(t))failures.push(`${f}: missing ${l}`)};
+const absent=f=>{if(fs.existsSync(path.join(root,f)))failures.push(`${f}: obsolete route still exists`)};
+absent("app/clinic/cases.tsx"); absent("app/clinic/services.tsx");
+must("app/clinic/_layout.tsx",'"(adoption)": { label: "استكشاف"',"normal-user explore tab");
+must("app/clinic/_layout.tsx",'"(notifications)": { label: "التنبيهات"',"normal-user notifications tab");
+for(const c of ['"view-adoption"','"apply-adoption"','"view-personal-account"','"edit-personal-account"','"view-personal-reports"']) must("src/features/session/accessPolicy.ts",c,`clinic user capability ${c}`);
+must("src/features/clinic-dashboard/screens/ClinicDashboardScreen.tsx","كل وظائف المستخدم العادي","clinic scope");
+must("src/features/clinic-dashboard/screens/ClinicDashboardScreen.tsx","ملف العيادة","clinic identity");
+must("src/features/clinic-dashboard/hooks/useClinicDashboard.ts",'label:"فتح حملة"',"campaign create");
+must("src/features/clinic-dashboard/hooks/useClinicDashboard.ts",'label:"إرسال بلاغ"',"normal report");
+must("src/features/clinic-dashboard/hooks/useClinicDashboard.ts",'label:"بلاغاتي"',"own reports");
+must("src/features/clinic-dashboard/hooks/useClinicDashboard.ts",'label:"التبني"',"adoption");
+must("src/domain/service-places/servicePlaceRepository.ts","getClinicByAccountId","account/place relation");
+must("src/domain/service-places/servicePlaceRepository.ts","updateClinicByAccountId","clinic profile update contract");
+must("src/data/repositories/inMemoryServicePlaceRepository.ts","updateClinicByAccountId","clinic profile persistence");
+must("src/features/clinic-dashboard/screens/ClinicProfileScreen.tsx","تعديل بيانات العيادة","clinic profile edit entry");
+if(failures.length){console.error("Clinic reconstruction check failed:\n"+failures.map(x=>`- ${x}`).join("\n"));process.exit(1)}
+console.log("Clinic reconstruction check passed: clinic inherits normal-user product capabilities plus clinic identity/profile and campaign management; obsolete medical-operation routes are removed.");
