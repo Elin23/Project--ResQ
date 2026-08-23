@@ -102,14 +102,14 @@ export const styles = StyleSheet.create({
   },
   brandRow: {
     flexDirection: "row",
-    direction: "ltr",
+    direction: "rtl",
     alignItems: "center",
     justifyContent: "center",
     gap: 6,
   },
   brandNameRow: {
     flexDirection: "row",
-    direction: "ltr",
+    direction: "rtl",
     alignItems: "center",
   },
   brandText: {
