@@ -42,6 +42,7 @@ export function WelcomePanel({ model }: { model: WelcomeModel }) {
     <Animated.View style={[styles.panel, { width: "100%", marginTop: panelTopMargin, paddingHorizontal: horizontalPadding, paddingTop: isCompact ? 34 : 42, paddingBottom: isCompact ? 24 : 34, opacity: panelOpacity, transform: [{ translateY: panelTranslateY }, { scale: panelScale }] }]}>
       <Animated.View style={[styles.titleContainer, { opacity: titleOpacity, transform: [{ translateY: titleTranslateY }] }]}>
         <View style={styles.titleRow}>
+          <AppText style={[styles.welcomeTitle, { fontSize: titleSize, lineHeight: titleSize * 1.4 }]}>مرحباً بك في</AppText>
           <View style={styles.brandRow}>
             <Ionicons name="paw" size={titleSize * 0.68} color={COLORS.text} />
             <View style={styles.brandNameRow}>
@@ -49,7 +50,6 @@ export function WelcomePanel({ model }: { model: WelcomeModel }) {
               <AppText style={[styles.brandText, { fontSize: titleSize, lineHeight: titleSize * 1.35 }]}>Res</AppText>
             </View>
           </View>
-          <AppText style={[styles.welcomeTitle, { fontSize: titleSize, lineHeight: titleSize * 1.4 }]}>مرحباً بك في</AppText>
         </View>
       </Animated.View>
 

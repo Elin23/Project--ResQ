@@ -1,10 +1,10 @@
 import { Ionicons, MaterialCommunityIcons } from "@expo/vector-icons";
 import { StyleSheet, View } from "react-native";
 
-import AppText from "../../../components/ui/AppText";
-import Button from "../../../components/ui/Button";
-import Card from "../../../components/ui/Card";
-import { COLORS, FONT_SIZES, RADIUS, SPACING } from "../../../theme/index";
+import AppText from "@/src/components/ui/AppText";
+import Button from "@/src/components/ui/Button";
+import Card from "@/src/components/ui/Card";
+import { COLORS, FONT_SIZES, RADIUS, SPACING } from "@/src/theme";
 
 import type { FeedingPointSummary } from "../types";
 type Props = {

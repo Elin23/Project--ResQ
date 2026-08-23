@@ -2,11 +2,11 @@ import { useState } from "react";
 import { Modal, Pressable, StyleSheet, View } from "react-native";
 
 import ActionStack from "@/src/components/ui/ActionStack";
-import AppText from "../../../components/ui/AppText";
-import Button from "../../../components/ui/Button";
-import Chip from "../../../components/ui/Chip";
-import Input from "../../../components/ui/Input";
-import { COLORS, FONT_SIZES, RADIUS, SPACING } from "../../../theme/index";
+import AppText from "@/src/components/ui/AppText";
+import Button from "@/src/components/ui/Button";
+import Chip from "@/src/components/ui/Chip";
+import Input from "@/src/components/ui/Input";
+import { COLORS, FONT_SIZES, RADIUS, SPACING } from "@/src/theme";
 
 import { ISSUE_REASON_META } from "../constants";
 import type { FeedingPointIssueReason } from "../types";

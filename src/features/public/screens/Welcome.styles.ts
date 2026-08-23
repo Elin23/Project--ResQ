@@ -90,7 +90,7 @@ export const styles = StyleSheet.create({
   },
   titleRow: {
     flexDirection: "row",
-    direction: "ltr",
+    direction: "rtl",
     flexWrap: "wrap",
     alignItems: "center",
     justifyContent: "center",

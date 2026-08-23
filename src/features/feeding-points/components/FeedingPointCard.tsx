@@ -1,10 +1,10 @@
 import { Ionicons } from "@expo/vector-icons";
 import { Image, Linking, StyleSheet, View } from "react-native";
 
-import AppText from "../../../components/ui/AppText";
-import Button from "../../../components/ui/Button";
-import Card from "../../../components/ui/Card";
-import StatusBadge from "../../../components/ui/StatusBadge";
+import AppText from "@/src/components/ui/AppText";
+import Button from "@/src/components/ui/Button";
+import Card from "@/src/components/ui/Card";
+import StatusBadge from "@/src/components/ui/StatusBadge";
 import { COLORS, FONT_SIZES, RADIUS, SPACING } from "@/src/theme";
 import { FOOD_LEVEL_META, STATUS_META, WATER_META } from "../constants";
 import type { FeedingPointSummary } from "../types";

@@ -8,21 +8,21 @@ import {
   View,
 } from "react-native";
 
-import ActionRow from "../../../components/ui/ActionRow";
-import AppText from "../../../components/ui/AppText";
-import Button from "../../../components/ui/Button";
-import Chip from "../../../components/ui/Chip";
-import Input from "../../../components/ui/Input";
-import EmptyState from "../../../components/ui/EmptyState";
-import ErrorState from "../../../components/ui/ErrorState";
-import RefreshStatus from "../../../components/ui/RefreshStatus";
-import { SkeletonList } from "../../../components/ui/Skeleton";
-import Screen from "../../../components/ui/Screen";
-import ScreenHeader from "../../../components/ui/ScreenHeader";
-import SectionHeader from "../../../components/ui/SectionHeader";
-import { COLORS, SPACING } from "../../../theme/index";
-import { feedingPointDetailsRoute, feedingPointSubmissionsRoute, ROUTES } from "../../../navigation/routes";
-import { useSession } from "../../session/SessionContext";
+import ActionRow from "@/src/components/ui/ActionRow";
+import AppText from "@/src/components/ui/AppText";
+import Button from "@/src/components/ui/Button";
+import Chip from "@/src/components/ui/Chip";
+import Input from "@/src/components/ui/Input";
+import EmptyState from "@/src/components/ui/EmptyState";
+import ErrorState from "@/src/components/ui/ErrorState";
+import RefreshStatus from "@/src/components/ui/RefreshStatus";
+import { SkeletonList } from "@/src/components/ui/Skeleton";
+import Screen from "@/src/components/ui/Screen";
+import ScreenHeader from "@/src/components/ui/ScreenHeader";
+import SectionHeader from "@/src/components/ui/SectionHeader";
+import { COLORS, SPACING } from "@/src/theme";
+import { feedingPointDetailsRoute, feedingPointSubmissionsRoute, ROUTES } from "@/src/navigation/routes";
+import { useSession } from "@/src/features/session/SessionContext";
 
 import FeedingPointCard from "../components/FeedingPointCard";
 import FeedingPointsMap from "../components/FeedingPointsMap";

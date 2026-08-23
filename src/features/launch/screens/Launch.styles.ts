@@ -89,7 +89,7 @@ export const styles = StyleSheet.create({
   },
   brandRow: {
     flexDirection: "row",
-    direction: "ltr",
+    direction: "rtl",
     alignItems: "center",
     justifyContent: "center",
     gap: 7,
@@ -103,7 +103,7 @@ export const styles = StyleSheet.create({
   },
   brandNameRow: {
     flexDirection: "row",
-    direction: "ltr",
+    direction: "rtl",
     alignItems: "center",
   },
   brandText: {
@@ -130,7 +130,7 @@ export const styles = StyleSheet.create({
   },
   subtitleDecoration: {
     flexDirection: "row",
-    direction: "ltr",
+    direction: "rtl",
     alignItems: "center",
     marginTop: 7,
     gap: 5,

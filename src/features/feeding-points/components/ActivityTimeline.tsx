@@ -1,9 +1,9 @@
 import { Ionicons } from "@expo/vector-icons";
 import { Image, StyleSheet, View } from "react-native";
 
-import AppText from "../../../components/ui/AppText";
-import StatusBadge from "../../../components/ui/StatusBadge";
-import { COLORS, FONT_SIZES, RADIUS, SPACING } from "../../../theme/index";
+import AppText from "@/src/components/ui/AppText";
+import StatusBadge from "@/src/components/ui/StatusBadge";
+import { COLORS, FONT_SIZES, RADIUS, SPACING } from "@/src/theme";
 import { STATUS_META } from "../constants";
 import type { StatusUpdate } from "../types";
 import { formatRelativeTime } from "../utils/status";

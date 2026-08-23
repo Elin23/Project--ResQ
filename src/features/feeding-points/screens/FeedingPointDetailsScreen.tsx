@@ -9,21 +9,21 @@ import {
   View,
 } from "react-native";
 
-import AppText from "../../../components/ui/AppText";
-import { useFeedback } from "../../../components/ui/FeedbackProvider";
-import Button from "../../../components/ui/Button";
-import ErrorState from "../../../components/ui/ErrorState";
-import LoadingState from "../../../components/ui/LoadingState";
-import Chip from "../../../components/ui/Chip";
-import IconButton from "../../../components/ui/IconButton";
+import AppText from "@/src/components/ui/AppText";
+import { useFeedback } from "@/src/components/ui/FeedbackProvider";
+import Button from "@/src/components/ui/Button";
+import ErrorState from "@/src/components/ui/ErrorState";
+import LoadingState from "@/src/components/ui/LoadingState";
+import Chip from "@/src/components/ui/Chip";
+import IconButton from "@/src/components/ui/IconButton";
 import QuickActionGrid, {
   type QuickAction,
-} from "../../../components/ui/QuickActionGrid";
-import RatingStars from "../../../components/ui/RatingStars";
-import Screen from "../../../components/ui/Screen";
-import SectionHeader from "../../../components/ui/SectionHeader";
-import StatusBadge from "../../../components/ui/StatusBadge";
-import { COLORS, FONT_SIZES, RADIUS, SPACING } from "../../../theme/index";
+} from "@/src/components/ui/QuickActionGrid";
+import RatingStars from "@/src/components/ui/RatingStars";
+import Screen from "@/src/components/ui/Screen";
+import SectionHeader from "@/src/components/ui/SectionHeader";
+import StatusBadge from "@/src/components/ui/StatusBadge";
+import { COLORS, FONT_SIZES, RADIUS, SPACING } from "@/src/theme";
 
 import ActivityTimeline from "../components/ActivityTimeline";
 import FeedingPointsMap from "../components/FeedingPointsMap";

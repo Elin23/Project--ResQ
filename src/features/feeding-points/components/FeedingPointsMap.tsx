@@ -1,7 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
 import { Pressable, StyleSheet, View } from "react-native";
 
-import AppText from "../../../components/ui/AppText";
+import AppText from "@/src/components/ui/AppText";
 import { COLORS, RADIUS, SPACING } from "@/src/theme";
 import { MARKER_COLORS } from "../constants";
 import type { FeedingPointSummary } from "../types";

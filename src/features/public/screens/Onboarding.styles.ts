@@ -83,7 +83,7 @@ export const styles = StyleSheet.create({
   firstTitleRow: {
     width: "100%",
     flexDirection: "row",
-    direction: "ltr",
+    direction: "rtl",
     alignItems: "center",
     justifyContent: "center",
     flexWrap: "wrap",
@@ -139,7 +139,7 @@ export const styles = StyleSheet.create({
   indicators: {
     minHeight: 24,
     flexDirection: "row",
-    direction: "ltr",
+    direction: "rtl",
     alignItems: "center",
     justifyContent: "center",
     gap: 3,

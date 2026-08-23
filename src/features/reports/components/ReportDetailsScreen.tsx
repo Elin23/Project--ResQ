@@ -370,7 +370,7 @@ const styles = StyleSheet.create({
     bottom: SPACING.md,
     alignSelf: "center",
     flexDirection: "row",
-    direction: "ltr",
+    direction: "rtl",
     gap: 6,
   },
   carouselDot: {

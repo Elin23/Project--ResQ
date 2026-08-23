@@ -3,12 +3,12 @@ import * as ImagePicker from "expo-image-picker";
 import { useState } from "react";
 import { Image, Modal, Pressable, StyleSheet, View } from "react-native";
 
-import ActionStack from "../../../components/ui/ActionStack";
-import AppText from "../../../components/ui/AppText";
-import Button from "../../../components/ui/Button";
-import Chip from "../../../components/ui/Chip";
-import Input from "../../../components/ui/Input";
-import { COLORS, FONT_SIZES, RADIUS, SPACING } from "../../../theme/index";
+import ActionStack from "@/src/components/ui/ActionStack";
+import AppText from "@/src/components/ui/AppText";
+import Button from "@/src/components/ui/Button";
+import Chip from "@/src/components/ui/Chip";
+import Input from "@/src/components/ui/Input";
+import { COLORS, FONT_SIZES, RADIUS, SPACING } from "@/src/theme";
 
 import { STATUS_META } from "../constants";
 import type { ReportedStatus } from "../types";

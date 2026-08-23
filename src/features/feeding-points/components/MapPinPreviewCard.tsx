@@ -1,9 +1,9 @@
 import { Ionicons } from "@expo/vector-icons";
 import { Image, Pressable, StyleSheet, View } from "react-native";
 
-import AppText from "../../../components/ui/AppText";
-import IconButton from "../../../components/ui/IconButton";
-import { COLORS, FONT_SIZES, RADIUS, SPACING } from "../../../theme/index";
+import AppText from "@/src/components/ui/AppText";
+import IconButton from "@/src/components/ui/IconButton";
+import { COLORS, FONT_SIZES, RADIUS, SPACING } from "@/src/theme";
 
 import { STATUS_META } from "../constants";
 import type { FeedingPointSummary } from "../types";

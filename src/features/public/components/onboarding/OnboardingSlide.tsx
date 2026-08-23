@@ -31,6 +31,7 @@ export default function OnboardingSlide({ item, index, cardWidth, cardHeight, is
       <View style={[styles.textSection, { width: cardWidth, marginTop: isCompact ? 18 : 28 }]}> 
         {index === 0 ? (
           <View style={styles.firstTitleRow}>
+            <AppText style={[styles.firstTitle, { fontSize: titleSize, lineHeight: titleSize * 1.4 }]}>ابدأ رحلتك مع</AppText>
             <View style={styles.brandRow}>
               <Ionicons name="paw" size={brandSize * 0.68} color={COLORS.text} />
               <View style={styles.brandNameRow}>
@@ -38,7 +39,6 @@ export default function OnboardingSlide({ item, index, cardWidth, cardHeight, is
                 <AppText style={[styles.brandText, { fontSize: brandSize, lineHeight: brandSize * 1.25 }]}>Res</AppText>
               </View>
             </View>
-            <AppText style={[styles.firstTitle, { fontSize: titleSize, lineHeight: titleSize * 1.4 }]}>ابدأ رحلتك مع</AppText>
           </View>
         ) : (
           <AppText style={[styles.title, { fontSize: titleSize, lineHeight: titleSize * 1.45 }]}>{item.title}</AppText>
