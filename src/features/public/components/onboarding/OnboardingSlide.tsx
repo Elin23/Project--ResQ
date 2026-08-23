@@ -34,8 +34,8 @@ export default function OnboardingSlide({ item, index, cardWidth, cardHeight, is
             <View style={styles.brandRow}>
               <Ionicons name="paw" size={brandSize * 0.68} color={COLORS.text} />
               <View style={styles.brandNameRow}>
-                <AppText style={[styles.brandAccent, { fontSize: brandSize, lineHeight: brandSize * 1.25 }]}>Q</AppText>
                 <AppText style={[styles.brandText, { fontSize: brandSize, lineHeight: brandSize * 1.25 }]}>Res</AppText>
+                <AppText style={[styles.brandAccent, { fontSize: brandSize, lineHeight: brandSize * 1.25 }]}>Q</AppText>
               </View>
             </View>
             <AppText style={[styles.firstTitle, { fontSize: titleSize, lineHeight: titleSize * 1.4 }]}>ابدأ رحلتك مع</AppText>
