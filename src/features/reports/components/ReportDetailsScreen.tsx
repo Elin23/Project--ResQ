@@ -2,7 +2,6 @@ import { MaterialCommunityIcons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import React, { useCallback, useMemo, useState } from "react";
 import { Image, LayoutChangeEvent, Linking, NativeScrollEvent, NativeSyntheticEvent, Platform, ScrollView, Share, StyleSheet, View } from "react-native";
-import MapView, { Marker } from "react-native-maps";
 
 import ActionRow from "@/src/components/ui/ActionRow";
 import ActionStack from "@/src/components/ui/ActionStack";
@@ -17,6 +16,8 @@ import StatusBadge from "@/src/components/ui/StatusBadge";
 import { useSession } from "@/src/features/session/SessionContext";
 import { ROUTES, organizationDetailsRoute } from "@/src/navigation/routes";
 import { COLORS, ICON_SIZES, RADIUS, SPACING } from "@/src/theme";
+
+import ReportLocationMap from "./ReportLocationMap";
 
 const CUSTOM_FIRST_IMAGE = require("../../../../assets/images/dogg.png");
 const REPORT_IMAGES = [
@@ -197,17 +198,7 @@ export default function ReportDetailsScreen() {
       <View style={styles.section}>
         <SectionTitle>الموقع</SectionTitle>
         <Card disabled padding={0} radius={RADIUS.xl} style={styles.mapCard}>
-          <MapView
-            style={styles.map}
-            initialRegion={{
-              latitude: LOCATION.latitude,
-              longitude: LOCATION.longitude,
-              latitudeDelta: 0.02,
-              longitudeDelta: 0.02,
-            }}
-          >
-            <Marker coordinate={{ latitude: LOCATION.latitude, longitude: LOCATION.longitude }} />
-          </MapView>
+          <ReportLocationMap latitude={LOCATION.latitude} longitude={LOCATION.longitude} style={styles.map} />
           <View style={styles.mapFooter}>
             <View style={styles.mapInfoRow}>
               <View style={styles.locationCopy}>

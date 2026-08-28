@@ -15,8 +15,6 @@ import {
     TouchableOpacity,
     View,
 } from "react-native";
-import MapView, { Marker } from "react-native-maps";
-
 import AppText from "@/src/components/ui/AppText";
 import Screen from "@/src/components/ui/Screen";
 import SelectionSheet from "@/src/components/ui/SelectionSheet";
@@ -26,6 +24,7 @@ import { ROUTES } from "@/src/navigation/routes";
 import { useSubmitReport } from "../hooks/useSubmitReport";
 import { usePermissionFeedback } from "@/src/hooks/usePermissionFeedback";
 import { COLORS, FONTS, LAYOUT, RADIUS, SPACING, TYPOGRAPHY } from "@/src/theme";
+import CreateReportLocationMap from "./CreateReportLocationMap";
 
 
 // حالات الحيوان
@@ -476,18 +475,7 @@ export default function CreateReportForm() {
           </AppText>
           <View style={styles.mapCard}>
             <View style={styles.mapContainer}>
-              <MapView
-                style={styles.map}
-                region={region}
-                onRegionChangeComplete={setRegion}
-              >
-                <Marker
-                  coordinate={{
-                    latitude: region.latitude,
-                    longitude: region.longitude,
-                  }}
-                />
-              </MapView>
+              <CreateReportLocationMap style={styles.map} region={region} onRegionChange={setRegion} />
             </View>
 
             <View style={styles.mapActions}>
