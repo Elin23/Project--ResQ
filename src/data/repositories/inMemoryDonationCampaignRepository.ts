@@ -49,6 +49,7 @@ function validateCampaignInput(
 
 export class InMemoryDonationCampaignRepository implements DonationCampaignRepository {
   private campaigns = DONATION_CAMPAIGN_SEED.map(clone);
+  private idCounter = 0;
 
   async listPublic() {
     return this.campaigns
@@ -83,7 +84,7 @@ export class InMemoryDonationCampaignRepository implements DonationCampaignRepos
     const now = new Date().toISOString();
     const campaign: DonationCampaign = {
       ...input,
-      id: `campaign-${Date.now()}`,
+      id: `campaign-${Date.now()}-${++this.idCounter}`,
       title: input.title.trim(),
       shortDescription: input.shortDescription.trim(),
       description: input.description.trim(),

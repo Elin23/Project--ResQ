@@ -29,7 +29,7 @@ must("src/features/donations/screens/DonationsScreen.tsx", "HeroCampaign", "Figm
 must("src/features/donations/screens/DonationsScreen.tsx", "CATEGORY_ITEMS", "campaign category filters");
 must("src/navigation/routes.ts", "donationCampaignDetailsRoute", "campaign details route");
 must("src/navigation/routes.ts", "donationDetailsRoute", "donation transfer details route");
-must("src/features/home/hooks/useHomeScreen.ts", "donationsRoute(accountKind)", "donations entry for authenticated user");
+must("src/features/home/hooks/useHomeScreen.ts", "donationsRoute(browseKind)", "donations entry for authenticated user");
 if (read("src/features/donations/screens/DonationsScreen.tsx").includes("const OPTIONS")) {
   failures.push("Legacy static donations OPTIONS surface still exists.");
 }

@@ -190,8 +190,13 @@ src/constants/config.ts     useMockApi + apiUrl
 
 ---
 
-## 9. حالة معروفة: `npm run check` معطّل
+## 9. حالة `npm run check`
 
-حالياً السلسلة تفشل عند الخطوة الثالثة (`check:product` / `scripts/check-project-architecture`) بسبب ملف مفقود `SCREEN-INVENTORY.md` لم يوجد قط في المستودع. ولأن الخطوات مربوطة بـ `&&`، فإن `typecheck` و `lint` و `test` **لا تعمل إطلاقاً**.
+السلسلة 71 خطوة مربوطة بـ `&&`، و `typecheck` و `lint` و `test` في آخرها.
+أي فشل في أي خطوة يمنع كل ما بعدها من العمل — بما فيها الثلاثة الأهم.
 
-إلى أن يُصلَح ذلك، لا تعتبر نجاح أو فشل `npm run check` دليلاً على سلامة عملك. أبلغ عن ناتجها كما هو دون تفسير.
+لذلك: عند التحقّق من عملك، **شغّل `npm run typecheck` و `npm run lint`
+و `npm run test` مباشرةً وبشكل منفصل**، ولا تكتفِ بـ `npm run check`.
+
+عائق `check:product` (ملف `SCREEN-INVENTORY.md` المفقود) تم إصلاحه بإضافة
+الملف إلى الجذر — الخطوة تمرّ الآن.
