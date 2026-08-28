@@ -2,7 +2,12 @@
 
 هذا الملف مرجع إلزامي. قبل أي تعديل، اقرأه كاملاً والتزم به.
 المشروع: تطبيق React Native / Expo، عربي بالكامل، اتجاه RTL مفروض عالمياً.
-المرجع الرقمي للحالة الحالية للمشروع: `AUDIT-INVENTORY.md` في الجذر.
+
+**وثائق مرجعية في الجذر:**
+- `AUDIT-INVENTORY.md` — جرد المكوّنات والتوكنز والقياسات بأرقام الأسطر.
+- `SCREEN-INVENTORY.md` — جرد الشاشات الـ 72.
+- `PRODUCTION-READINESS.md` — حدّ التكامل مع الخلفية وخطوات الإنتاج.
+- `README.md` — نظرة عامة وتشغيل.
 
 ---
 
@@ -32,6 +37,8 @@ import { COLORS } from "../../../theme";          // مسار نسبي متعد�
 كل ما هو مشترك (`components/ui`, `theme`, `navigation`, `services`, `data`, `i18n`) يُستورد بـ `@/src/...` دائماً.
 
 المكوّنات المشتركة تُستورد من الـ barrel: `@/src/components/ui` — لا من مسار الملف المفرد.
+
+الـ alias معرّف في ثلاثة أماكن يجب أن تبقى متطابقة: `tsconfig.json` (paths)، Metro (تلقائي عبر Expo)، و `vitest.config.ts` (resolve.alias). إن أضفت مساراً جديداً، تأكد من الثلاثة.
 
 ---
 
@@ -86,6 +93,8 @@ none: 0   xxs: 2   xs: 4   sm: 8   md: 12   lg: 16   xl: 24   2xl: 32   3xl: 40
 | صف أزرار / عمود أزرار | `<ActionRow>` / `<ActionStack>` |
 | `<ScrollView>` داخل شاشة ذات تنقّل عائم | `<ShellAwareScrollView>` |
 
+استثناء وحيد: `src/components/ui/AppText.tsx` هو المكوّن المعرِّف، ويستخدم `Text` الخام بالضرورة. لا يُعتبر مخالفة.
+
 ### الحالات (إلزامية في كل شاشة تجلب بيانات)
 `<LoadingState>` أثناء التحميل، `<ErrorState onRetry>` عند الخطأ، `<EmptyState>` عند الفراغ، `<SkeletonList>` للقوائم، `<RefreshStatus>` لحالة إعادة الجلب.
 لا تكتب `<ActivityIndicator>` أو نص "جاري التحميل" يدوياً.
@@ -121,6 +130,8 @@ none: 0   xxs: 2   xs: 4   sm: 8   md: 12   lg: 16   xl: 24   2xl: 32   3xl: 40
 **النص:** `AppText` محاذاته الافتراضية `right` مأخوذة من `ARABIC_LAYOUT.textAlign`. لا تكتب `textAlign` يدوياً.
 للمحتوى اللاتيني إجبارياً (بريد إلكتروني، رقم هاتف، رابط، رمز تحقّق) استخدم `LTR_TEXT` من `@/src/i18n/rtl` — لا `textAlign: "left"` حرفياً.
 
+**كل صف أفقي (`flexDirection: "row"`) يجب أن يعلن اتجاهه صراحةً** خلال 5 أسطر من تعريفه (`direction: "rtl"` أو `ARABIC_LAYOUT.direction`). هذا مفروض آلياً في `check:ui-consistency`. و `flexDirection: "row-reverse"` ممنوع تماماً.
+
 **الأيقونات الاتجاهية:** استخدم `<DirectionalIcon direction="back|forward|previous|next" />`.
 لا تكتب `chevron-back` / `chevron-forward` / `arrow-forward` / `arrow-back` حرفياً في كود جديد.
 
@@ -137,12 +148,14 @@ src/features/<feature>/
   components/               مكوّنات خاصة بالميزة
   hooks/
 src/components/ui/          المكوّنات المشتركة فقط
+src/domain/                 قواعد العمل، معزولة عن الواجهة
+src/application/            خدمات التنسيق
+src/data/repositories/      المستودعات (وهمية حالياً)
 src/theme/index.ts          كل التوكنز
 src/i18n/rtl.ts             أدوات الاتجاه (LTR_TEXT, RTL_TEXT, directionalIcon)
 src/navigation/routes.ts    كل المسارات
-src/data/                   بيانات وهمية
-src/services/api/client.ts  عميل الـ API
 src/constants/config.ts     useMockApi + apiUrl
+scripts/                    فحوصات الجودة الآلية
 ```
 
 **قواعد:**
@@ -151,19 +164,22 @@ src/constants/config.ts     useMockApi + apiUrl
 - **الستايلات:** المشروع يستخدم نمطين قائمين — ملف `X.styles.ts` منفصل (شاشات `auth` و `public`)، و `StyleSheet.create` داخل ملف الشاشة (باقي الميزات). **لا تنقل ملفاً من نمط لآخر.** التزم بنمط الملف الذي تعدّله، ولا تمزج النمطين في نفس الملف.
 - كل مسار جديد يُضاف إلى `src/navigation/routes.ts`. **ممنوع** `as never` أو نص مسار حرفي في `router.push`.
 - ملفات `app/` تبقى إعادة تصدير بسطر واحد؛ استخراج الـ params يتم داخل الشاشة.
+- **ممنوع** `console.log` و `@ts-ignore` و `@ts-nocheck` و `as never` و علامات `TODO`/`FIXME`/`HACK` — كلها مفروضة آلياً في `check:final-rc` وستكسر السلسلة.
+- وضع الـ API الوهمي مركزي في `src/constants/config.ts` (`useMockApi`). ممنوع أي راية `USE_MOCKS` محلية داخل ميزة.
 - النصوص العربية تبقى كما هي في مكانها؛ لا تعيد صياغتها ولا تترجمها أثناء عمل تنسيقي.
 
 ---
 
 ## 6. طريقة العمل معي
 
-1. **لا تعدّل قبل أن تعرض خطة.** لكل مهمة: اعرض قائمة الملفات وأرقام الأسطر والتغييرات المقصودة، وانتظر الموافقة صراحةً.
+1. **لا تعدّل قبل أن تعرض خطة.** لكل مهمة: اعرض قائمة الملفات وأرقام الأسطر والتغييرات المقصودة، وانتظر الموافقة صراحةً — ولا تبدأ التنفيذ حتى تصلك.
 2. **دفعة واحدة في كل مرة.** لا تخلط نوعي إصلاح مختلفين في نفس التعديل.
-3. **شغّل `npm run check` بعد كل دفعة** قبل أن تعلن الانتهاء، وأرفق ناتجها.
+3. **بعد كل دفعة شغّل `npm run typecheck` و `npm run lint` و `npm run test` مباشرةً وبشكل منفصل** (انظر القسم 9)، ثم `npm run check` إن كان التعديل معمارياً. أرفق الناتج كما هو.
 4. **لا تصلح شيئاً لم يُطلب منك.** إذا لاحظت مشكلة أخرى، اذكرها في تقريرك ولا تلمسها.
-5. **لا تغيّر السلوك.** هذه أعمال توحيد بصري: لا منطق جديد، لا حقول جديدة، لا تغيير في تدفّق الشاشات.
+5. **لا تغيّر السلوك.** أعمال التوحيد البصري لا تحمل منطقاً جديداً ولا حقولاً جديدة ولا تغييراً في تدفّق الشاشات.
 6. إذا كان التعديل يغيّر المظهر بشكل ملحوظ، ضع عليه علامة في تقريرك ليُفحص بصرياً على `expo start --web`. لا يوجد emulator على الجهاز — الفحص البصري يدوي على الويب فقط.
 7. لا تعدّل ملفات لم تُذكر في الخطة المعتمدة. إن اقتضى التعديل ملفاً إضافياً، توقّف واسأل.
+8. **لا تنقل حالة الملفات من الذاكرة.** قبل أن تصف حالة ملف أو فحص، اقرأه أو شغّله. لا تعتمد على ما هو مكتوب في هذا الملف كحقيقة راهنة — قد يكون تغيّر.
 
 ---
 
@@ -172,31 +188,47 @@ src/constants/config.ts     useMockApi + apiUrl
 - حذف أي ملف أو مكوّن.
 - إضافة أي حزمة (dependency) جديدة.
 - تعديل `src/theme/index.ts` أو `app/_layout.tsx` أو إعدادات Expo (`app.config.js`).
-- تعديل `scripts/` أو ملفات الـ QA أو `eslint.config.js`.
+- تعديل `scripts/` أو ملفات الـ QA أو `eslint.config.js` أو `vitest.config.ts`.
 - تعديل `package.json`.
+- تعديل ملفات الاختبار (`*.test.ts`).
 - تغيير نصوص المستخدم العربية.
 
 ---
 
 ## 8. دين معروف — مؤجّل، لا تعالجه بدون طلب صريح
 
-هذه بنود معروفة وموثّقة في `AUDIT-INVENTORY.md`. **لا تبادر بإصلاحها**، ولا تدرجها ضمن أي خطة إلا إذا طُلبت بالاسم:
+**لا تبادر بإصلاح أي بند هنا**، ولا تدرجه ضمن أي خطة إلا إذا طُلب بالاسم:
 
+**تصميم وتنسيق**
 - **`SCREEN_SURFACES`**: القيم الأربع (`app`, `plain`, `elevated`, `subtle`) كلها `COLORS.background`. الـ prop بلا أثر بصري حالياً. قرار تصميم مؤجّل — لا تعدّله ولا تحذفه.
 - **21 شاشة لا تستخدم `<Screen>` wrapper** (11 في `auth`، 7 في `public`، إضافة إلى `LaunchScreen`, `CreateReportScreen`, `SearchScreen`). تحويلها يغيّر الحشوة و safe area — مؤجّل.
 - **390 قيمة مسافات خارج مقياس `SPACING`** في 32 ملفاً (مركّزة في `RegisterEntity`, `About`, `ContactUs`, `PrivacyPolicy`, `HelpCenter`, `CreateReportForm`, `TermsAndConditions`). القاعدة في القسم 2 تنطبق على **الكود الجديد**؛ التنظيف الشامل للقائم مؤجّل.
 - **54 مفتاح Compatibility alias** في `COLORS`. الهجرة تدريجية ومؤجّلة.
 - **16 استخدام لـ `chevron-back`** كمؤشّر قوائم — مطابق بصرياً لـ RTL، ليس خطأً. مؤجّل كتحسين اتساق فقط.
 
+**كود وبنية**
+- **نمطان لتوليد المعرّفات في `src/data/repositories/`**: خمسة ملفات تستخدم `${Date.now()}-${++this.idCounter}` (adoption, adoptionApplication, feedingPointSubmission, report, donationCampaign)، وخمسة تستخدم `${Date.now()}-${array.length}` (donationTransfer, mapPlaceApplication, servicePlace, mapPlaceChangeRequest, notification). كلاهما يعمل. التوحيد مؤجّل، ويُفضّل أن يتم عند نقل توليد المعرّفات إلى الخادم.
+- **قواعد عمل داخل المستودعات الوهمية**: اعتماد طلبات التبنّي، مراجعة نقاط الإطعام، والتحقق من التحويلات — منطقها حالياً في `src/data/repositories/`. عند ربط الخلفية يجب أن ينتقل إلى الخادم. انظر `PRODUCTION-READINESS.md`.
+- **9 تحذيرات ESLint** (غير حاجبة، 0 أخطاء): أربعة متغيّرات غير مستخدمة، وخمسة `react-hooks/exhaustive-deps` في `useLoginForm`, `useWelcomeScreen`, `notifications/hooks.ts`, `useOrganizationDashboard`. **لا تعدّل مصفوفات الـ deps** — ذلك تغيير سلوك قد يسبّب إعادة رسم لا نهائية، ويحتاج فحصاً فعلياً.
+- **5 سكربتات معرّفة في `package.json` وغير مضمومة إلى سلسلة `check`**: `check:map-place-management`, `check:map-place-review`, `check:map-place-hardening`, `check:ui-foundation-v3`, `check:header-v3`. لم تُشغَّل منذ فترة وقد تكون فاشلة. ضمّها يحتاج قراراً منفصلاً.
+
 ---
 
 ## 9. حالة `npm run check`
 
-السلسلة 71 خطوة مربوطة بـ `&&`، و `typecheck` و `lint` و `test` في آخرها.
-أي فشل في أي خطوة يمنع كل ما بعدها من العمل — بما فيها الثلاثة الأهم.
+**السلسلة تمرّ كاملة الآن** — 68 فحصاً معمارياً + `typecheck` + `lint` + `test` (71 اختباراً في 15 ملفاً).
 
-لذلك: عند التحقّق من عملك، **شغّل `npm run typecheck` و `npm run lint`
-و `npm run test` مباشرةً وبشكل منفصل**، ولا تكتفِ بـ `npm run check`.
+لكنها 71 خطوة مربوطة بـ `&&`، و `typecheck` و `lint` و `test` في آخرها: **أي فشل في أي خطوة يحجب كل ما بعدها**. لذلك عند التحقّق من عمل جديد، شغّل الثلاثة الأهم مباشرةً وبشكل منفصل أولاً:
 
-عائق `check:product` (ملف `SCREEN-INVENTORY.md` المفقود) تم إصلاحه بإضافة
-الملف إلى الجذر — الخطوة تمرّ الآن.
+```
+npm run typecheck
+npm run lint
+npm run test
+```
+
+ثم `npm run check` للسلسلة الكاملة.
+
+**درسان من إصلاحات سابقة، انتبه لهما عند أي فشل:**
+
+1. **قد يكون السكربت هو المتخلّف، لا الكود.** بعض سكربتات الـ QA تبحث عن نصوص حرفية في ملفات محدّدة؛ إذا تطوّر الكود ولم يُحدَّث السكربت، يفشل الفحص خطأً. اقرأ ما يتوقّعه السكربت وقارنه بالكود قبل أن تفترض أن الكود معطوب. لا تعدّل كوداً سليماً لإرضاء سكربت قديم.
+2. **بعض السكربتات فيها افتراضات مسارات POSIX.** المشروع يُطوَّر على ويندوز؛ إن ظهر مسار بفواصل خلفية (`src\...`) في رسالة خطأ، اشتبه بمقارنة مسار نصية قبل أن تشتبه بالكود.
