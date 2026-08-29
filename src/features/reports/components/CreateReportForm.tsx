@@ -15,8 +15,6 @@ import {
     TouchableOpacity,
     View,
 } from "react-native";
-import MapView, { Marker } from "react-native-maps";
-
 import AppText from "@/src/components/ui/AppText";
 import Screen from "@/src/components/ui/Screen";
 import SelectionSheet from "@/src/components/ui/SelectionSheet";
@@ -26,6 +24,7 @@ import { ROUTES } from "@/src/navigation/routes";
 import { useSubmitReport } from "../hooks/useSubmitReport";
 import { usePermissionFeedback } from "@/src/hooks/usePermissionFeedback";
 import { COLORS, FONTS, LAYOUT, RADIUS, SPACING, TYPOGRAPHY } from "@/src/theme";
+import CreateReportLocationMap from "./CreateReportLocationMap";
 
 
 // حالات الحيوان
@@ -177,23 +176,23 @@ export default function CreateReportForm() {
       <View style={styles.container}>
         {/* Header / الهيدر العلوي */}
         <View style={styles.header}>
-          <TouchableOpacity accessibilityRole="button" accessibilityLabel="فتح مركز المساعدة" onPress={() => router.push(ROUTES.helpCenter)} style={styles.headerBtn}>
-            <Ionicons
-              name="help-circle-outline"
-              size={24}
-              color={COLORS.text}
-            />
+          <TouchableOpacity
+            onPress={() => router.back()}
+            style={styles.headerBtn}
+          >
+            <Ionicons name="arrow-forward" size={22} color={COLORS.text} />
           </TouchableOpacity>
 
           <AppText variant="h3" weight="bold" color={COLORS.text}>
             إرسال بلاغ جديد
           </AppText>
 
-          <TouchableOpacity
-            onPress={() => router.back()}
-            style={styles.headerBtn}
-          >
-            <Ionicons name="arrow-forward" size={22} color={COLORS.text} />
+          <TouchableOpacity accessibilityRole="button" accessibilityLabel="فتح مركز المساعدة" onPress={() => router.push(ROUTES.helpCenter)} style={styles.headerBtn}>
+            <Ionicons
+              name="help-circle-outline"
+              size={24}
+              color={COLORS.text}
+            />
           </TouchableOpacity>
         </View>
 
@@ -268,7 +267,8 @@ export default function CreateReportForm() {
               variant="bodySmall"
               weight="bold"
               color={COLORS.text}
-              style={{ marginTop: 8 }}
+              style={{ marginTop: 8, flexShrink: 0}}
+              numberOfLines={1}
             >
               اضغط هنا لرفع الصور
             </AppText>
@@ -476,18 +476,7 @@ export default function CreateReportForm() {
           </AppText>
           <View style={styles.mapCard}>
             <View style={styles.mapContainer}>
-              <MapView
-                style={styles.map}
-                region={region}
-                onRegionChangeComplete={setRegion}
-              >
-                <Marker
-                  coordinate={{
-                    latitude: region.latitude,
-                    longitude: region.longitude,
-                  }}
-                />
-              </MapView>
+              <CreateReportLocationMap style={styles.map} region={region} onRegionChange={setRegion} />
             </View>
 
             <View style={styles.mapActions}>
@@ -700,7 +689,6 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.surfaceMuted,
   },
   fieldLabel: {
-    textAlign: "right",
     marginTop: SPACING.md,
     marginBottom: SPACING.sm,
   },
@@ -711,14 +699,13 @@ const styles = StyleSheet.create({
     borderRadius: RADIUS.md,
     backgroundColor: COLORS.white,
     height: 140,
-    paddingHorizontal: 18,
+    paddingHorizontal: 10,
     alignItems: "center",
     justifyContent: "center",
     marginTop: 6,
   },
   uploadIconsRow: {
     flexDirection: "row",
-    direction: "rtl",
     alignItems: "center",
     justifyContent: "center",
     gap: 10,

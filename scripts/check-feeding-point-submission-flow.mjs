@@ -30,7 +30,7 @@ requireText("src/features/feeding-points/screens/CreateFeedingPointScreen.tsx", 
 requireText("src/features/feeding-points/screens/FeedingPointSubmissionDetailsScreen.tsx", "rejectionReason", "rejection reason display");
 requireText("src/data/repositories/inMemoryFeedingPointSubmissionRepository.ts", 'moderationStatus: "pending_review"', "pending review default");
 requireText("src/features/session/accessPolicy.ts", 'guest: new Set(["browse", "create-report", "view-adoption"])', "guest remains unable to create feeding points");
-requireText("src/features/home/hooks/useHomeScreen.ts", "feedingPointsRoute(accountKind)", "home action opens feeding-points feature");
+requireText("src/features/home/hooks/useHomeScreen.ts", "feedingPointsRoute(browseKind)", "home action opens feeding-points feature");
 
 if (failures.length) {
   console.error("Feeding-point submission flow check failed:\n" + failures.map((item) => `- ${item}`).join("\n"));

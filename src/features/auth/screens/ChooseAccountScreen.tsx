@@ -510,7 +510,6 @@ const styles = StyleSheet.create({
     fontSize: TYPOGRAPHY.h3.fontSize,
     lineHeight: 27,
     color: COLORS.icon,
-    textAlign: "right",
     writingDirection: "rtl",
   },
   sectionSubtitle: {
@@ -520,7 +519,6 @@ const styles = StyleSheet.create({
     fontSize: TYPOGRAPHY.label.fontSize,
     lineHeight: 19,
     color: COLORS.textMuted,
-    textAlign: "right",
     writingDirection: "rtl",
   },
   optionsList: {
@@ -672,7 +670,6 @@ const styles = StyleSheet.create({
     fontFamily: FONTS.bold,
     fontSize: TYPOGRAPHY.bodySmall.fontSize,
     color: COLORS.primaryStrong,
-    textAlign: "right",
     writingDirection: "rtl",
   },
   noticeList: {
@@ -683,7 +680,6 @@ const styles = StyleSheet.create({
     fontSize: TYPOGRAPHY.label.fontSize,
     lineHeight: 19,
     color: COLORS.textSecondary,
-    textAlign: "right",
     writingDirection: "rtl",
   },
   continueButton: {

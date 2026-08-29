@@ -35,6 +35,7 @@ function publicClone(item: AdoptionListing): AdoptionListing {
 
 export class InMemoryAdoptionRepository implements AdoptionRepository {
   private listings = ADOPTION_SEED.map(clone);
+  private idCounter = 0;
 
   async listAvailable() {
     return this.listings
@@ -69,7 +70,7 @@ export class InMemoryAdoptionRepository implements AdoptionRepository {
   async submit(input: CreateAdoptionListingInput) {
     const now = new Date().toISOString();
     const item: AdoptionListing = {
-      id: `adoption-${Date.now()}`,
+      id: `adoption-${Date.now()}-${++this.idCounter}`,
       ...input,
       imageUrl: input.images[0],
       locationName: input.location.address,

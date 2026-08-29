@@ -8,7 +8,7 @@ function walk(dir){
   for(const entry of fs.readdirSync(abs,{withFileTypes:true})){
     const rel=path.join(dir,entry.name);
     if(entry.isDirectory()) walk(rel);
-    else if(entry.isFile() && /\.(ts|tsx)$/.test(rel)) files.push(rel);
+    else if(entry.isFile() && /\.(ts|tsx)$/.test(rel)) files.push(rel.split(path.sep).join("/"));
   }
 }
 walk("src"); walk("app");

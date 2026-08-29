@@ -39,8 +39,8 @@ export function LaunchContent({ model }: { model: LaunchModel }) {
           <View style={[styles.pawContainer, { width: brandFontSize * 0.9, height: brandFontSize * 0.9, borderRadius: brandFontSize * 0.3 }]}>
             <Ionicons name="paw" size={brandFontSize * 0.58} color={COLORS.text} />
           </View>
-          <AppText style={[styles.brandAccent, { fontSize: brandFontSize, lineHeight: brandFontSize * 1.2 }]}>Q</AppText>
           <View style={styles.brandNameRow}><AppText style={[styles.brandText, { fontSize: brandFontSize, lineHeight: brandFontSize * 1.2 }]}>Res</AppText></View>
+          <AppText style={[styles.brandAccent, { fontSize: brandFontSize, lineHeight: brandFontSize * 1.2 }]}>Q</AppText>
         </View>
       </Animated.View>
 

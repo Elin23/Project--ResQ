@@ -5,12 +5,13 @@ const clone = (report: Report): Report => ({ ...report });
 
 export class InMemoryReportRepository implements ReportRepository {
   private reports = REPORT_SEED.map(clone);
+  private idCounter = 0;
 
   async list() { return this.reports.map(clone); }
   async create(input: CreateReportInput) {
     const sequence = String(this.reports.length + 1).padStart(4, "0");
     const report: Report = {
-      id: `local-${Date.now()}`,
+      id: `local-${Date.now()}-${++this.idCounter}`,
       code: `RP-2026-${sequence}`,
       title: input.title,
       description: input.description,

@@ -53,7 +53,7 @@ must("src/domain/service-places/servicePlace.ts", "emergency24h", "24h emergency
 must("src/domain/service-places/servicePlace.ts", "isOvernight", "overnight opening-hour handling");
 must("src/navigation/routes.ts", "veterinaryClinicsRoute", "workspace-aware vets route");
 must("src/navigation/routes.ts", "veterinaryClinicDetailsRoute", "workspace-aware clinic-details route");
-must("src/features/home/hooks/useHomeScreen.ts", "veterinaryClinicsRoute(accountKind)", "home clinic action");
+must("src/features/home/hooks/useHomeScreen.ts", "veterinaryClinicsRoute(browseKind)", "home clinic action");
 must("src/features/organization-dashboard/components/OrganizationQuickActions.tsx", 'label: "العيادات"', "organization workspace vets entry");
 
 if (failures.length) {

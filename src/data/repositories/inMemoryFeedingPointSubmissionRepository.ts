@@ -13,11 +13,12 @@ function clone(item: FeedingPointSubmission): FeedingPointSubmission {
 export class InMemoryFeedingPointSubmissionRepository
 implements FeedingPointSubmissionRepository {
   private submissions: FeedingPointSubmission[] = [];
+  private idCounter = 0;
 
   async submit(input: CreateFeedingPointSubmissionInput) {
     const now = new Date().toISOString();
     const item: FeedingPointSubmission = {
-      id: `feeding-submission-${Date.now()}`,
+      id: `feeding-submission-${Date.now()}-${++this.idCounter}`,
       ...input,
       facilities: [...(input.facilities ?? [])],
       moderationStatus: "pending_review",

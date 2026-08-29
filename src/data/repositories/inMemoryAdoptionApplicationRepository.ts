@@ -12,6 +12,7 @@ function clone(item: AdoptionApplication): AdoptionApplication {
 
 export class InMemoryAdoptionApplicationRepository implements AdoptionApplicationRepository {
   private applications: AdoptionApplication[] = [];
+  private idCounter = 0;
 
   constructor(
     private readonly adoptionRepository: AdoptionRepository,
@@ -37,7 +38,7 @@ export class InMemoryAdoptionApplicationRepository implements AdoptionApplicatio
 
     const now = new Date().toISOString();
     const application: AdoptionApplication = {
-      id: `adoption-application-${Date.now()}`,
+      id: `adoption-application-${Date.now()}-${++this.idCounter}`,
       ...input,
       listingOwnerAccountId: listing.ownerAccountId,
       applicantName: input.applicantName.trim(),

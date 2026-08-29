@@ -171,7 +171,7 @@ const styles = StyleSheet.create({
   content: { paddingBottom: SPACING.xl },
   joinMapCard: { marginHorizontal: LAYOUT.screenPadding, marginTop: SPACING.sm, gap: SPACING.md },
   joinMapCopy: { alignItems: "stretch", gap: SPACING.xs },
-  controls: { paddingHorizontal: LAYOUT.screenPadding, paddingTop: SPACING.md },
+  controls: { paddingHorizontal: LAYOUT.screenPadding, paddingTop: SPACING.md, paddingBottom: SPACING.md },
   searchInput: { marginBottom: SPACING.sm },
   filters: { width: "100%", flexDirection: "row", direction: "rtl", flexWrap: "wrap", gap: SPACING.xs },
   mapWrap: { paddingHorizontal: LAYOUT.screenPadding, gap: SPACING.sm },
