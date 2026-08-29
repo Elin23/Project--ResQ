@@ -196,10 +196,7 @@ export const ACCESSIBILITY = {
 
 export const ARABIC_LAYOUT = {
   direction: "rtl" as const,
-  textAlign: "right" as const,
-  /** Logical start/end values used by components that support them. */
-  start: "right" as const,
-  end: "left" as const,
+  textAlign: "auto" as const,
 } as const;
 
 export const FONTS = {

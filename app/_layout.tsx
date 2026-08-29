@@ -20,8 +20,8 @@ SplashScreen.preventAutoHideAsync().catch(() => {
   // The splash screen may already be controlled by Expo during fast refresh.
 });
 
-I18nManager.allowRTL(true);
-I18nManager.forceRTL(true);
+// I18nManager.allowRTL(true);
+// I18nManager.forceRTL(true);
 
 export const unstable_settings = {
   initialRouteName: "index",
@@ -38,6 +38,7 @@ const LightNavigationTheme = {
   colors: { ...DefaultTheme.colors, background: COLORS.background, card: COLORS.white },
 };
 export default function RootLayout() {
+  console.log("isRTL:", I18nManager.isRTL);
   const [fontsLoaded] = useFonts({
     IBMPlexSansArabic_400Regular,
     IBMPlexSansArabic_500Medium,

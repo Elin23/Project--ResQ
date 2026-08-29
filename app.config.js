@@ -4,6 +4,7 @@ module.exports = () => {
 
   const plugins = [
     "expo-font",
+    "expo-localization",
     "@react-native-community/datetimepicker",
   ];
 

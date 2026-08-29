@@ -267,7 +267,8 @@ export default function CreateReportForm() {
               variant="bodySmall"
               weight="bold"
               color={COLORS.text}
-              style={{ marginTop: 8 }}
+              style={{ marginTop: 8, flexShrink: 0}}
+              numberOfLines={1}
             >
               اضغط هنا لرفع الصور
             </AppText>
@@ -688,7 +689,6 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.surfaceMuted,
   },
   fieldLabel: {
-    textAlign: "right",
     marginTop: SPACING.md,
     marginBottom: SPACING.sm,
   },
@@ -699,14 +699,13 @@ const styles = StyleSheet.create({
     borderRadius: RADIUS.md,
     backgroundColor: COLORS.white,
     height: 140,
-    paddingHorizontal: 18,
+    paddingHorizontal: 10,
     alignItems: "center",
     justifyContent: "center",
     marginTop: 6,
   },
   uploadIconsRow: {
     flexDirection: "row",
-    direction: "rtl",
     alignItems: "center",
     justifyContent: "center",
     gap: 10,

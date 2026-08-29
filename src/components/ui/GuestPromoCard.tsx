@@ -90,7 +90,6 @@ const styles = StyleSheet.create({
     fontFamily: FONTS.bold,
     fontSize: TYPOGRAPHY.h3.fontSize,
     lineHeight: 27,
-    textAlign: "right",
   },
   benefitsGrid: {
     width: "100%",
