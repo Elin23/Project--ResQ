@@ -59,7 +59,7 @@ export function getRegistrationPasswordRequirements(
     },
     {
       id: "letter",
-      label: "حرف واحد على الأقل",
+      label: "محرف واحد على الأقل",
       isValid: hasLetter(password),
     },
     {
