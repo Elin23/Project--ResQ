@@ -45,8 +45,8 @@ export function WelcomePanel({ model }: { model: WelcomeModel }) {
           <View style={styles.brandRow}>
             <Ionicons name="paw" size={titleSize * 0.68} color={COLORS.text} />
             <View style={styles.brandNameRow}>
-              <AppText style={[styles.brandAccent, { fontSize: titleSize, lineHeight: titleSize * 1.35 }]}>Q</AppText>
               <AppText style={[styles.brandText, { fontSize: titleSize, lineHeight: titleSize * 1.35 }]}>Res</AppText>
+              <AppText style={[styles.brandAccent, { fontSize: titleSize, lineHeight: titleSize * 1.35 }]}>Q</AppText>
             </View>
           </View>
           <AppText style={[styles.welcomeTitle, { fontSize: titleSize, lineHeight: titleSize * 1.4 }]}>مرحباً بك في</AppText>

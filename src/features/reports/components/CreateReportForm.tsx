@@ -176,23 +176,23 @@ export default function CreateReportForm() {
       <View style={styles.container}>
         {/* Header / الهيدر العلوي */}
         <View style={styles.header}>
-          <TouchableOpacity accessibilityRole="button" accessibilityLabel="فتح مركز المساعدة" onPress={() => router.push(ROUTES.helpCenter)} style={styles.headerBtn}>
-            <Ionicons
-              name="help-circle-outline"
-              size={24}
-              color={COLORS.text}
-            />
+          <TouchableOpacity
+            onPress={() => router.back()}
+            style={styles.headerBtn}
+          >
+            <Ionicons name="arrow-forward" size={22} color={COLORS.text} />
           </TouchableOpacity>
 
           <AppText variant="h3" weight="bold" color={COLORS.text}>
             إرسال بلاغ جديد
           </AppText>
 
-          <TouchableOpacity
-            onPress={() => router.back()}
-            style={styles.headerBtn}
-          >
-            <Ionicons name="arrow-forward" size={22} color={COLORS.text} />
+          <TouchableOpacity accessibilityRole="button" accessibilityLabel="فتح مركز المساعدة" onPress={() => router.push(ROUTES.helpCenter)} style={styles.headerBtn}>
+            <Ionicons
+              name="help-circle-outline"
+              size={24}
+              color={COLORS.text}
+            />
           </TouchableOpacity>
         </View>
 
