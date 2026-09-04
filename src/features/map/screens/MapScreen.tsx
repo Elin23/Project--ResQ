@@ -109,17 +109,18 @@ export default function MapScreen() {
 
       <RefreshStatus refreshing={isRefreshing} error={refreshError} stale={isStale} lastUpdatedAt={lastUpdatedAt} onRetry={() => void refetch()} style={styles.refreshStatus} />
       {accountKind === "user" ? (
-        <Card disabled style={styles.joinMapCard}>
-          <View style={styles.joinMapCopy}>
-            <AppText variant="h3" weight="bold">هل لديك جهة تهم محبي الحيوانات؟</AppText>
-            <AppText variant="bodySmall" color={COLORS.textSecondary}>
-              إذا كنت تدير عيادة، متجر حيوانات، فندقًا، مأوى أو خدمة مشابهة، قدّم طلبك للظهور على الخريطة مجانًا.
-            </AppText>
-          </View>
-          <Button title="تقديم طلب ظهور" icon="location-outline" size="small" fullWidth={false} onPress={() => router.push(ROUTES.mapPlaceApply)} />
-        </Card>
+        <View style={styles.joinMapWrap}>
+          <Card disabled style={styles.joinMapCard}>
+            <View style={styles.joinMapCopy}>
+              <AppText variant="h3" weight="bold" align="center">هل لديك جهة تهم محبي الحيوانات؟</AppText>
+              <AppText variant="bodySmall" color={COLORS.textSecondary} align="center">
+                إذا كنت تدير عيادة، متجر حيوانات، فندقًا، مأوى أو خدمة مشابهة، قدّم طلبك للظهور على الخريطة مجانًا.
+              </AppText>
+            </View>
+            <Button title="تقديم طلب ظهور" icon="location-outline" size="small" fullWidth={false} onPress={() => router.push(ROUTES.mapPlaceApply)} />
+          </Card>
+        </View>
       ) : null}
-
 
       {isLoading ? (
         <SkeletonList count={3} compact style={styles.skeletons} />
@@ -169,8 +170,9 @@ export default function MapScreen() {
 
 const styles = StyleSheet.create({
   content: { paddingBottom: SPACING.xl },
-  joinMapCard: { marginHorizontal: LAYOUT.screenPadding, marginTop: SPACING.sm, gap: SPACING.md },
-  joinMapCopy: { alignItems: "stretch", gap: SPACING.xs },
+  joinMapWrap: { width: "100%", paddingHorizontal: LAYOUT.screenPadding, paddingTop: SPACING.sm, paddingBottom: SPACING.md },
+  joinMapCard: { alignSelf: "stretch", alignItems: "center", gap: SPACING.md },
+  joinMapCopy: { width: "100%", alignItems: "center", gap: SPACING.xs },
   controls: { paddingHorizontal: LAYOUT.screenPadding, paddingTop: SPACING.md, paddingBottom: SPACING.md },
   searchInput: { marginBottom: SPACING.sm },
   filters: { width: "100%", flexDirection: "row", direction: "rtl", flexWrap: "wrap", gap: SPACING.xs },
