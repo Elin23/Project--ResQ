@@ -60,14 +60,14 @@ export const styles = StyleSheet.create({
     fontFamily: FONTS.regular,
     fontSize: TYPOGRAPHY.bodySmall.fontSize,
     color: COLORS.textSecondary,
-    textAlign: "right",
+    textAlign: "auto",
     writingDirection: "rtl",
   },
   stepText: {
     fontFamily: FONTS.medium,
     fontSize: TYPOGRAPHY.bodySmall.fontSize,
     color: COLORS.primary,
-    textAlign: "right",
+    textAlign: "auto",
     writingDirection: "rtl",
   },
   progressTrack: {
@@ -116,7 +116,7 @@ export const styles = StyleSheet.create({
     fontFamily: FONTS.medium,
     fontSize: TYPOGRAPHY.h3.fontSize,
     color: PALETTE.green700,
-    textAlign: "right",
+    textAlign: "auto",
     writingDirection: "rtl",
   },
   fieldGroup: {
@@ -156,7 +156,7 @@ export const styles = StyleSheet.create({
     fontFamily: FONTS.regular,
     fontSize: TYPOGRAPHY.bodyLarge.fontSize,
     color: COLORS.icon,
-    textAlign: "right",
+    textAlign: "auto",
     writingDirection: "rtl",
   },
   datePlaceholder: {
@@ -167,7 +167,7 @@ export const styles = StyleSheet.create({
     fontFamily: FONTS.regular,
     fontSize: TYPOGRAPHY.bodyLarge.fontSize,
     color: COLORS.icon,
-    textAlign: "right",
+    textAlign: "auto",
     writingDirection: "rtl",
   },
   selectPlaceholder: {
@@ -233,7 +233,7 @@ export const styles = StyleSheet.create({
     fontFamily: FONTS.regular,
     fontSize: TYPOGRAPHY.bodySmall.fontSize,
     color: COLORS.icon,
-    textAlign: "right",
+    textAlign: "auto",
     writingDirection: "rtl",
   },
   errorText: {
@@ -242,7 +242,7 @@ export const styles = StyleSheet.create({
     fontSize: TYPOGRAPHY.label.fontSize,
     lineHeight: 18,
     color: COLORS.danger,
-    textAlign: "right",
+    textAlign: "auto",
     writingDirection: "rtl",
   },
   passwordStrengthHeader: {
@@ -258,13 +258,13 @@ export const styles = StyleSheet.create({
     fontFamily: FONTS.regular,
     fontSize: TYPOGRAPHY.label.fontSize,
     color: COLORS.textSecondary,
-    textAlign: "right",
+    textAlign: "auto",
     writingDirection: "rtl",
   },
   passwordStrengthLabel: {
     fontFamily: FONTS.medium,
     fontSize: TYPOGRAPHY.label.fontSize,
-    textAlign: "right",
+    textAlign: "auto",
     writingDirection: "rtl",
   },
   passwordBars: {
@@ -295,7 +295,7 @@ export const styles = StyleSheet.create({
     fontFamily: FONTS.regular,
     fontSize: TYPOGRAPHY.label.fontSize,
     color: COLORS.textSecondary,
-    textAlign: "right",
+    textAlign: "auto",
     writingDirection: "rtl",
   },
   checkboxRow: {
@@ -329,7 +329,7 @@ export const styles = StyleSheet.create({
     fontSize: TYPOGRAPHY.bodySmall.fontSize,
     lineHeight: 22,
     color: COLORS.textSecondary,
-    textAlign: "right",
+    textAlign: "auto",
     writingDirection: "rtl",
   },
   linkText: {
@@ -357,7 +357,7 @@ export const styles = StyleSheet.create({
     fontSize: TYPOGRAPHY.label.fontSize,
     lineHeight: 20,
     color: COLORS.textSecondary,
-    textAlign: "right",
+    textAlign: "auto",
     writingDirection: "rtl",
   },
   dateModalOverlay: {

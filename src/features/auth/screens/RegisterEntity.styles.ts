@@ -43,14 +43,14 @@ export const styles = StyleSheet.create({
     fontFamily: FONTS.regular,
     fontSize: TYPOGRAPHY.bodySmall.fontSize,
     color: COLORS.textSecondary,
-    textAlign: "right",
+    textAlign: "auto",
     writingDirection: "rtl",
   },
   stepText: {
     fontFamily: FONTS.medium,
     fontSize: TYPOGRAPHY.bodySmall.fontSize,
     color: COLORS.primary,
-    textAlign: "right",
+    textAlign: "auto",
     writingDirection: "rtl",
   },
   progressTrack: {
@@ -91,7 +91,7 @@ export const styles = StyleSheet.create({
     fontFamily: FONTS.medium,
     fontSize: TYPOGRAPHY.bodySmall.fontSize,
     color: COLORS.danger,
-    textAlign: "right",
+    textAlign: "auto",
     writingDirection: "rtl",
   },
   formErrorSummaryText: {
@@ -100,7 +100,7 @@ export const styles = StyleSheet.create({
     fontSize: TYPOGRAPHY.label.fontSize,
     lineHeight: 19,
     color: COLORS.textSecondary,
-    textAlign: "right",
+    textAlign: "auto",
     writingDirection: "rtl",
   },
   reviewCard: {
@@ -125,7 +125,7 @@ export const styles = StyleSheet.create({
     fontFamily: FONTS.medium,
     fontSize: TYPOGRAPHY.bodyLarge.fontSize,
     color: COLORS.primaryStrong,
-    textAlign: "right",
+    textAlign: "auto",
     writingDirection: "rtl",
   },
   reviewText: {
@@ -133,7 +133,7 @@ export const styles = StyleSheet.create({
     fontSize: TYPOGRAPHY.bodySmall.fontSize,
     lineHeight: 22,
     color: COLORS.textSecondary,
-    textAlign: "right",
+    textAlign: "auto",
     writingDirection: "rtl",
   },
   sectionHeader: {
@@ -156,7 +156,7 @@ export const styles = StyleSheet.create({
     fontFamily: FONTS.medium,
     fontSize: TYPOGRAPHY.h3.fontSize,
     color: PALETTE.green700,
-    textAlign: "right",
+    textAlign: "auto",
     writingDirection: "rtl",
   },
   fieldGroup: { width: "100%", marginBottom: 16, marginTop: 16 },
@@ -189,7 +189,7 @@ export const styles = StyleSheet.create({
     fontFamily: FONTS.regular,
     fontSize: TYPOGRAPHY.bodyLarge.fontSize,
     color: COLORS.icon,
-    textAlign: "right",
+    textAlign: "auto",
     writingDirection: "rtl",
   },
   selectPlaceholder: { color: PALETTE.neutral600 },
@@ -237,7 +237,7 @@ export const styles = StyleSheet.create({
     fontFamily: FONTS.regular,
     fontSize: TYPOGRAPHY.caption.fontSize,
     color: COLORS.iconMuted,
-    textAlign: "right",
+    textAlign: "auto",
   },
   dropdown: {
     width: "100%",
@@ -267,7 +267,7 @@ export const styles = StyleSheet.create({
     fontFamily: FONTS.regular,
     fontSize: TYPOGRAPHY.bodySmall.fontSize,
     color: COLORS.icon,
-    textAlign: "right",
+    textAlign: "auto",
     writingDirection: "rtl",
   },
   mapCard: {
@@ -333,7 +333,7 @@ export const styles = StyleSheet.create({
     fontFamily: FONTS.regular,
     fontSize: TYPOGRAPHY.caption.fontSize,
     color: COLORS.textMuted,
-    textAlign: "right",
+    textAlign: "auto",
     writingDirection: "rtl",
   },
   helperText: {
@@ -342,7 +342,7 @@ export const styles = StyleSheet.create({
     fontSize: TYPOGRAPHY.caption.fontSize,
     lineHeight: 18,
     color: COLORS.iconMuted,
-    textAlign: "right",
+    textAlign: "auto",
     writingDirection: "rtl",
   },
   subLabel: {
@@ -351,7 +351,7 @@ export const styles = StyleSheet.create({
     fontFamily: FONTS.regular,
     fontSize: TYPOGRAPHY.bodySmall.fontSize,
     color: COLORS.icon,
-    textAlign: "right",
+    textAlign: "auto",
     writingDirection: "rtl",
   },
   subLabelSpacing: { marginTop: 17 },
@@ -398,7 +398,7 @@ export const styles = StyleSheet.create({
     fontFamily: FONTS.medium,
     fontSize: TYPOGRAPHY.bodySmall.fontSize,
     color: COLORS.icon,
-    textAlign: "right",
+    textAlign: "auto",
     writingDirection: "rtl",
   },
   switchSubtitle: {
@@ -407,7 +407,7 @@ export const styles = StyleSheet.create({
     fontSize: TYPOGRAPHY.caption.fontSize,
     lineHeight: 18,
     color: COLORS.iconMuted,
-    textAlign: "right",
+    textAlign: "auto",
     writingDirection: "rtl",
   },
   logoUploadCard: {
@@ -455,7 +455,7 @@ export const styles = StyleSheet.create({
     fontFamily: FONTS.medium,
     fontSize: TYPOGRAPHY.bodySmall.fontSize,
     color: COLORS.icon,
-    textAlign: "right",
+    textAlign: "auto",
     writingDirection: "rtl",
   },
   uploadSubtitle: {
@@ -464,7 +464,7 @@ export const styles = StyleSheet.create({
     fontSize: TYPOGRAPHY.caption.fontSize,
     lineHeight: 16,
     color: COLORS.iconMuted,
-    textAlign: "right",
+    textAlign: "auto",
     writingDirection: "rtl",
   },
   uploadButton: {
@@ -494,13 +494,13 @@ export const styles = StyleSheet.create({
     fontFamily: FONTS.regular,
     fontSize: TYPOGRAPHY.label.fontSize,
     color: COLORS.textMuted,
-    textAlign: "right",
+    textAlign: "auto",
     writingDirection: "rtl",
   },
   passwordStrengthLabel: {
     fontFamily: FONTS.medium,
     fontSize: TYPOGRAPHY.label.fontSize,
-    textAlign: "right",
+    textAlign: "auto",
     writingDirection: "rtl",
   },
   passwordBars: {
@@ -532,7 +532,7 @@ export const styles = StyleSheet.create({
     fontFamily: FONTS.regular,
     fontSize: TYPOGRAPHY.label.fontSize,
     color: COLORS.textSecondary,
-    textAlign: "right",
+    textAlign: "auto",
     writingDirection: "rtl",
   },
   confirmationCard: {
@@ -571,7 +571,7 @@ export const styles = StyleSheet.create({
     fontSize: TYPOGRAPHY.label.fontSize,
     lineHeight: 20,
     color: COLORS.textSecondary,
-    textAlign: "right",
+    textAlign: "auto",
     writingDirection: "rtl",
   },
   linkText: {
@@ -585,7 +585,7 @@ export const styles = StyleSheet.create({
     fontSize: TYPOGRAPHY.label.fontSize,
     lineHeight: 18,
     color: COLORS.danger,
-    textAlign: "right",
+    textAlign: "auto",
     writingDirection: "rtl",
   },
   submitButton: { width: "100%", height: 58, minHeight: 58, marginTop: 20 },
@@ -685,7 +685,7 @@ export const styles = StyleSheet.create({
     fontSize: TYPOGRAPHY.label.fontSize,
     lineHeight: 19,
     color: COLORS.textSecondary,
-    textAlign: "right",
+    textAlign: "auto",
     writingDirection: "rtl",
   },
   currentLocationButton: {

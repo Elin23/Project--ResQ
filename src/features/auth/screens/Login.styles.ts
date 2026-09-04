@@ -75,7 +75,7 @@ export const loginStyles = StyleSheet.create({
     marginTop: 6,
     fontFamily: FONTS.regular,
     color: COLORS.textMuted,
-    textAlign: "right",
+    textAlign: "auto",
     writingDirection: "rtl",
   },
   form: {
@@ -98,7 +98,7 @@ export const loginStyles = StyleSheet.create({
     fontFamily: FONTS.medium,
     fontSize: TYPOGRAPHY.bodySmall.fontSize,
     color: COLORS.primaryStrong,
-    textAlign: "right",
+    textAlign: "auto",
   },
   generalError: {
     width: "100%",
@@ -119,7 +119,7 @@ export const loginStyles = StyleSheet.create({
     fontSize: TYPOGRAPHY.label.fontSize,
     lineHeight: 20,
     color: COLORS.warning,
-    textAlign: "right",
+    textAlign: "auto",
   },
   loginButton: {
     direction: "ltr",

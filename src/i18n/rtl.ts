@@ -4,7 +4,7 @@ export const APP_DIRECTION = "rtl" as const;
 export const IS_RTL = true;
 
 export const RTL_TEXT: TextStyle = {
-  textAlign: "right",
+  textAlign: "auto",
   writingDirection: "rtl",
 };
 

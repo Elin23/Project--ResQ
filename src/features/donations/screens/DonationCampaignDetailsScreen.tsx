@@ -297,7 +297,7 @@ const styles = StyleSheet.create({
   heroScrim: { ...StyleSheet.absoluteFillObject, borderRadius: RADIUS.xl, backgroundColor: "rgba(0,0,0,0.22)" },
   urgentPill: { position: "absolute", top: SPACING.md, right: SPACING.md, flexDirection: "row", direction: "rtl", alignItems: "center", gap: SPACING.xxs, paddingHorizontal: SPACING.sm, paddingVertical: SPACING.xs, backgroundColor: COLORS.danger, borderRadius: RADIUS.full },
   heroDonationPill: { position: "absolute", right: SPACING.md, bottom: 70, paddingHorizontal: SPACING.md, paddingVertical: SPACING.xs, backgroundColor: COLORS.info, borderRadius: RADIUS.full },
-  heroCampaignTitle: { width: "100%", textAlign: "right" },
+  heroCampaignTitle: { width: "100%", textAlign: "auto" },
   ownerRow: { flexDirection: "row", direction: "rtl", alignItems: "center", gap: SPACING.md },
   ownerLogo: { width: 54, height: 54, borderRadius: RADIUS.full, backgroundColor: COLORS.surfaceMuted },
   ownerLogoFallback: { width: 54, height: 54, borderRadius: RADIUS.full, backgroundColor: COLORS.primarySoft, alignItems: "center", justifyContent: "center" },

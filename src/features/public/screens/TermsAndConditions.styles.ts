@@ -65,7 +65,7 @@ export const styles = StyleSheet.create({
     fontSize: TYPOGRAPHY.h1.fontSize,
     lineHeight: 33,
     color: COLORS.icon,
-    textAlign: "right",
+    textAlign: "auto",
     writingDirection: "rtl",
   },
   updatedText: {
@@ -74,7 +74,7 @@ export const styles = StyleSheet.create({
     fontFamily: FONTS.medium,
     fontSize: TYPOGRAPHY.caption.fontSize,
     color: COLORS.textMuted,
-    textAlign: "right",
+    textAlign: "auto",
     writingDirection: "rtl",
   },
   introText: {
@@ -84,7 +84,7 @@ export const styles = StyleSheet.create({
     fontSize: TYPOGRAPHY.bodySmall.fontSize,
     lineHeight: 23,
     color: COLORS.textSecondary,
-    textAlign: "right",
+    textAlign: "auto",
     writingDirection: "rtl",
   },
   noticeCard: {
@@ -119,7 +119,7 @@ export const styles = StyleSheet.create({
     fontFamily: FONTS.bold,
     fontSize: TYPOGRAPHY.bodyLarge.fontSize,
     color: COLORS.secondaryStrong,
-    textAlign: "right",
+    textAlign: "auto",
     writingDirection: "rtl",
   },
   noticeText: {
@@ -129,7 +129,7 @@ export const styles = StyleSheet.create({
     fontSize: TYPOGRAPHY.label.fontSize,
     lineHeight: 20,
     color: COLORS.secondaryStrong,
-    textAlign: "right",
+    textAlign: "auto",
     writingDirection: "rtl",
   },
   contentsCard: {
@@ -149,7 +149,7 @@ export const styles = StyleSheet.create({
     fontFamily: FONTS.bold,
     fontSize: TYPOGRAPHY.bodySmall.fontSize,
     color: COLORS.icon,
-    textAlign: "right",
+    textAlign: "auto",
     writingDirection: "rtl",
   },
   contentsRow: {
@@ -177,7 +177,7 @@ export const styles = StyleSheet.create({
     fontFamily: FONTS.regular,
     fontSize: TYPOGRAPHY.label.fontSize,
     color: COLORS.textSecondary,
-    textAlign: "right",
+    textAlign: "auto",
     writingDirection: "rtl",
   },
   sectionCard: {
@@ -198,7 +198,7 @@ export const styles = StyleSheet.create({
     fontSize: TYPOGRAPHY.h3.fontSize,
     lineHeight: 27,
     color: COLORS.icon,
-    textAlign: "right",
+    textAlign: "auto",
     writingDirection: "rtl",
   },
   sectionParagraph: {
@@ -208,7 +208,7 @@ export const styles = StyleSheet.create({
     fontSize: TYPOGRAPHY.label.fontSize,
     lineHeight: 23,
     color: COLORS.textSecondary,
-    textAlign: "right",
+    textAlign: "auto",
     writingDirection: "rtl",
   },
   warningCard: {
@@ -229,7 +229,7 @@ export const styles = StyleSheet.create({
     fontSize: TYPOGRAPHY.label.fontSize,
     lineHeight: 21,
     color: COLORS.danger,
-    textAlign: "right",
+    textAlign: "auto",
     writingDirection: "rtl",
   },
   bulletList: {
@@ -257,7 +257,7 @@ export const styles = StyleSheet.create({
     fontSize: TYPOGRAPHY.label.fontSize,
     lineHeight: 22,
     color: COLORS.textSecondary,
-    textAlign: "right",
+    textAlign: "auto",
     writingDirection: "rtl",
   },
   inlineContactButton: {
@@ -299,7 +299,7 @@ export const styles = StyleSheet.create({
     fontFamily: FONTS.bold,
     fontSize: TYPOGRAPHY.h3.fontSize,
     color: COLORS.primaryStrong,
-    textAlign: "right",
+    textAlign: "auto",
     writingDirection: "rtl",
   },
   helpDescription: {
@@ -309,7 +309,7 @@ export const styles = StyleSheet.create({
     fontSize: TYPOGRAPHY.caption.fontSize,
     lineHeight: 18,
     color: COLORS.textMuted,
-    textAlign: "right",
+    textAlign: "auto",
     writingDirection: "rtl",
   },
   helpLink: {

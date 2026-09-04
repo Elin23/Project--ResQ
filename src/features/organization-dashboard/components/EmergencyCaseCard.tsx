@@ -71,6 +71,6 @@ const styles = StyleSheet.create({
   urgentDot: { width: 6, height: 6, borderRadius: RADIUS.full, backgroundColor: COLORS.white },
   bodyText: { paddingHorizontal: SPACING.md, paddingTop: SPACING.md, gap: SPACING.xs },
   buttonArea: { paddingHorizontal: SPACING.md, paddingBottom: SPACING.md },
-  title: { textAlign: "right", writingDirection: "rtl" },
-  meta: { textAlign: "right", writingDirection: "rtl", marginBottom: SPACING.sm },
+  title: { textAlign: "auto", writingDirection: "rtl" },
+  meta: { textAlign: "auto", writingDirection: "rtl", marginBottom: SPACING.sm },
 });

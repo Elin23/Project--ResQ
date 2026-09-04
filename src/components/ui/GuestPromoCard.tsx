@@ -114,7 +114,7 @@ const styles = StyleSheet.create({
     fontFamily: FONTS.regular,
     fontSize: FONT_SIZES.label,
     lineHeight: 21,
-    textAlign: "right",
+    textAlign: "auto",
   },
   buttonText: {
     fontFamily: FONTS.medium,

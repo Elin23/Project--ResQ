@@ -134,7 +134,7 @@ const styles = StyleSheet.create({
   titleContent: { flex: 1, alignItems: "stretch" },
   metaRow: { flexDirection: "row", direction: "rtl", alignItems: "center", gap: SPACING.xs, marginTop: SPACING.xs },
   sectionTitle: { marginBottom: SPACING.sm },
-  description: { lineHeight: 25, textAlign: "right" },
+  description: { lineHeight: 25, textAlign: "auto" },
   infoRow: { flexDirection: "row", direction: "rtl", alignItems: "center", gap: SPACING.sm, marginTop: SPACING.md, padding: SPACING.md, borderRadius: RADIUS.md, backgroundColor: COLORS.lightgray },
   infoText: { flex: 1 },
 });

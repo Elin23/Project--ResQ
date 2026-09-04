@@ -211,7 +211,7 @@ const styles = StyleSheet.create({
     fontSize: TYPOGRAPHY.bodyLarge.fontSize,
     lineHeight: 24,
     color: COLORS.icon,
-    textAlign: "right",
+    textAlign: "auto",
   },
   statusDivider: {
     width: "100%",

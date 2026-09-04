@@ -12,7 +12,8 @@ type Props = {
 export function LoginHeader({ opacity, translateY, subtitleSize }: Props) {
   return (
     <Animated.View style={[styles.header, { opacity, transform: [{ translateY }] }]}> 
-      <AppText style={[styles.subtitle, { fontSize: subtitleSize, lineHeight: subtitleSize * 1.75 }]}>أدخل بيانات حسابك للمتابعة.</AppText>
+      {/* RLM (U+200F) يجبر اتجاه الجملة RTL حتى تبدأ من اليمين وتبقى النقطة في آخرها يسارًا */}
+      <AppText style={[styles.subtitle, { fontSize: subtitleSize, lineHeight: subtitleSize * 1.75 }]}>{"\u200F"}أدخل بيانات حسابك للمتابعة.</AppText>
     </Animated.View>
   );
 }

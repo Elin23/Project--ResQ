@@ -11,7 +11,7 @@ const context = read("src/components/ui/FloatingNavigationContext.tsx");
 
 for (const token of [
   'position: "absolute"',
-  'activeIndicator',
+  'topBorder',
   'iconSlot',
   'pointerEvents="box-none"',
 ]) {

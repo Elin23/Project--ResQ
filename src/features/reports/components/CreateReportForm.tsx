@@ -415,7 +415,7 @@ export default function CreateReportForm() {
                     <AppText
                       variant="caption"
                       color={COLORS.textSecondary}
-                      style={{ marginTop: 2, textAlign: "right" }}
+                      style={{ marginTop: 2, textAlign: "auto" }}
                     >
                       {item.desc}
                     </AppText>
@@ -513,7 +513,7 @@ export default function CreateReportForm() {
               <AppText
                 variant="caption"
                 color={COLORS.textSecondary}
-                style={{ marginStart: 4, flex: 1, textAlign: "right" }}
+                style={{ marginStart: 4, flex: 1, textAlign: "auto" }}
               >
                 لن يتم مشاركة موقعك الدقيق مع أي جهة، سيستخدم فقط لتوجيه فرق
                 الإنقاذ.
@@ -791,7 +791,7 @@ const styles = StyleSheet.create({
     lineHeight: TYPOGRAPHY.body.lineHeight,
     color: COLORS.text,
   },
-  charCounter: { textAlign: "right", marginTop: 6 },
+  charCounter: { textAlign: "auto", marginTop: 6 },
   mapCard: {
     borderWidth: 1,
     borderColor: COLORS.border,
@@ -854,7 +854,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
   },
   warningHeader: { flexDirection: "row", direction: "rtl", alignItems: "center" },
-  warningText: { textAlign: "right", marginTop: 6, lineHeight: 18 },
+  warningText: { textAlign: "auto", marginTop: 6, lineHeight: 18 },
   submitBtn: {
     flexDirection: "row", direction: "rtl",
     alignItems: "center",

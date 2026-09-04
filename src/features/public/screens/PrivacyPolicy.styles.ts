@@ -103,7 +103,7 @@ export const styles = StyleSheet.create({
     fontFamily: FONTS.bold,
     fontSize: TYPOGRAPHY.bodyLarge.fontSize,
     color: COLORS.secondaryStrong,
-    textAlign: "right",
+    textAlign: "auto",
     writingDirection: "rtl",
   },
   summaryList: {
@@ -121,7 +121,7 @@ export const styles = StyleSheet.create({
     fontSize: TYPOGRAPHY.label.fontSize,
     lineHeight: 19,
     color: COLORS.secondaryStrong,
-    textAlign: "right",
+    textAlign: "auto",
     writingDirection: "rtl",
   },
   contentsCard: {
@@ -139,7 +139,7 @@ export const styles = StyleSheet.create({
     fontFamily: FONTS.bold,
     fontSize: TYPOGRAPHY.bodySmall.fontSize,
     color: COLORS.icon,
-    textAlign: "right",
+    textAlign: "auto",
     writingDirection: "rtl",
   },
   contentsRow: {
@@ -163,7 +163,7 @@ export const styles = StyleSheet.create({
     fontFamily: FONTS.regular,
     fontSize: TYPOGRAPHY.label.fontSize,
     color: COLORS.textSecondary,
-    textAlign: "right",
+    textAlign: "auto",
     writingDirection: "rtl",
   },
   sectionCard: {
@@ -181,7 +181,7 @@ export const styles = StyleSheet.create({
     fontSize: TYPOGRAPHY.h3.fontSize,
     lineHeight: 27,
     color: COLORS.icon,
-    textAlign: "right",
+    textAlign: "auto",
     writingDirection: "rtl",
   },
   sectionParagraph: {
@@ -190,7 +190,7 @@ export const styles = StyleSheet.create({
     fontSize: TYPOGRAPHY.label.fontSize,
     lineHeight: 23,
     color: COLORS.textSecondary,
-    textAlign: "right",
+    textAlign: "auto",
     writingDirection: "rtl",
   },
   informationList: {
@@ -216,7 +216,7 @@ export const styles = StyleSheet.create({
     fontFamily: FONTS.medium,
     fontSize: TYPOGRAPHY.bodySmall.fontSize,
     color: COLORS.icon,
-    textAlign: "right",
+    textAlign: "auto",
     writingDirection: "rtl",
   },
   informationDescription: {
@@ -225,7 +225,7 @@ export const styles = StyleSheet.create({
     fontSize: TYPOGRAPHY.caption.fontSize,
     lineHeight: 19,
     color: COLORS.textMuted,
-    textAlign: "right",
+    textAlign: "auto",
     writingDirection: "rtl",
   },
   bulletList: {
@@ -251,7 +251,7 @@ export const styles = StyleSheet.create({
     fontSize: TYPOGRAPHY.label.fontSize,
     lineHeight: 21,
     color: COLORS.textSecondary,
-    textAlign: "right",
+    textAlign: "auto",
     writingDirection: "rtl",
   },
   promiseCard: {
@@ -293,7 +293,7 @@ export const styles = StyleSheet.create({
     fontSize: TYPOGRAPHY.label.fontSize,
     lineHeight: 22,
     color: COLORS.textSecondary,
-    textAlign: "right",
+    textAlign: "auto",
     writingDirection: "rtl",
   },
   rightsList: {
@@ -317,7 +317,7 @@ export const styles = StyleSheet.create({
     fontSize: TYPOGRAPHY.label.fontSize,
     lineHeight: 19,
     color: COLORS.textSecondary,
-    textAlign: "right",
+    textAlign: "auto",
     writingDirection: "rtl",
   },
   contactCard: {
@@ -338,7 +338,7 @@ export const styles = StyleSheet.create({
     fontFamily: FONTS.bold,
     fontSize: TYPOGRAPHY.h3.fontSize,
     color: COLORS.primaryStrong,
-    textAlign: "right",
+    textAlign: "auto",
     writingDirection: "rtl",
   },
   contactDescription: {
@@ -348,7 +348,7 @@ export const styles = StyleSheet.create({
     fontSize: TYPOGRAPHY.caption.fontSize,
     lineHeight: 18,
     color: COLORS.textMuted,
-    textAlign: "right",
+    textAlign: "auto",
     writingDirection: "rtl",
   },
   emailButton: {

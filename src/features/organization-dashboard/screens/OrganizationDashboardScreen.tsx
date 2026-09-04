@@ -143,6 +143,6 @@ const styles = StyleSheet.create({
   section: { marginTop: SPACING.xl },
   sectionCompact: { marginTop: SPACING.lg },
   availabilityRow: { marginTop: SPACING.lg, flexDirection: "row", direction: "rtl", alignItems: "center", justifyContent: "space-between" },
-  sectionTitle: { textAlign: "right", writingDirection: "rtl", marginBottom: SPACING.md },
+  sectionTitle: { textAlign: "auto", writingDirection: "rtl", marginBottom: SPACING.md },
   locationButton: { alignSelf: "flex-start", width: 170, marginTop: SPACING.xl },
 });

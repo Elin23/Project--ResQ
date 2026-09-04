@@ -179,7 +179,7 @@ export const registrationSuccessStyles = StyleSheet.create({
     fontFamily: FONTS.regular,
     fontSize: TYPOGRAPHY.caption.fontSize,
     color: COLORS.textMuted,
-    textAlign: "right",
+    textAlign: "auto",
     writingDirection: "rtl",
   },
   statusDot: {
@@ -197,7 +197,7 @@ export const registrationSuccessStyles = StyleSheet.create({
     marginTop: 3,
     fontFamily: FONTS.bold,
     fontSize: TYPOGRAPHY.h3.fontSize,
-    textAlign: "right",
+    textAlign: "auto",
     writingDirection: "rtl",
   },
   activeStatusTitle: {
@@ -212,7 +212,7 @@ export const registrationSuccessStyles = StyleSheet.create({
     fontSize: TYPOGRAPHY.caption.fontSize,
     lineHeight: 18,
     color: COLORS.textMuted,
-    textAlign: "right",
+    textAlign: "auto",
     writingDirection: "rtl",
   },
   sectionHeader: {
@@ -224,7 +224,7 @@ export const registrationSuccessStyles = StyleSheet.create({
     fontFamily: FONTS.bold,
     fontSize: TYPOGRAPHY.h2.fontSize,
     color: COLORS.icon,
-    textAlign: "right",
+    textAlign: "auto",
     writingDirection: "rtl",
   },
   sectionDescription: {
@@ -233,7 +233,7 @@ export const registrationSuccessStyles = StyleSheet.create({
     fontSize: TYPOGRAPHY.label.fontSize,
     lineHeight: 19,
     color: COLORS.textMuted,
-    textAlign: "right",
+    textAlign: "auto",
     writingDirection: "rtl",
   },
   capabilitiesCard: {
@@ -280,7 +280,7 @@ export const registrationSuccessStyles = StyleSheet.create({
     fontFamily: FONTS.medium,
     fontSize: TYPOGRAPHY.bodySmall.fontSize,
     color: COLORS.icon,
-    textAlign: "right",
+    textAlign: "auto",
     writingDirection: "rtl",
   },
   capabilityDescription: {
@@ -289,7 +289,7 @@ export const registrationSuccessStyles = StyleSheet.create({
     fontSize: TYPOGRAPHY.caption.fontSize,
     lineHeight: 18,
     color: COLORS.textMuted,
-    textAlign: "right",
+    textAlign: "auto",
     writingDirection: "rtl",
   },
   profileCard: {
@@ -321,7 +321,7 @@ export const registrationSuccessStyles = StyleSheet.create({
     fontFamily: FONTS.medium,
     fontSize: TYPOGRAPHY.bodySmall.fontSize,
     color: COLORS.icon,
-    textAlign: "right",
+    textAlign: "auto",
     writingDirection: "rtl",
   },
   profileDescription: {
@@ -329,7 +329,7 @@ export const registrationSuccessStyles = StyleSheet.create({
     fontFamily: FONTS.regular,
     fontSize: TYPOGRAPHY.caption.fontSize,
     color: COLORS.iconMuted,
-    textAlign: "right",
+    textAlign: "auto",
     writingDirection: "rtl",
   },
   progressContainer: {

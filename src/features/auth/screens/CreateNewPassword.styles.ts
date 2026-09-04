@@ -133,7 +133,7 @@ const styles = StyleSheet.create({
     fontSize: TYPOGRAPHY.label.fontSize,
     lineHeight: 20,
     color: COLORS.warning,
-    textAlign: "right",
+    textAlign: "auto",
   },
   requirementsCard: {
     width: "100%",
@@ -173,7 +173,7 @@ const styles = StyleSheet.create({
     fontFamily: FONTS.medium,
     fontSize: TYPOGRAPHY.bodyLarge.fontSize,
     color: COLORS.icon,
-    textAlign: "right",
+    textAlign: "auto",
   },
   requirementsList: {
     width: "100%",
@@ -192,7 +192,7 @@ const styles = StyleSheet.create({
     fontSize: TYPOGRAPHY.bodySmall.fontSize,
     lineHeight: 21,
     color: COLORS.textMuted,
-    textAlign: "right",
+    textAlign: "auto",
   },
   validRequirementText: {
     color: COLORS.secondaryStrong,
