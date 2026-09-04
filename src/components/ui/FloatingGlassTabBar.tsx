@@ -7,6 +7,7 @@ import { useSafeAreaInsets } from "react-native-safe-area-context";
 
 import {
   COLORS,
+  CONTROL_SIZES,
   DENSITY,
   ICON_SIZES,
   NAVIGATION,
@@ -33,7 +34,12 @@ type WebGlassStyle = ViewStyle & {
   WebkitBackdropFilter?: string;
 };
 
+/**
+ * Only the web build has a real backdrop blur, so it is the only platform that
+ * may keep a translucent surface. On native the bar paints opaque instead.
+ */
 const WEB_GLASS_STYLE: WebGlassStyle = {
+  backgroundColor: COLORS.glassSurface,
   backdropFilter: "blur(22px) saturate(155%)",
   WebkitBackdropFilter: "blur(22px) saturate(155%)",
 };
@@ -42,9 +48,21 @@ const WEB_GLASS_STYLE: WebGlassStyle = {
  * Arabic-first persistent navigation.
  *
  * Route order is rendered RTL, so the first/highest-priority destination sits
- * on the right. Focus never adds a pill or boxed background: hierarchy comes
- * from semantic color, icon weight and a compact top indicator. This prevents
- * Arabic labels from competing with oversized active decoration.
+ * on the right. Focus never adds a pill, boxed background or per-tab marker:
+ * hierarchy comes from semantic color and icon weight alone, while a hairline
+ * border runs across the whole bar. This prevents Arabic labels from competing
+ * with oversized active decoration.
+ *
+ * Layering rules (they are what keep stray rectangles off the bar):
+ * - The surface is a single opaque, rounded view. Translucent layers used to
+ *   let scrolled screen content read through the bar, and white `opacity`
+ *   overlays escape the rounded clip on Android and paint as square patches.
+ * - Elevation lives on that rounded, opaque view. Elevation on the transparent
+ *   host had no radius to follow, so Android drew a rectangular shadow behind
+ *   the pill.
+ * - iOS clips a view's own shadow when `overflow: hidden` is set, so it gets a
+ *   sibling caster underneath; that sibling is opaque, because a transparent
+ *   view casts no shadow at all.
  */
 export default function FloatingGlassTabBar({ state, descriptors, navigation, tabs }: Props) {
   const insets = useSafeAreaInsets();
@@ -58,11 +76,9 @@ export default function FloatingGlassTabBar({ state, descriptors, navigation, ta
 
   return (
     <View pointerEvents="box-none" style={[styles.host, { bottom }]}>
-      <View pointerEvents="none" style={styles.shadowLayer} />
+      {Platform.OS === "ios" ? <View pointerEvents="none" style={styles.shadowLayer} /> : null}
       <View style={[styles.material, Platform.OS === "web" && WEB_GLASS_STYLE]}>
-        <View pointerEvents="none" style={styles.tintLayer} />
-        <View pointerEvents="none" style={styles.frostLayer} />
-        <View pointerEvents="none" style={styles.topHighlight} />
+        <View pointerEvents="none" style={styles.topBorder} />
 
         {visibleRoutes.map((route) => {
           const index = state.routes.findIndex((candidate) => candidate.key === route.key);
@@ -92,18 +108,17 @@ export default function FloatingGlassTabBar({ state, descriptors, navigation, ta
               hitSlop={4}
               style={({ pressed }) => [styles.item, pressed && styles.itemPressed]}
             >
-              <View style={[styles.activeIndicator, !focused && styles.activeIndicatorHidden]} />
               <View style={styles.iconSlot}>
                 <Ionicons
                   name={focused ? visual.iconFocused ?? visual.icon : visual.icon}
                   size={focused ? ICON_SIZES.lg : 22}
-                  color={focused ? COLORS.primaryStrong : COLORS.iconMuted}
+                  color={focused ? COLORS.navActive : COLORS.iconMuted}
                 />
               </View>
               <AppText
                 variant="caption"
                 weight={focused ? "bold" : "medium"}
-                color={focused ? COLORS.primaryStrong : COLORS.textMuted}
+                color={focused ? COLORS.navActive : COLORS.textMuted}
                 align="center"
                 numberOfLines={2}
                 maxFontSizeMultiplier={1.4}
@@ -125,26 +140,25 @@ const styles = StyleSheet.create({
     left: NAVIGATION.horizontalInset,
     right: NAVIGATION.horizontalInset,
     zIndex: 50,
-    elevation: 20,
     alignItems: "center",
   },
   shadowLayer: {
+    // No left/right: the host centers absolute children, which keeps the caster
+    // aligned with the bar once maxWidth caps it on wide screens.
     position: "absolute",
-    top: 5,
-    bottom: -4,
-    left: 2,
-    right: 2,
+    top: 0,
+    width: "100%",
     maxWidth: NAVIGATION.maxWidth,
-    alignSelf: "center",
+    height: CONTROL_SIZES.tabBar,
     borderRadius: NAVIGATION.barRadius,
-    backgroundColor: COLORS.transparent,
-    ...SHADOWS.md,
+    backgroundColor: COLORS.glassSurfaceSolid,
+    ...SHADOWS.lg,
   },
   material: {
     width: "100%",
     maxWidth: NAVIGATION.maxWidth,
     minHeight: DENSITY.touchTargetMin,
-    height: 68,
+    height: CONTROL_SIZES.tabBar,
     overflow: "hidden",
     position: "relative",
     flexDirection: "row",
@@ -157,30 +171,24 @@ const styles = StyleSheet.create({
     borderRadius: NAVIGATION.barRadius,
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: COLORS.glassBorder,
-    backgroundColor: Platform.select({
-      ios: COLORS.glassSurfaceIos,
-      android: COLORS.glassSurfaceAndroid,
-      default: COLORS.glassSurface,
+    backgroundColor: COLORS.glassSurfaceSolid,
+    ...Platform.select({
+      // iOS casts its shadow through the sibling layer above.
+      ios: {},
+      android: { ...SHADOWS.lg, elevation: 12 },
+      default: SHADOWS.lg,
     }),
   },
-  tintLayer: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: COLORS.surfaceElevated,
-    opacity: Platform.OS === "android" ? 0.16 : 0.1,
-  },
-  frostLayer: {
-    ...StyleSheet.absoluteFillObject,
-    backgroundColor: COLORS.surfaceSubtle,
-    opacity: 0.12,
-  },
-  topHighlight: {
+  topBorder: {
+    // Spans the full bar; the rounded clip tapers it at both corners. Solid
+    // colour rather than an `opacity` overlay, which Android would promote to
+    // its own layer and paint outside the rounded corners.
     position: "absolute",
     top: 0,
-    left: SPACING.lg,
-    right: SPACING.lg,
+    left: 0,
+    right: 0,
     height: StyleSheet.hairlineWidth,
-    backgroundColor: COLORS.white,
-    opacity: 0.86,
+    backgroundColor: COLORS.border,
   },
   item: {
     minWidth: DENSITY.touchTargetMin,
@@ -191,7 +199,6 @@ const styles = StyleSheet.create({
     gap: 1,
     borderRadius: RADIUS.md,
     paddingHorizontal: SPACING.xxs,
-    paddingTop: SPACING.xs,
     position: "relative",
   },
   itemPressed: {
@@ -209,13 +216,4 @@ const styles = StyleSheet.create({
     lineHeight: 15,
     maxWidth: "100%",
   },
-  activeIndicator: {
-    position: "absolute",
-    top: 0,
-    width: NAVIGATION.activeIndicatorWidth,
-    height: NAVIGATION.activeIndicatorHeight,
-    borderRadius: RADIUS.full,
-    backgroundColor: COLORS.primaryStrong,
-  },
-  activeIndicatorHidden: { opacity: 0 },
 });
