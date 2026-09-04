@@ -20,8 +20,8 @@ SplashScreen.preventAutoHideAsync().catch(() => {
   // The splash screen may already be controlled by Expo during fast refresh.
 });
 
-// I18nManager.allowRTL(true);
-// I18nManager.forceRTL(true);
+I18nManager.allowRTL(true);
+I18nManager.forceRTL(true);
 
 export const unstable_settings = {
   initialRouteName: "index",
