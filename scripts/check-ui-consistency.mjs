@@ -47,8 +47,8 @@ must("src/components/ui/ScreenHeader.tsx",'paddingHorizontal: horizontalPadding'
 must("src/components/ui/ScreenHeader.tsx",'borderBottomWidth: StyleSheet.hairlineWidth',"header boundary contract");
 must("src/components/ui/SectionHeader.tsx",'alignItems: "stretch"',"section copy stretches to Arabic start edge");
 must("src/components/ui/FloatingGlassTabBar.tsx",'backdropFilter: "blur(22px) saturate(155%)"',"web glass blur");
-must("src/components/ui/FloatingGlassTabBar.tsx","glassSurfaceAndroid","glass material");
-must("src/components/ui/FloatingGlassTabBar.tsx","activeIndicator","active state line indicator");
+must("src/components/ui/FloatingGlassTabBar.tsx","glassSurfaceSolid","glass material");
+must("src/components/ui/FloatingGlassTabBar.tsx","topBorder","shared top border");
 
 // Active nav must not paint a focused background behind icons.
 const nav=read("src/components/ui/FloatingGlassTabBar.tsx");

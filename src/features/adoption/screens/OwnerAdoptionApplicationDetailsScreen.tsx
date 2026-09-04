@@ -174,7 +174,7 @@ const styles = StyleSheet.create({
   card: { gap: SPACING.md },
   row: { flexDirection: "row", direction: "rtl", justifyContent: "space-between", alignItems: "flex-start", gap: SPACING.md },
   field: { gap: SPACING.xs, alignItems: "stretch" },
-  value: { flex: 1, textAlign: "right" },
+  value: { flex: 1, textAlign: "auto" },
   acceptedCard: { gap: SPACING.sm, backgroundColor: COLORS.successSoft },
   handoverCard: { gap: SPACING.sm, backgroundColor: COLORS.surfaceSubtle },
   completedCard: { gap: SPACING.sm, backgroundColor: COLORS.successSoft },

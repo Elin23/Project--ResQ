@@ -201,7 +201,7 @@ const styles = StyleSheet.create({
   },
   animalTitle: {
     width: "100%",
-    textAlign: "right",
+    textAlign: "auto",
   },
   locationRow: {
     flexDirection: "row", direction: "rtl",
@@ -249,7 +249,7 @@ const styles = StyleSheet.create({
   services: {
     width: "100%",
     marginTop: SPACING.xs,
-    textAlign: "right",
+    textAlign: "auto",
   },
   clinicDistance: {
     flexShrink: 0,

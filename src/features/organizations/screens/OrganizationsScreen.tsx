@@ -32,7 +32,7 @@ export default function OrganizationsScreen() {
       <SectionHeader title="إحصائيات المجتمع" style={styles.communityTitle} />
       <View style={styles.statsGrid}>{COMMUNITY_STATS.map((item) => <CommunityStatCard key={item.id} {...item}/>)}</View>
       <View style={styles.resultsHeader}><AppText variant="h3" weight="bold">كافة الجهات</AppText><AppText variant="label" color={COLORS.textSecondary}>تم العثور على {controller.organizations.length} جهة</AppText></View>
-      {controller.organizations.length ? controller.organizations.map((item) => <OrganizationCard key={item.id} organization={item} onOpen={() => controller.openOrganization(item.id)} onContact={() => router.push("/contact-us")}/>) : <EmptyState title="لا توجد جهات" description="جرّب البحث باسم آخر أو مدينة مختلفة."/>}
+      <View style={styles.orgList}>{controller.organizations.length ? controller.organizations.map((item) => <OrganizationCard key={item.id} organization={item} onOpen={() => controller.openOrganization(item.id)} onContact={() => router.push("/contact-us")}/>) : <EmptyState title="لا توجد جهات" description="جرّب البحث باسم آخر أو مدينة مختلفة."/>}</View>
     </ShellAwareScrollView>
   </Screen>;
 }
@@ -53,5 +53,6 @@ const styles = StyleSheet.create({
   verifiedPill: { position: "absolute", top: SPACING.sm, right: SPACING.sm, backgroundColor: COLORS.successDark, borderRadius: RADIUS.full, paddingHorizontal: SPACING.sm, paddingVertical: 4, flexDirection: "row", direction: "rtl", gap: 3, alignItems: "center" },
   recommendedBody: { padding: SPACING.md, alignItems: "stretch" },
   communityTitle: { marginTop: SPACING.xl },
+  orgList: { width: "100%", gap: SPACING.md },
   statsGrid: { flexDirection: "row", direction: "rtl", flexWrap: "wrap", justifyContent: "space-between", gap: SPACING.md },
 });

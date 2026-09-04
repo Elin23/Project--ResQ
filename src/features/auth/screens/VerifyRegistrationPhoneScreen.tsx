@@ -617,11 +617,11 @@ export default function VerifyRegistrationPhoneScreen() {
 }
 
 const styles = StyleSheet.create({
-  safeArea: { flex: 1, backgroundColor: PALETTE.neutral25 },
+  safeArea: { flex: 1, backgroundColor: COLORS.background },
   keyboardView: { flex: 1 },
-  screen: { flex: 1, width: "100%", backgroundColor: PALETTE.neutral25 },
+  screen: { flex: 1, width: "100%", backgroundColor: COLORS.background },
   scrollView: { flex: 1, width: "100%" },
-  pageHeader: { backgroundColor: PALETTE.neutral25 },
+  pageHeader: { backgroundColor: COLORS.background },
   topBar: {
     width: "100%",
     minHeight: 58,
@@ -791,7 +791,7 @@ const styles = StyleSheet.create({
     fontFamily: FONTS.regular,
     fontSize: TYPOGRAPHY.label.fontSize,
     color: COLORS.secondaryStrong,
-    textAlign: "right",
+    textAlign: "auto",
     writingDirection: "rtl",
   },
   codeBoxes: {
@@ -869,7 +869,7 @@ const styles = StyleSheet.create({
     fontSize: TYPOGRAPHY.label.fontSize,
     lineHeight: 20,
     color: COLORS.warning,
-    textAlign: "right",
+    textAlign: "auto",
     writingDirection: "rtl",
   },
   generalError: {
@@ -892,7 +892,7 @@ const styles = StyleSheet.create({
     fontSize: TYPOGRAPHY.label.fontSize,
     lineHeight: 20,
     color: COLORS.warning,
-    textAlign: "right",
+    textAlign: "auto",
     writingDirection: "rtl",
   },
   verifyButton: {

@@ -1,5 +1,6 @@
 import { COLORS, PALETTE } from "@/src/theme";
 import { Ionicons } from "@expo/vector-icons";
+import { useState } from "react";
 import {
     Image,
     Modal,
@@ -12,6 +13,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import AppText from "@/src/components/ui/AppText";
+import IconButton from "@/src/components/ui/IconButton";
 import ScreenHeader from "@/src/components/ui/ScreenHeader";
 import { IMAGES } from "@/src/assets/images";
 import { MAX_MESSAGE_LENGTH, MESSAGE_TYPES, SOCIAL_ITEMS, SUPPORT_EMAIL, SUPPORT_PHONE } from "../constants/contact";
@@ -27,6 +29,7 @@ export default function ContactUsScreen() {
     isSubmitting, horizontalPadding, contentWidth, remainingCharacters,
     handleBack, handleHelpCenter, openExternalUrl, handleEmail, handlePhone, handlePickImage, handleSubmit,
   } = form;
+  const [headerElevated, setHeaderElevated] = useState(false);
 
   return (
     <SafeAreaView style={styles.safeArea} edges={["top", "bottom"]}>
@@ -34,22 +37,18 @@ export default function ContactUsScreen() {
         <ScreenHeader
           title="تواصل معنا"
           onBack={handleBack}
-          horizontalPadding={horizontalPadding}
+          elevated={headerElevated}
             right={
-              <Pressable
-                accessibilityRole="button"
+              <IconButton
+                icon="share-social-outline"
                 accessibilityLabel="مشاركة صفحة التواصل"
-                hitSlop={10}
                 onPress={() =>
                   void Share.share({
                     title: "تواصل معنا - ResQ",
                     message: "يمكنك التواصل مع فريق ResQ عبر صفحة التواصل داخل التطبيق.",
                   })
                 }
-                style={({ pressed }) => [styles.topBarButton, pressed && styles.pressed]}
-              >
-                <Ionicons name="share-social-outline" size={20} color={PALETTE.neutral800} />
-              </Pressable>
+              />
             }
         />
 
@@ -61,6 +60,8 @@ export default function ContactUsScreen() {
           ]}
           showsVerticalScrollIndicator={false}
           keyboardShouldPersistTaps="handled"
+          scrollEventThrottle={16}
+          onScroll={(event) => setHeaderElevated(event.nativeEvent.contentOffset.y > 3)}
         >
           <View style={[styles.content, { width: contentWidth }]}>
             <Image
@@ -185,9 +186,12 @@ export default function ContactUsScreen() {
 
               <View style={styles.fieldGroup}>
                 <View style={styles.messageLabelRow}>
-                  <AppText style={styles.label}>رسالتك</AppText>
+                  <AppText style={[styles.label, styles.messageLabel]}>
+                    رسالتك
+                  </AppText>
 
                   <AppText
+                    numberOfLines={1}
                     style={[
                       styles.counterText,
                       remainingCharacters < 0 && styles.counterError,

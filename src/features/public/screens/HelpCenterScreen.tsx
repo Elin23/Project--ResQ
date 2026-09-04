@@ -29,6 +29,7 @@ export default function HelpCenterScreen() {
 
   const [searchQuery, setSearchQuery] = useState("");
   const [expandedFaqId, setExpandedFaqId] = useState<string | null>(null);
+  const [headerElevated, setHeaderElevated] = useState(false);
 
   const horizontalPadding = width >= 700 ? Math.min(width * 0.15, 120) : 18;
   const contentWidth = Math.min(width - horizontalPadding * 2, 620);
@@ -123,18 +124,8 @@ export default function HelpCenterScreen() {
         <ScreenHeader
           title="مركز المساعدة"
           onBack={handleBack}
-          horizontalPadding={horizontalPadding}
-            right={
-              <Pressable
-                accessibilityRole="button"
-                accessibilityLabel="مشاركة مركز المساعدة"
-                hitSlop={10}
-                onPress={handleShare}
-                style={({ pressed }) => [styles.topBarButton, pressed && { opacity: 0.6 }]}
-              >
-                <Ionicons name="help-circle-outline" size={20} color={PALETTE.neutral800} />
-              </Pressable>
-            }
+          elevated={headerElevated}
+            right={<IconButton icon="help-circle-outline" accessibilityLabel="مشاركة مركز المساعدة" onPress={handleShare} />}
         />
 
         <ShellAwareScrollView
@@ -145,6 +136,8 @@ export default function HelpCenterScreen() {
           ]}
           showsVerticalScrollIndicator={false}
           keyboardShouldPersistTaps="handled"
+          scrollEventThrottle={16}
+          onScroll={(event) => setHeaderElevated(event.nativeEvent.contentOffset.y > 3)}
         >
           <View style={[styles.content, { width: contentWidth }]}>
             <Image

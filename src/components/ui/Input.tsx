@@ -237,7 +237,7 @@ const styles = StyleSheet.create({
     fontSize: TYPOGRAPHY.label.fontSize,
     lineHeight: TYPOGRAPHY.label.lineHeight,
     color: COLORS.text,
-    textAlign: "right",
+    textAlign: "auto",
   },
   required: {
     fontFamily: TYPOGRAPHY.label.fontFamily,
@@ -346,7 +346,7 @@ const styles = StyleSheet.create({
     fontSize: TYPOGRAPHY.caption.fontSize,
     lineHeight: TYPOGRAPHY.caption.lineHeight,
     color: COLORS.danger,
-    textAlign: "right",
+    textAlign: "auto",
   },
   helperText: {
     marginTop: SPACING.xs,
@@ -354,6 +354,6 @@ const styles = StyleSheet.create({
     fontSize: TYPOGRAPHY.caption.fontSize,
     lineHeight: TYPOGRAPHY.caption.lineHeight,
     color: COLORS.textMuted,
-    textAlign: "right",
+    textAlign: "auto",
   },
 });

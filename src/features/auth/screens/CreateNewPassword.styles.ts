@@ -5,7 +5,7 @@ import { TYPOGRAPHY, RADIUS, COLORS, FONTS, PALETTE } from "@/src/theme";
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: PALETTE.neutral25,
+    backgroundColor: COLORS.background,
   },
   keyboardView: {
     flex: 1,
@@ -13,7 +13,7 @@ const styles = StyleSheet.create({
   screen: {
     flex: 1,
     width: "100%",
-    backgroundColor: PALETTE.neutral25,
+    backgroundColor: COLORS.background,
   },
   pageHeader: { backgroundColor: "transparent" },
   topBar: {
@@ -133,7 +133,7 @@ const styles = StyleSheet.create({
     fontSize: TYPOGRAPHY.label.fontSize,
     lineHeight: 20,
     color: COLORS.warning,
-    textAlign: "right",
+    textAlign: "auto",
   },
   requirementsCard: {
     width: "100%",
@@ -173,7 +173,7 @@ const styles = StyleSheet.create({
     fontFamily: FONTS.medium,
     fontSize: TYPOGRAPHY.bodyLarge.fontSize,
     color: COLORS.icon,
-    textAlign: "right",
+    textAlign: "auto",
   },
   requirementsList: {
     width: "100%",
@@ -192,7 +192,7 @@ const styles = StyleSheet.create({
     fontSize: TYPOGRAPHY.bodySmall.fontSize,
     lineHeight: 21,
     color: COLORS.textMuted,
-    textAlign: "right",
+    textAlign: "auto",
   },
   validRequirementText: {
     color: COLORS.secondaryStrong,

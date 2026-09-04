@@ -5,7 +5,7 @@ import { TYPOGRAPHY, RADIUS, COLORS, FONTS, PALETTE } from "@/src/theme";
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: PALETTE.neutral25,
+    backgroundColor: COLORS.background,
   },
   keyboardView: {
     flex: 1,
@@ -13,7 +13,7 @@ const styles = StyleSheet.create({
   screen: {
     flex: 1,
     width: "100%",
-    backgroundColor: PALETTE.neutral25,
+    backgroundColor: COLORS.background,
   },
   scrollView: {
     flex: 1,
@@ -275,7 +275,7 @@ const styles = StyleSheet.create({
     fontSize: TYPOGRAPHY.label.fontSize,
     lineHeight: 20,
     color: COLORS.warning,
-    textAlign: "right",
+    textAlign: "auto",
   },
   generalError: {
     width: "100%",
@@ -296,7 +296,7 @@ const styles = StyleSheet.create({
     fontSize: TYPOGRAPHY.label.fontSize,
     lineHeight: 20,
     color: COLORS.warning,
-    textAlign: "right",
+    textAlign: "auto",
   },
   verifyButton: {
     direction: "ltr",

@@ -123,7 +123,6 @@ export default function ReportDetailsScreen() {
       <ScreenHeader
         title="تفاصيل البلاغ"
         onBack={() => router.back()}
-        horizontalPadding={0}
         right={<IconButton icon="share-social-outline" accessibilityLabel="مشاركة البلاغ" onPress={handleShareReport} />}
         style={styles.pageHeader}
       />

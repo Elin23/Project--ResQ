@@ -4,13 +4,13 @@ import { TYPOGRAPHY, RADIUS, COLORS, FONTS } from "@/src/theme";
 export const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: COLORS.surfaceSubtle,
+    backgroundColor: COLORS.background,
   },
   screen: {
     flex: 1,
     width: "100%",
     overflow: "hidden",
-    backgroundColor: COLORS.surfaceSubtle,
+    backgroundColor: COLORS.background,
   },
   content: {
     flex: 1,

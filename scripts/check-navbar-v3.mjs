@@ -15,9 +15,9 @@ const orgTabs = read("app/organization/(tabs)/_layout.tsx");
 for (const token of [
   'direction: "rtl"',
   'Haptics.selectionAsync()',
-  'NAVIGATION.activeIndicatorWidth',
+  'COLORS.navActive',
   'NAVIGATION.iconSlotSize',
-  'activeIndicatorHidden',
+  'topBorder',
   'accessibilityRole="tab"',
   'numberOfLines={2}',
 ]) {

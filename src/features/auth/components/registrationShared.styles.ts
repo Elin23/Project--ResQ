@@ -12,5 +12,5 @@ export const styles = StyleSheet.create({
   stepText: { fontFamily: FONTS.regular, fontSize: TYPOGRAPHY.bodySmall.fontSize, color: COLORS.iconMuted },
   progressTrack: { height: 6, borderRadius: RADIUS.xs, backgroundColor: COLORS.surfaceMuted, overflow: "hidden" },
   progressFill: { height: "100%", borderRadius: RADIUS.xs, backgroundColor: COLORS.primary },
-  errorText: { marginTop: 6, fontFamily: FONTS.regular, fontSize: TYPOGRAPHY.label.fontSize, color: COLORS.danger, textAlign: "right" },
+  errorText: { marginTop: 6, fontFamily: FONTS.regular, fontSize: TYPOGRAPHY.label.fontSize, color: COLORS.danger, textAlign: "auto" },
 });

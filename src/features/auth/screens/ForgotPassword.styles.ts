@@ -1,11 +1,11 @@
 import { StyleSheet } from "react-native";
 
-import { TYPOGRAPHY, RADIUS, COLORS, FONTS, PALETTE } from "@/src/theme";
+import { TYPOGRAPHY, RADIUS, COLORS, FONTS } from "@/src/theme";
 
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: PALETTE.neutral25,
+    backgroundColor: COLORS.background,
   },
   keyboardView: {
     flex: 1,
@@ -14,7 +14,7 @@ const styles = StyleSheet.create({
     flex: 1,
     width: "100%",
     overflow: "hidden",
-    backgroundColor: PALETTE.neutral25,
+    backgroundColor: COLORS.background,
   },
   topGlow: {
     position: "absolute",
@@ -161,7 +161,7 @@ const styles = StyleSheet.create({
     fontSize: TYPOGRAPHY.label.fontSize,
     lineHeight: 20,
     color: COLORS.warning,
-    textAlign: "right",
+    textAlign: "auto",
   },
   submitButton: {
     direction: "ltr",

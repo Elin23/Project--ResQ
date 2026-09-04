@@ -13,6 +13,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import AppText from "@/src/components/ui/AppText";
+import IconButton from "@/src/components/ui/IconButton";
 import ScreenHeader from "@/src/components/ui/ScreenHeader";
 import ShellAwareScrollView from "@/src/components/ui/ShellAwareScrollView";
 import { styles } from "./PrivacyPolicy.styles";
@@ -91,19 +92,8 @@ export default function PrivacyPolicyScreen() {
         <ScreenHeader
           title="سياسة الخصوصية"
           onBack={handleBack}
-          horizontalPadding={horizontalPadding}
           elevated={headerElevated}
-            right={
-              <Pressable
-                accessibilityRole="button"
-                accessibilityLabel="مشاركة سياسة الخصوصية"
-                hitSlop={10}
-                onPress={handleShare}
-                style={({ pressed }) => [styles.topBarIconButton, pressed && { opacity: 0.6 }]}
-              >
-                <Ionicons name="share-social-outline" size={20} color={PALETTE.neutral800} />
-              </Pressable>
-            }
+            right={<IconButton icon="share-social-outline" accessibilityLabel="مشاركة سياسة الخصوصية" onPress={handleShare} />}
         />
 
         <ShellAwareScrollView

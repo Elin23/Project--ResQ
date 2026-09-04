@@ -60,9 +60,9 @@ const styles = StyleSheet.create({
   card: { width: "100%", borderRadius: RADIUS.lg, padding: 16, backgroundColor: COLORS.dangerSoft, borderWidth: 1, borderColor: COLORS.border },
   header: { flexDirection: "row", direction: "rtl", alignItems: "center", gap: 10, marginBottom: 14 },
   headerIcon: { width: 36, height: 36, borderRadius: RADIUS.lg, alignItems: "center", justifyContent: "center", backgroundColor: COLORS.divider },
-  title: { flex: 1, textAlign: "right", fontSize: TYPOGRAPHY.h3.fontSize, color: COLORS.icon },
+  title: { flex: 1, textAlign: "auto", fontSize: TYPOGRAPHY.h3.fontSize, color: COLORS.icon },
   list: { gap: 10 },
   row: { flexDirection: "row", direction: "rtl", alignItems: "center", gap: 9 },
-  text: { flex: 1, textAlign: "right", fontSize: TYPOGRAPHY.body.fontSize, color: COLORS.textMuted },
+  text: { flex: 1, textAlign: "auto", fontSize: TYPOGRAPHY.body.fontSize, color: COLORS.textMuted },
   validText: { color: COLORS.secondaryStrong },
 });

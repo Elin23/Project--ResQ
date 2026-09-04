@@ -5,11 +5,11 @@ import { RADIUS, COLORS, FONTS, PALETTE, TYPOGRAPHY } from "@/src/theme";
 export const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: PALETTE.neutral50,
+    backgroundColor: COLORS.background,
   },
   screen: {
     flex: 1,
-    backgroundColor: PALETTE.neutral50,
+    backgroundColor: COLORS.background,
   },
   topBar: {
     minHeight: 60,
@@ -19,7 +19,7 @@ export const styles = StyleSheet.create({
     justifyContent: "space-between",
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: PALETTE.neutral250,
-    backgroundColor: PALETTE.neutral50,
+    backgroundColor: COLORS.background,
   },
   topBarButton: {
     width: 44,
@@ -68,7 +68,6 @@ export const styles = StyleSheet.create({
     fontSize: TYPOGRAPHY.h1.fontSize,
     lineHeight: 33,
     color: COLORS.icon,
-    textAlign: "right",
     writingDirection: "rtl",
   },
   heroDescription: {
@@ -78,7 +77,6 @@ export const styles = StyleSheet.create({
     fontSize: TYPOGRAPHY.bodySmall.fontSize,
     lineHeight: 23,
     color: COLORS.textMuted,
-    textAlign: "right",
     writingDirection: "rtl",
   },
   formCard: {
@@ -110,7 +108,6 @@ export const styles = StyleSheet.create({
     fontFamily: FONTS.medium,
     fontSize: TYPOGRAPHY.bodySmall.fontSize,
     color: COLORS.textSecondary,
-    textAlign: "right",
     writingDirection: "rtl",
   },
   input: {
@@ -125,7 +122,6 @@ export const styles = StyleSheet.create({
     fontFamily: FONTS.regular,
     fontSize: TYPOGRAPHY.bodySmall.fontSize,
     color: COLORS.icon,
-    textAlign: "right",
     writingDirection: "rtl",
   },
   ltrInput: {
@@ -150,7 +146,6 @@ export const styles = StyleSheet.create({
     fontFamily: FONTS.regular,
     fontSize: TYPOGRAPHY.bodySmall.fontSize,
     color: COLORS.icon,
-    textAlign: "right",
     writingDirection: "rtl",
   },
   selectPlaceholder: {
@@ -162,12 +157,17 @@ export const styles = StyleSheet.create({
     direction: "rtl",
     alignItems: "center",
     justifyContent: "space-between",
+    gap: 8,
+  },
+  messageLabel: {
+    width: "auto",
+    flexShrink: 1,
   },
   counterText: {
+    flexShrink: 0,
     fontFamily: FONTS.regular,
     fontSize: TYPOGRAPHY.caption.fontSize,
     color: COLORS.iconMuted,
-    textAlign: "left",
     writingDirection: "ltr",
   },
   counterError: {
@@ -186,7 +186,6 @@ export const styles = StyleSheet.create({
     fontSize: TYPOGRAPHY.bodySmall.fontSize,
     lineHeight: 22,
     color: COLORS.icon,
-    textAlign: "right",
     writingDirection: "rtl",
   },
   inputError: {
@@ -199,7 +198,6 @@ export const styles = StyleSheet.create({
     fontFamily: FONTS.regular,
     fontSize: TYPOGRAPHY.caption.fontSize,
     color: COLORS.danger,
-    textAlign: "right",
     writingDirection: "rtl",
   },
   uploadBox: {
@@ -247,7 +245,6 @@ export const styles = StyleSheet.create({
     fontFamily: FONTS.medium,
     fontSize: TYPOGRAPHY.caption.fontSize,
     color: COLORS.danger,
-    textAlign: "right",
     writingDirection: "rtl",
   },
   helpCard: {
@@ -268,7 +265,7 @@ export const styles = StyleSheet.create({
     fontFamily: FONTS.bold,
     fontSize: TYPOGRAPHY.h3.fontSize,
     color: COLORS.primaryStrong,
-    textAlign: "right",
+    textAlign: "center",
     writingDirection: "rtl",
   },
   helpDescription: {
@@ -278,11 +275,11 @@ export const styles = StyleSheet.create({
     fontSize: TYPOGRAPHY.caption.fontSize,
     lineHeight: 18,
     color: COLORS.textMuted,
-    textAlign: "right",
+    textAlign: "center",
     writingDirection: "rtl",
   },
   helpButton: {
-    alignSelf: "flex-start",
+    alignSelf: "center",
     flexDirection: "row",
     direction: "rtl",
     alignItems: "center",
@@ -318,7 +315,6 @@ export const styles = StyleSheet.create({
     fontFamily: FONTS.bold,
     fontSize: TYPOGRAPHY.h3.fontSize,
     color: COLORS.icon,
-    textAlign: "right",
     writingDirection: "rtl",
   },
   contactInfoRow: {
@@ -340,7 +336,6 @@ export const styles = StyleSheet.create({
     fontFamily: FONTS.regular,
     fontSize: TYPOGRAPHY.caption.fontSize,
     color: COLORS.iconMuted,
-    textAlign: "right",
     writingDirection: "rtl",
   },
   contactValue: {
@@ -349,7 +344,6 @@ export const styles = StyleSheet.create({
     fontFamily: FONTS.medium,
     fontSize: TYPOGRAPHY.bodySmall.fontSize,
     color: COLORS.icon,
-    textAlign: "right",
     writingDirection: "rtl",
   },
   contactValueLTR: {
@@ -496,7 +490,6 @@ export const styles = StyleSheet.create({
     fontFamily: FONTS.bold,
     fontSize: TYPOGRAPHY.h3.fontSize,
     color: COLORS.icon,
-    textAlign: "right",
     writingDirection: "rtl",
   },
   typeOption: {
@@ -517,7 +510,6 @@ export const styles = StyleSheet.create({
     fontFamily: FONTS.regular,
     fontSize: TYPOGRAPHY.bodySmall.fontSize,
     color: COLORS.icon,
-    textAlign: "right",
     writingDirection: "rtl",
   },
   rowPressed: {

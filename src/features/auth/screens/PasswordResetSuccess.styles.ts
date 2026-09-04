@@ -5,13 +5,13 @@ import { TYPOGRAPHY, RADIUS, COLORS, FONTS, PALETTE } from "@/src/theme";
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: PALETTE.neutral25,
+    backgroundColor: COLORS.background,
   },
   screen: {
     flex: 1,
     width: "100%",
     overflow: "hidden",
-    backgroundColor: PALETTE.neutral25,
+    backgroundColor: COLORS.background,
   },
   pageHeader: { backgroundColor: "transparent" },
   topGlow: {
@@ -211,7 +211,7 @@ const styles = StyleSheet.create({
     fontSize: TYPOGRAPHY.bodyLarge.fontSize,
     lineHeight: 24,
     color: COLORS.icon,
-    textAlign: "right",
+    textAlign: "auto",
   },
   statusDivider: {
     width: "100%",

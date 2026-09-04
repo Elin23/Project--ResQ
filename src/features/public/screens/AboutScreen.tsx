@@ -13,6 +13,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import AppText from "@/src/components/ui/AppText";
+import IconButton from "@/src/components/ui/IconButton";
 import ScreenHeader from "@/src/components/ui/ScreenHeader";
 import ShellAwareScrollView from "@/src/components/ui/ShellAwareScrollView";
 import { styles } from "./About.styles";
@@ -30,6 +31,7 @@ export default function AboutScreen() {
   const router = useRouter();
   const { width } = useWindowDimensions();
   const [licensesVisible, setLicensesVisible] = useState(false);
+  const [headerElevated, setHeaderElevated] = useState(false);
 
   const horizontalPadding = width >= 700 ? Math.min(width * 0.15, 120) : 18;
   const contentWidth = Math.min(width - horizontalPadding * 2, 620);
@@ -76,18 +78,8 @@ export default function AboutScreen() {
         <ScreenHeader
           title="حول ResQ"
           onBack={handleBack}
-          horizontalPadding={horizontalPadding}
-            right={
-              <Pressable
-                accessibilityRole="button"
-                accessibilityLabel="مشاركة معلومات التطبيق"
-                hitSlop={10}
-                onPress={handleShare}
-                style={({ pressed }) => [styles.topBarButton, pressed && { opacity: 0.6 }]}
-              >
-                <Ionicons name="share-social-outline" size={20} color={PALETTE.neutral800} />
-              </Pressable>
-            }
+          elevated={headerElevated}
+            right={<IconButton icon="share-social-outline" accessibilityLabel="مشاركة معلومات التطبيق" onPress={handleShare} />}
         />
 
         <ShellAwareScrollView
@@ -97,6 +89,8 @@ export default function AboutScreen() {
             { paddingHorizontal: horizontalPadding },
           ]}
           showsVerticalScrollIndicator={false}
+          scrollEventThrottle={16}
+          onScroll={(event) => setHeaderElevated(event.nativeEvent.contentOffset.y > 3)}
         >
           <View style={[styles.content, { width: contentWidth }]}>
             <View style={styles.hero}>

@@ -114,8 +114,12 @@ export const COLORS = {
   glassSurface: "rgba(248,249,248,0.54)",
   glassSurfaceIos: "rgba(248,249,248,0.58)",
   glassSurfaceAndroid: "rgba(248,249,248,0.70)",
+  /** Opaque equivalent of the glass tint: native has no real backdrop blur, so the bar paints solid there. */
+  glassSurfaceSolid: "#F8F9F8",
   glassBorder: "rgba(255,255,255,0.72)",
   glassActive: "rgba(255,136,73,0.16)",
+  /** Active tab tint for the floating navigation, kept separate from primaryStrong. */
+  navActive: "#FF8C42",
   shadow: PALETTE.neutral950,
   onColor: PALETTE.neutral0,
 
@@ -275,8 +279,6 @@ export const NAVIGATION = {
   barVerticalPadding: 6,
   itemMinHeight: 56,
   iconSlotSize: 30,
-  activeIndicatorWidth: 24,
-  activeIndicatorHeight: 3,
   quickActionGap: 12,
 } as const;
 

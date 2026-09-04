@@ -5,11 +5,11 @@ import { RADIUS, COLORS, FONTS, PALETTE, TYPOGRAPHY } from "@/src/theme";
 export const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: PALETTE.neutral50,
+    backgroundColor: COLORS.background,
   },
   screen: {
     flex: 1,
-    backgroundColor: PALETTE.neutral50,
+    backgroundColor: COLORS.background,
   },
   topBar: {
     minHeight: 60,
@@ -19,7 +19,7 @@ export const styles = StyleSheet.create({
     justifyContent: "space-between",
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: PALETTE.neutral250,
-    backgroundColor: PALETTE.neutral50,
+    backgroundColor: COLORS.background,
   },
   topBarButton: {
     width: 44,
@@ -137,7 +137,7 @@ export const styles = StyleSheet.create({
     fontFamily: FONTS.bold,
     fontSize: TYPOGRAPHY.h3.fontSize,
     color: COLORS.secondaryStrong,
-    textAlign: "right",
+    textAlign: "auto",
     writingDirection: "rtl",
   },
   visionTitle: {
@@ -150,7 +150,7 @@ export const styles = StyleSheet.create({
     fontSize: TYPOGRAPHY.label.fontSize,
     lineHeight: 23,
     color: COLORS.textSecondary,
-    textAlign: "right",
+    textAlign: "auto",
     writingDirection: "rtl",
   },
   featuresCard: {
@@ -168,7 +168,7 @@ export const styles = StyleSheet.create({
     fontFamily: FONTS.bold,
     fontSize: TYPOGRAPHY.h3.fontSize,
     color: COLORS.icon,
-    textAlign: "right",
+    textAlign: "auto",
     writingDirection: "rtl",
   },
   featuresGrid: {
@@ -227,7 +227,7 @@ export const styles = StyleSheet.create({
     fontFamily: FONTS.regular,
     fontSize: TYPOGRAPHY.label.fontSize,
     color: COLORS.textMuted,
-    textAlign: "right",
+    textAlign: "auto",
     writingDirection: "rtl",
   },
   infoValue: {
@@ -254,7 +254,7 @@ export const styles = StyleSheet.create({
     fontFamily: FONTS.bold,
     fontSize: TYPOGRAPHY.h3.fontSize,
     color: COLORS.icon,
-    textAlign: "right",
+    textAlign: "auto",
     writingDirection: "rtl",
   },
   licensesDescription: {
@@ -264,7 +264,7 @@ export const styles = StyleSheet.create({
     fontSize: TYPOGRAPHY.label.fontSize,
     lineHeight: 21,
     color: COLORS.textSecondary,
-    textAlign: "right",
+    textAlign: "auto",
     writingDirection: "rtl",
   },
   licensesButton: {
@@ -299,7 +299,7 @@ export const styles = StyleSheet.create({
     fontFamily: FONTS.bold,
     fontSize: TYPOGRAPHY.bodyLarge.fontSize,
     color: COLORS.primaryStrong,
-    textAlign: "right",
+    textAlign: "auto",
     writingDirection: "rtl",
     backgroundColor: COLORS.dangerSoft,
   },
@@ -316,7 +316,7 @@ export const styles = StyleSheet.create({
     fontFamily: FONTS.regular,
     fontSize: TYPOGRAPHY.label.fontSize,
     color: COLORS.icon,
-    textAlign: "right",
+    textAlign: "auto",
     writingDirection: "rtl",
   },
   rowPressed: {
@@ -340,7 +340,7 @@ export const styles = StyleSheet.create({
     fontFamily: FONTS.bold,
     fontSize: TYPOGRAPHY.h3.fontSize,
     color: COLORS.primaryStrong,
-    textAlign: "right",
+    textAlign: "auto",
     writingDirection: "rtl",
   },
   helpDescription: {
@@ -350,7 +350,7 @@ export const styles = StyleSheet.create({
     fontSize: TYPOGRAPHY.caption.fontSize,
     lineHeight: 18,
     color: COLORS.textMuted,
-    textAlign: "right",
+    textAlign: "auto",
     writingDirection: "rtl",
   },
   helpButton: {
@@ -368,7 +368,7 @@ export const styles = StyleSheet.create({
     fontFamily: FONTS.medium,
     fontSize: TYPOGRAPHY.label.fontSize,
     color: COLORS.primaryStrong,
-    textAlign: "right",
+    textAlign: "auto",
     textDecorationLine: "underline",
     writingDirection: "rtl",
   },
@@ -388,7 +388,7 @@ export const styles = StyleSheet.create({
     fontFamily: FONTS.bold,
     fontSize: TYPOGRAPHY.h3.fontSize,
     color: COLORS.primaryStrong,
-    textAlign: "right",
+    textAlign: "auto",
     writingDirection: "rtl",
   },
   shareDescription: {
@@ -398,7 +398,7 @@ export const styles = StyleSheet.create({
     fontSize: TYPOGRAPHY.caption.fontSize,
     lineHeight: 19,
     color: COLORS.textMuted,
-    textAlign: "right",
+    textAlign: "auto",
     writingDirection: "rtl",
   },
   shareButton: {
@@ -502,7 +502,7 @@ export const styles = StyleSheet.create({
     fontFamily: FONTS.bold,
     fontSize: TYPOGRAPHY.h3.fontSize,
     color: COLORS.icon,
-    textAlign: "right",
+    textAlign: "auto",
     writingDirection: "rtl",
   },
   modalText: {
@@ -512,7 +512,7 @@ export const styles = StyleSheet.create({
     fontSize: TYPOGRAPHY.label.fontSize,
     lineHeight: 21,
     color: COLORS.textSecondary,
-    textAlign: "right",
+    textAlign: "auto",
     writingDirection: "rtl",
   },
   licenseList: {
@@ -527,7 +527,7 @@ export const styles = StyleSheet.create({
     fontFamily: FONTS.medium,
     fontSize: TYPOGRAPHY.label.fontSize,
     color: COLORS.icon,
-    textAlign: "right",
+    textAlign: "auto",
     backgroundColor: COLORS.surface,
   },
   modalDoneButton: {

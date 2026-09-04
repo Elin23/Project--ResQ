@@ -5,7 +5,7 @@ import { TYPOGRAPHY, RADIUS, COLORS, FONTS } from "@/src/theme";
 export const loginStyles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: COLORS.surfaceSubtle,
+    backgroundColor: COLORS.background,
   },
   keyboardView: {
     flex: 1,
@@ -14,7 +14,7 @@ export const loginStyles = StyleSheet.create({
     flex: 1,
     width: "100%",
     overflow: "hidden",
-    backgroundColor: COLORS.surfaceSubtle,
+    backgroundColor: COLORS.background,
   },
   topGlow: {
     position: "absolute",
@@ -75,7 +75,7 @@ export const loginStyles = StyleSheet.create({
     marginTop: 6,
     fontFamily: FONTS.regular,
     color: COLORS.textMuted,
-    textAlign: "right",
+    textAlign: "auto",
     writingDirection: "rtl",
   },
   form: {
@@ -98,7 +98,7 @@ export const loginStyles = StyleSheet.create({
     fontFamily: FONTS.medium,
     fontSize: TYPOGRAPHY.bodySmall.fontSize,
     color: COLORS.primaryStrong,
-    textAlign: "right",
+    textAlign: "auto",
   },
   generalError: {
     width: "100%",
@@ -119,7 +119,7 @@ export const loginStyles = StyleSheet.create({
     fontSize: TYPOGRAPHY.label.fontSize,
     lineHeight: 20,
     color: COLORS.warning,
-    textAlign: "right",
+    textAlign: "auto",
   },
   loginButton: {
     direction: "ltr",

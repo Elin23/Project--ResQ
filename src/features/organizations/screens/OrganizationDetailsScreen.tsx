@@ -6,6 +6,7 @@ import Button from "@/src/components/ui/Button";
 import ActionStack from "@/src/components/ui/ActionStack";
 import EmptyState from "@/src/components/ui/EmptyState";
 import Screen from "@/src/components/ui/Screen";
+import IconButton from "@/src/components/ui/IconButton";
 import ScreenHeader from "@/src/components/ui/ScreenHeader";
 import { useFeedback } from "@/src/components/ui/FeedbackProvider";
 import { COLORS, RADIUS, SPACING } from "@/src/theme";
@@ -30,12 +31,8 @@ export default function OrganizationDetailsScreen() {
       onBack={() => router.back()}
       right={
         <View style={styles.headerActions}>
-          <Pressable accessibilityRole="button" accessibilityLabel="مشاركة الجمعية" onPress={share} hitSlop={8}>
-            <Ionicons name="share-social-outline" size={22} color={COLORS.brownMuted}/>
-          </Pressable>
-          <Pressable accessibilityRole="button" accessibilityLabel="إضافة الجمعية إلى المفضلة" onPress={() => showFeedback({ title: "تمت الإضافة", message: "تمت إضافة الجهة إلى المفضلة.", tone: "success" })} hitSlop={8}>
-            <Ionicons name="heart-outline" size={24} color={COLORS.brownMuted}/>
-          </Pressable>
+          <IconButton icon="share-social-outline" accessibilityLabel="مشاركة الجمعية" onPress={share} />
+          <IconButton icon="heart-outline" accessibilityLabel="إضافة الجمعية إلى المفضلة" onPress={() => showFeedback({ title: "تمت الإضافة", message: "تمت إضافة الجهة إلى المفضلة.", tone: "success" })} />
         </View>
       }
     />
@@ -57,5 +54,5 @@ export default function OrganizationDetailsScreen() {
 }
 function SectionTitle({title}:{title:string}){return <AppText variant="h3" weight="bold" style={styles.sectionTitle}>{title}</AppText>}
 const styles=StyleSheet.create({
-  content:{paddingVertical:0}, headerActions:{flexDirection:"row",direction:"rtl",alignItems:"center",gap:SPACING.md}, hero:{width:"100%",height:205}, body:{padding:SPACING.lg,paddingBottom:40}, logo:{width:105,height:105,borderRadius:RADIUS.full,alignSelf:"flex-end",marginTop:-55,borderWidth:5,borderColor:COLORS.background,backgroundColor:COLORS.background}, titleRow:{flexDirection:"row",direction:"rtl",alignItems:"center",gap:SPACING.sm,marginTop:SPACING.md}, meta:{flexDirection:"row",direction:"rtl",alignItems:"center",flexWrap:"wrap",gap:SPACING.xs,marginTop:SPACING.xs}, sectionTitle:{marginTop:SPACING.xl,marginBottom:SPACING.md}, paragraph:{textAlign:"right"}, services:{flexDirection:"row",direction:"rtl",flexWrap:"wrap",gap:SPACING.sm}, service:{backgroundColor:COLORS.neutral,paddingHorizontal:SPACING.md,paddingVertical:8,borderRadius:RADIUS.full}, hours:{backgroundColor:COLORS.lightgray,borderRadius:RADIUS.md,padding:SPACING.md}, hourRow:{flexDirection:"row",direction:"rtl",justifyContent:"space-between"}, separator:{height:1,backgroundColor:COLORS.border,marginVertical:SPACING.md}, mapCard:{borderWidth:1,borderColor:COLORS.border,borderRadius:RADIUS.md,overflow:"hidden",backgroundColor:COLORS.background}, map:{width:"100%",height:190}, address:{flexDirection:"row",direction:"rtl",gap:SPACING.sm,padding:SPACING.md}, addressText:{flex:1,alignItems:"stretch"}, mapActions:{flexDirection:"row",direction:"rtl",gap:SPACING.sm,padding:SPACING.md,paddingTop:0}, flex:{flex:1}, animalCard:{width:220,backgroundColor:COLORS.background,borderRadius:RADIUS.md,overflow:"hidden",borderWidth:1,borderColor:COLORS.border}, animalImage:{width:"100%",height:155}, animalName:{padding:SPACING.sm,textAlign:"center"}, animalCardPressed:{opacity:0.82,transform:[{scale:0.99}]}
+  content:{paddingVertical:0}, headerActions:{flexDirection:"row",direction:"rtl",alignItems:"center",gap:SPACING.md}, hero:{width:"100%",height:205}, body:{padding:SPACING.lg,paddingBottom:40}, logo:{width:105,height:105,borderRadius:RADIUS.full,alignSelf:"flex-end",marginTop:-55,borderWidth:5,borderColor:COLORS.background,backgroundColor:COLORS.background}, titleRow:{flexDirection:"row",direction:"rtl",alignItems:"center",gap:SPACING.sm,marginTop:SPACING.md}, meta:{flexDirection:"row",direction:"rtl",alignItems:"center",flexWrap:"wrap",gap:SPACING.xs,marginTop:SPACING.xs}, sectionTitle:{marginTop:SPACING.xl,marginBottom:SPACING.md}, paragraph:{textAlign:"auto"}, services:{flexDirection:"row",direction:"rtl",flexWrap:"wrap",gap:SPACING.sm}, service:{backgroundColor:COLORS.neutral,paddingHorizontal:SPACING.md,paddingVertical:8,borderRadius:RADIUS.full}, hours:{backgroundColor:COLORS.lightgray,borderRadius:RADIUS.md,padding:SPACING.md}, hourRow:{flexDirection:"row",direction:"rtl",justifyContent:"space-between"}, separator:{height:1,backgroundColor:COLORS.border,marginVertical:SPACING.md}, mapCard:{borderWidth:1,borderColor:COLORS.border,borderRadius:RADIUS.md,overflow:"hidden",backgroundColor:COLORS.background}, map:{width:"100%",height:190}, address:{flexDirection:"row",direction:"rtl",gap:SPACING.sm,padding:SPACING.md}, addressText:{flex:1,alignItems:"stretch"}, mapActions:{flexDirection:"row",direction:"rtl",gap:SPACING.sm,padding:SPACING.md,paddingTop:0}, flex:{flex:1}, animalCard:{width:220,backgroundColor:COLORS.background,borderRadius:RADIUS.md,overflow:"hidden",borderWidth:1,borderColor:COLORS.border}, animalImage:{width:"100%",height:155}, animalName:{padding:SPACING.sm,textAlign:"center"}, animalCardPressed:{opacity:0.82,transform:[{scale:0.99}]}
 });
