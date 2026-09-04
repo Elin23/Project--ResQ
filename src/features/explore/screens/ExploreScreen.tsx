@@ -10,7 +10,7 @@ import OrganizationCard from "@/src/features/organizations/components/Organizati
 import { useAdoptionListings } from "@/src/features/adoption/hooks/useAdoptionListings";
 import { ROUTES, adoptionDetailsRoute, adoptionRoute, organizationDetailsRoute } from "@/src/navigation/routes";
 import { useSession } from "@/src/features/session/SessionContext";
-import { COLORS, FONT_SIZES, RADIUS, SPACING } from "@/src/theme";
+import { ARABIC_LAYOUT, COLORS, FONT_SIZES, RADIUS, SPACING } from "@/src/theme";
 
 export default function ExploreScreen() {
   const router = useRouter();
@@ -18,7 +18,7 @@ export default function ExploreScreen() {
   const browseKind = account?.kind === "organization" && account.status === "pending" ? "user" : accountKind;
   const adoption = useAdoptionListings();
   return (
-    <Screen scroll padded={false} surface="app" safeAreaEdges={["top", "left", "right"]} contentContainerStyle={styles.content}>
+    <Screen scroll surface="app" safeAreaEdges={["top", "left", "right"]} contentContainerStyle={styles.content}>
         <View style={styles.hero}>
           <AppText weight="bold" size={FONT_SIZES.headline}>استكشف مجتمع ResQ</AppText>
           <AppText color={COLORS.textSecondary} style={styles.subtitle}>تصفح الجمعيات والعيادات وحالات التبني والخدمات القريبة.</AppText>
@@ -51,5 +51,5 @@ function Category({ title, icon, onPress }: { title: string; icon: keyof typeof 
   return <Pressable accessibilityRole="button" onPress={onPress} style={({ pressed }) => [styles.category, pressed && styles.pressed]}><View style={styles.categoryIcon}><Ionicons name={icon} size={25} color={COLORS.brown} /></View><AppText weight="medium" size={FONT_SIZES.label} style={styles.categoryText}>{title}</AppText></Pressable>;
 }
 const styles = StyleSheet.create({
-  content: { padding: SPACING.lg, paddingBottom: SPACING.xl, gap: SPACING.sm }, hero: { alignItems: "stretch", marginBottom: SPACING.lg }, subtitle: { marginTop: SPACING.sm, textAlign: "right", lineHeight: 24 }, categoryRow: { flexDirection: "row", direction: "rtl", gap: SPACING.sm }, category: { flex: 1, minHeight: 112, padding: SPACING.sm, borderRadius: RADIUS.lg, backgroundColor: COLORS.background, borderWidth: 1, borderColor: COLORS.border, alignItems: "center", justifyContent: "center", gap: SPACING.sm }, categoryIcon: { width: 48, height: 48, borderRadius: RADIUS.full, backgroundColor: COLORS.peach, alignItems: "center", justifyContent: "center" }, categoryText: { textAlign: "center" }, pressed: { opacity: 0.78, transform: [{ scale: 0.98 }] },
+  content: { paddingBottom: SPACING.xl, gap: SPACING.sm }, hero: { alignItems: "stretch", marginBottom: SPACING.lg }, subtitle: { marginTop: SPACING.sm, width: "100%", textAlign: ARABIC_LAYOUT.textAlign, writingDirection: ARABIC_LAYOUT.direction, lineHeight: 24 }, categoryRow: { flexDirection: "row", direction: "rtl", gap: SPACING.sm }, category: { flex: 1, minHeight: 112, padding: SPACING.sm, borderRadius: RADIUS.lg, backgroundColor: COLORS.background, borderWidth: 1, borderColor: COLORS.border, alignItems: "center", justifyContent: "center", gap: SPACING.sm }, categoryIcon: { width: 48, height: 48, borderRadius: RADIUS.full, backgroundColor: COLORS.peach, alignItems: "center", justifyContent: "center" }, categoryText: { textAlign: "center" }, pressed: { opacity: 0.78, transform: [{ scale: 0.98 }] },
 });
