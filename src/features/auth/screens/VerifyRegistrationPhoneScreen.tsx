@@ -617,11 +617,11 @@ export default function VerifyRegistrationPhoneScreen() {
 }
 
 const styles = StyleSheet.create({
-  safeArea: { flex: 1, backgroundColor: PALETTE.neutral25 },
+  safeArea: { flex: 1, backgroundColor: COLORS.background },
   keyboardView: { flex: 1 },
-  screen: { flex: 1, width: "100%", backgroundColor: PALETTE.neutral25 },
+  screen: { flex: 1, width: "100%", backgroundColor: COLORS.background },
   scrollView: { flex: 1, width: "100%" },
-  pageHeader: { backgroundColor: PALETTE.neutral25 },
+  pageHeader: { backgroundColor: COLORS.background },
   topBar: {
     width: "100%",
     minHeight: 58,

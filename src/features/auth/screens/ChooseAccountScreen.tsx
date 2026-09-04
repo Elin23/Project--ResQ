@@ -335,13 +335,13 @@ export default function ChooseAccountScreen() {
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: PALETTE.neutral25,
+    backgroundColor: COLORS.background,
   },
   screen: {
     flex: 1,
-    backgroundColor: PALETTE.neutral25,
+    backgroundColor: COLORS.background,
   },
-  pageHeader: { backgroundColor: PALETTE.neutral25 },
+  pageHeader: { backgroundColor: COLORS.background },
   topBar: {
     minHeight: 60,
     flexDirection: "row",

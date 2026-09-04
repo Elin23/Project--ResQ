@@ -125,7 +125,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     gap: SPACING.sm,
     paddingVertical: SPACING.sm,
-    backgroundColor: COLORS.background,
+    backgroundColor: COLORS.surfaceElevated,
     borderBottomWidth: 0,
   },
   transparent: { backgroundColor: COLORS.transparent },

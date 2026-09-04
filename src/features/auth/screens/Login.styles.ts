@@ -5,7 +5,7 @@ import { TYPOGRAPHY, RADIUS, COLORS, FONTS } from "@/src/theme";
 export const loginStyles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: COLORS.surfaceSubtle,
+    backgroundColor: COLORS.background,
   },
   keyboardView: {
     flex: 1,
@@ -14,7 +14,7 @@ export const loginStyles = StyleSheet.create({
     flex: 1,
     width: "100%",
     overflow: "hidden",
-    backgroundColor: COLORS.surfaceSubtle,
+    backgroundColor: COLORS.background,
   },
   topGlow: {
     position: "absolute",

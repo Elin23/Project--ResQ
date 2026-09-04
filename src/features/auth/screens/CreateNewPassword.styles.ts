@@ -5,7 +5,7 @@ import { TYPOGRAPHY, RADIUS, COLORS, FONTS, PALETTE } from "@/src/theme";
 const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: PALETTE.neutral25,
+    backgroundColor: COLORS.background,
   },
   keyboardView: {
     flex: 1,
@@ -13,7 +13,7 @@ const styles = StyleSheet.create({
   screen: {
     flex: 1,
     width: "100%",
-    backgroundColor: PALETTE.neutral25,
+    backgroundColor: COLORS.background,
   },
   pageHeader: { backgroundColor: "transparent" },
   topBar: {

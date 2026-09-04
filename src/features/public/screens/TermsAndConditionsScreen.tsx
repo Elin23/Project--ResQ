@@ -12,6 +12,7 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import AppText from "@/src/components/ui/AppText";
+import IconButton from "@/src/components/ui/IconButton";
 import ScreenHeader from "@/src/components/ui/ScreenHeader";
 import ShellAwareScrollView from "@/src/components/ui/ShellAwareScrollView";
 import { styles } from "./TermsAndConditions.styles";
@@ -71,19 +72,8 @@ export default function TermsAndConditionsScreen() {
         <ScreenHeader
           title="الشروط والأحكام"
           onBack={handleBack}
-          horizontalPadding={horizontalPadding}
           elevated={headerElevated}
-            right={
-              <Pressable
-                accessibilityRole="button"
-                accessibilityLabel="مشاركة الشروط والأحكام"
-                hitSlop={10}
-                onPress={handleShare}
-                style={({ pressed }) => [styles.topBarButton, pressed && { opacity: 0.6 }]}
-              >
-                <Ionicons name="share-social-outline" size={20} color={PALETTE.neutral800} />
-              </Pressable>
-            }
+            right={<IconButton icon="share-social-outline" accessibilityLabel="مشاركة الشروط والأحكام" onPress={handleShare} />}
         />
 
         <ShellAwareScrollView

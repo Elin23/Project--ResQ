@@ -5,7 +5,7 @@ import { RADIUS, COLORS, FONTS, PALETTE, TYPOGRAPHY } from "@/src/theme";
 export const registrationSuccessStyles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: COLORS.surface,
+    backgroundColor: COLORS.background,
   },
   scrollView: {
     flex: 1,

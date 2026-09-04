@@ -5,11 +5,11 @@ import { RADIUS, COLORS, FONTS, PALETTE, TYPOGRAPHY } from "@/src/theme";
 export const styles = StyleSheet.create({
   safeArea: {
     flex: 1,
-    backgroundColor: PALETTE.neutral50,
+    backgroundColor: COLORS.background,
   },
   screen: {
     flex: 1,
-    backgroundColor: PALETTE.neutral50,
+    backgroundColor: COLORS.background,
   },
   topBar: {
     minHeight: 60,
@@ -19,7 +19,7 @@ export const styles = StyleSheet.create({
     justifyContent: "space-between",
     borderBottomWidth: StyleSheet.hairlineWidth,
     borderBottomColor: PALETTE.neutral250,
-    backgroundColor: PALETTE.neutral50,
+    backgroundColor: COLORS.background,
   },
   topBarButton: {
     width: 44,

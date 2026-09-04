@@ -16,7 +16,9 @@ import {
     View,
 } from "react-native";
 import AppText from "@/src/components/ui/AppText";
+import IconButton from "@/src/components/ui/IconButton";
 import Screen from "@/src/components/ui/Screen";
+import ScreenHeader from "@/src/components/ui/ScreenHeader";
 import SelectionSheet from "@/src/components/ui/SelectionSheet";
 import { useFeedback } from "@/src/components/ui/FeedbackProvider";
 import { useSession } from "@/src/features/session/SessionContext";
@@ -173,28 +175,19 @@ export default function CreateReportForm() {
 
   return (
     <Screen padded={false} safeAreaEdges={["top", "bottom"]} style={styles.screen}>
+      <ScreenHeader
+        title="إرسال بلاغ جديد"
+        onBack={() => router.back()}
+        right={
+          <IconButton
+            icon="help-circle-outline"
+            accessibilityLabel="فتح مركز المساعدة"
+            onPress={() => router.push(ROUTES.helpCenter)}
+          />
+        }
+      />
+
       <View style={styles.container}>
-        {/* Header / الهيدر العلوي */}
-        <View style={styles.header}>
-          <TouchableOpacity
-            onPress={() => router.back()}
-            style={styles.headerBtn}
-          >
-            <Ionicons name="arrow-forward" size={22} color={COLORS.text} />
-          </TouchableOpacity>
-
-          <AppText variant="h3" weight="bold" color={COLORS.text}>
-            إرسال بلاغ جديد
-          </AppText>
-
-          <TouchableOpacity accessibilityRole="button" accessibilityLabel="فتح مركز المساعدة" onPress={() => router.push(ROUTES.helpCenter)} style={styles.headerBtn}>
-            <Ionicons
-              name="help-circle-outline"
-              size={24}
-              color={COLORS.text}
-            />
-          </TouchableOpacity>
-        </View>
 
         {/* Stepper / شريط الخطوات */}
         <View style={styles.stepperContainer}>
@@ -640,7 +633,7 @@ export default function CreateReportForm() {
 }
 
 const styles = StyleSheet.create({
-  screen: { flex: 1, backgroundColor: COLORS.surface },
+  screen: { flex: 1, backgroundColor: COLORS.background },
   container: { flex: 1, paddingHorizontal: LAYOUT.screenPadding },
   header: {
     flexDirection: "row",

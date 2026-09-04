@@ -2,10 +2,10 @@ import { StyleSheet } from "react-native";
 import { RADIUS, COLORS, FONTS, PALETTE, TYPOGRAPHY } from "@/src/theme";
 
 export const styles = StyleSheet.create({
-  safeArea: { flex: 1, backgroundColor: PALETTE.neutral25 },
+  safeArea: { flex: 1, backgroundColor: COLORS.background },
   keyboardView: { flex: 1 },
-  screen: { flex: 1, backgroundColor: PALETTE.neutral25 },
-  pageHeader: { backgroundColor: PALETTE.neutral25 },
+  screen: { flex: 1, backgroundColor: COLORS.background },
+  pageHeader: { backgroundColor: COLORS.background },
   topBar: {
     minHeight: 58,
     flexDirection: "row",

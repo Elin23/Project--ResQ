@@ -6,6 +6,7 @@ import Button from "@/src/components/ui/Button";
 import ActionStack from "@/src/components/ui/ActionStack";
 import EmptyState from "@/src/components/ui/EmptyState";
 import Screen from "@/src/components/ui/Screen";
+import IconButton from "@/src/components/ui/IconButton";
 import ScreenHeader from "@/src/components/ui/ScreenHeader";
 import { useFeedback } from "@/src/components/ui/FeedbackProvider";
 import { COLORS, RADIUS, SPACING } from "@/src/theme";
@@ -30,12 +31,8 @@ export default function OrganizationDetailsScreen() {
       onBack={() => router.back()}
       right={
         <View style={styles.headerActions}>
-          <Pressable accessibilityRole="button" accessibilityLabel="مشاركة الجمعية" onPress={share} hitSlop={8}>
-            <Ionicons name="share-social-outline" size={22} color={COLORS.brownMuted}/>
-          </Pressable>
-          <Pressable accessibilityRole="button" accessibilityLabel="إضافة الجمعية إلى المفضلة" onPress={() => showFeedback({ title: "تمت الإضافة", message: "تمت إضافة الجهة إلى المفضلة.", tone: "success" })} hitSlop={8}>
-            <Ionicons name="heart-outline" size={24} color={COLORS.brownMuted}/>
-          </Pressable>
+          <IconButton icon="share-social-outline" accessibilityLabel="مشاركة الجمعية" onPress={share} />
+          <IconButton icon="heart-outline" accessibilityLabel="إضافة الجمعية إلى المفضلة" onPress={() => showFeedback({ title: "تمت الإضافة", message: "تمت إضافة الجهة إلى المفضلة.", tone: "success" })} />
         </View>
       }
     />

@@ -93,7 +93,7 @@ export default function ReportsScreen() {
 }
 
 const styles = StyleSheet.create({
-  root: { flex: 1, backgroundColor: COLORS.surface },
+  root: { flex: 1, backgroundColor: COLORS.background },
   content: { paddingTop: 0, gap: SPACING.lg },
   filters: {
     width: "100%",
