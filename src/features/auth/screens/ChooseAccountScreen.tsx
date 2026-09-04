@@ -387,13 +387,11 @@ const styles = StyleSheet.create({
     fontFamily: FONTS.regular,
     fontSize: TYPOGRAPHY.bodySmall.fontSize,
     color: COLORS.textSecondary,
-    textAlign: "right",
   },
   stepText: {
     fontFamily: FONTS.medium,
     fontSize: TYPOGRAPHY.bodySmall.fontSize,
     color: COLORS.primary,
-    textAlign: "right",
   },
   progressTrack: {
     width: "100%",
@@ -585,7 +583,6 @@ const styles = StyleSheet.create({
     fontSize: TYPOGRAPHY.bodyLarge.fontSize,
     lineHeight: 23,
     color: COLORS.icon,
-    textAlign: "right",
     writingDirection: "rtl",
   },
   badge: {
@@ -620,7 +617,6 @@ const styles = StyleSheet.create({
     fontSize: TYPOGRAPHY.label.fontSize,
     lineHeight: 21,
     color: COLORS.textSecondary,
-    textAlign: "right",
     writingDirection: "rtl",
   },
   features: {
