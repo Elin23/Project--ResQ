@@ -27,6 +27,7 @@ export default function OrganizationReportsScreen() {
       <ScreenHeader
         title="البلاغات الواردة"
         subtitle="راجع الحالات الجديدة قبل تحويلها إلى مهام إنقاذ"
+        onBack={() => router.back()}
         right={<View style={styles.counter}><AppText weight="bold">{incoming.length}</AppText></View>}
       />
 
