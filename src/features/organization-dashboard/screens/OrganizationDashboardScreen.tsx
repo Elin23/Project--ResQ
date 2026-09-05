@@ -72,6 +72,7 @@ export default function OrganizationDashboardScreen() {
           acceptedIds={dashboard.acceptedCaseIds}
           onOpenCase={dashboard.openCaseDetails}
           onAcceptCase={dashboard.acceptCase}
+          onViewAll={dashboard.openReports}
         />
 
         <View style={styles.section}>

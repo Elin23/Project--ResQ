@@ -1,4 +1,4 @@
-import { ScrollView, StyleSheet, View } from "react-native";
+import { Pressable, ScrollView, StyleSheet, View } from "react-native";
 
 import AppText from "@/src/components/ui/AppText";
 import { COLORS, FONT_SIZES, SPACING } from "@/src/theme";
@@ -10,14 +10,17 @@ type Props = {
   acceptedIds: string[];
   onOpenCase: (id: string) => void;
   onAcceptCase: (id: string) => void;
+  onViewAll: () => void;
 };
 
-export default function EmergencyCasesSection({ items, acceptedIds, onOpenCase, onAcceptCase }: Props) {
+export default function EmergencyCasesSection({ items, acceptedIds, onOpenCase, onAcceptCase, onViewAll }: Props) {
   return (
     <View style={styles.section}>
       <View style={styles.header}>
-        <AppText size={FONT_SIZES.label} color={COLORS.brown}>عرض الكل</AppText>
         <AppText size={FONT_SIZES.headline} weight="medium">حالات طارئة بالقرب منك</AppText>
+        <Pressable accessibilityRole="button" accessibilityLabel="عرض الكل" onPress={onViewAll} hitSlop={8}>
+          <AppText size={FONT_SIZES.label} color={COLORS.brown}>عرض الكل</AppText>
+        </Pressable>
       </View>
       <ScrollView
         horizontal

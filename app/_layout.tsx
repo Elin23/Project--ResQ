@@ -14,6 +14,7 @@ import "react-native-reanimated";
 
 import { COLORS } from "@/src/theme";
 import { SessionProvider } from "@/src/features/session/SessionContext";
+import { FavoritesProvider } from "@/src/features/favorites";
 import { FeedbackProvider, UnsavedChangesDecisionProvider } from "@/src/components/ui";
 
 SplashScreen.preventAutoHideAsync().catch(() => {
@@ -61,6 +62,7 @@ export default function RootLayout() {
 
   return (
     <SessionProvider>
+    <FavoritesProvider>
     <FeedbackProvider>
     <UnsavedChangesDecisionProvider>
     <ThemeProvider value={LightNavigationTheme}>
@@ -100,6 +102,7 @@ export default function RootLayout() {
     </ThemeProvider>
     </UnsavedChangesDecisionProvider>
     </FeedbackProvider>
+    </FavoritesProvider>
     </SessionProvider>
   );
 }

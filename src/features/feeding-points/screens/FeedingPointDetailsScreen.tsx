@@ -25,6 +25,8 @@ import SectionHeader from "../../../components/ui/SectionHeader";
 import StatusBadge from "../../../components/ui/StatusBadge";
 import { COLORS, FONT_SIZES, RADIUS, SPACING } from "../../../theme/index";
 
+import { useFavorites } from "../../favorites";
+
 import ActivityTimeline from "../components/ActivityTimeline";
 import FeedingPointsMap from "../components/FeedingPointsMap";
 import ReportIssueSheet from "../components/ReportIssueSheet";
@@ -40,7 +42,7 @@ export default function FeedingPointDetailsScreen() {
   const router = useRouter();
   const { showFeedback } = useFeedback();
   const { id } = useLocalSearchParams<{ id: string }>();
-  const [isFavorite, setIsFavorite] = useState(false);
+  const { isFavorite, toggleFavorite } = useFavorites();
   const [statusSheetVisible, setStatusSheetVisible] = useState(false);
   const [issueSheetVisible, setIssueSheetVisible] = useState(false);
   const { point, updates, isLoading, error, refetch } = useFeedingPointDetails(id);
@@ -65,6 +67,7 @@ export default function FeedingPointDetailsScreen() {
     );
   }
 
+  const favorite = isFavorite("feeding-point", point.id);
   const display = getDisplayStatus(point.status, point.lastStatusUpdateAt);
   const meta = STATUS_META[display];
   const distance = formatDistance(point.distanceInMeters);
@@ -74,6 +77,17 @@ export default function FeedingPointDetailsScreen() {
     Linking.openURL(
       `https://www.google.com/maps/search/?api=1&query=${latitude},${longitude}`,
     );
+  };
+
+  const handleToggleFavorite = () => {
+    const added = toggleFavorite({ kind: "feeding-point", id: point.id, title: point.name });
+    showFeedback({
+      title: added ? "تمت الإضافة إلى المفضلة" : "تمت الإزالة من المفضلة",
+      message: added
+        ? `${point.name} صارت ضمن نقاطك المفضلة.`
+        : `${point.name} انشالت من نقاطك المفضلة.`,
+      tone: added ? "success" : "info",
+    });
   };
 
   const handleShare = () => {
@@ -141,12 +155,14 @@ export default function FeedingPointDetailsScreen() {
             />
 
             <IconButton
-              icon={isFavorite ? "heart" : "heart-outline"}
-              accessibilityLabel={isFavorite ? "إزالة من المفضلة" : "إضافة للمفضلة"}
-              onPress={() => setIsFavorite((v) => !v)}
+              icon={favorite ? "heart" : "heart-outline"}
+              accessibilityLabel={favorite ? "إزالة من المفضلة" : "إضافة للمفضلة"}
+              selected={favorite}
+              onPress={handleToggleFavorite}
               size={20}
-              color={isFavorite ? COLORS.danger : COLORS.text}
-              style={styles.heroIconButton}
+              hitSlop={12}
+              color={favorite ? COLORS.danger : COLORS.text}
+              style={[styles.heroIconButton, favorite && styles.heroIconButtonActive]}
             />
           </View>
         </View>
@@ -286,6 +302,7 @@ const styles = StyleSheet.create({
   },
   heroTopRow: {
     position: "absolute",
+    zIndex: 2,
     top: SPACING.sm,
     left: SPACING.sm,
     right: SPACING.sm,
@@ -303,6 +320,9 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.15,
     shadowRadius: 6,
     elevation: 3,
+  },
+  heroIconButtonActive: {
+    backgroundColor: COLORS.dangerSoft,
   },
   titleBlock: {
     gap: SPACING.xs,

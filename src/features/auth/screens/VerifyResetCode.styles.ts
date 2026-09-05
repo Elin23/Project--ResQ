@@ -200,6 +200,11 @@ const styles = StyleSheet.create({
     color: COLORS.primaryStrong,
     textAlign: "center",
   },
+  otpSection: {
+    width: "100%",
+    marginTop: 24,
+    marginBottom: 16,
+  },
   codeBoxes: {
     position: "relative",
     width: "100%",

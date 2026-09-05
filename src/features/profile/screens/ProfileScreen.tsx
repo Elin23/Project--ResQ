@@ -14,13 +14,15 @@ import { useFeedback } from "@/src/components/ui/FeedbackProvider";
 import { useDecisionDialog } from "@/src/hooks/useDecisionDialog";
 import { ROUTES } from "@/src/navigation/routes";
 import GuestAccountGate from "@/src/features/session/GuestAccountGate";
+import { useFavorites } from "@/src/features/favorites/FavoritesContext";
 import { useProfile } from "../hooks/useProfile";
 
 export default function ProfileScreen() {
   const router = useRouter();
-  const { isGuest, signOut } = useSession();
+  const { isGuest, signOut, deleteAccount } = useSession();
   const { showFeedback } = useFeedback();
   const decision = useDecisionDialog();
+  const { clearFavorites } = useFavorites();
   const { profile, handleItemPress, edit } = useProfile();
   if (isGuest) return <GuestAccountGate />;
 
@@ -41,8 +43,13 @@ export default function ProfileScreen() {
             title="حذف الحساب"
             variant="outline"
             onPress={() => decision.request(
-              { title: "حذف الحساب", message: "حذف الحساب إجراء نهائي. خدمة الحذف غير متاحة في النسخة المحلية الحالية ولن يتم تنفيذ أي حذف دون ربط آمن بالخادم.", confirmLabel: "فهمت", cancelLabel: "تراجع", destructive: true, icon: "trash-outline" },
-              () => showFeedback({ title: "الحذف غير متاح حاليًا", message: "لن يتم حذف أي بيانات من النسخة المحلية.", tone: "info" }),
+              { title: "حذف الحساب", message: "سيتم حذف حسابك وكل بياناتك المحفوظة على هذا الجهاز نهائيًا، ولا يمكن التراجع عن هذا الإجراء.", confirmLabel: "حذف نهائيًا", cancelLabel: "تراجع", destructive: true, icon: "trash-outline" },
+              async () => {
+                clearFavorites();
+                await deleteAccount();
+                showFeedback({ title: "تم حذف الحساب", message: "تم مسح بياناتك من هذا الجهاز.", tone: "success" });
+                router.replace(ROUTES.welcome);
+              },
             )}
             textColor={COLORS.danger}
           />

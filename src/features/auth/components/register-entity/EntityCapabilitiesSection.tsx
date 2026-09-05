@@ -39,10 +39,10 @@ export default function EntityCapabilitiesSection({ form }: { form: RegisterEnti
 
 {isClinic ? (
   <>
-    <ToggleField label="هل العيادة مفتوحة 24 ساعة؟" description="فعّل الخيار فقط إذا كانت الخدمة متاحة طوال اليوم." value={open24Hours} onValueChange={setOpen24Hours} />
+    <ToggleField style={styles.toggleField} label="هل العيادة مفتوحة 24 ساعة؟" description="فعّل الخيار فقط إذا كانت الخدمة متاحة طوال اليوم." value={open24Hours} onValueChange={setOpen24Hours} />
 
     {!open24Hours ? (
-      <View style={styles.fieldGroup}>
+      <View style={[styles.fieldGroup, styles.toggleDependentGroup]}>
         <View
           style={[
             styles.inputContainer,
@@ -73,16 +73,16 @@ export default function EntityCapabilitiesSection({ form }: { form: RegisterEnti
       </View>
     ) : null}
 
-    <ToggleField label="هل تتوفر زيارات منزلية؟" description="يمكن للمستخدمين طلب زيارة بيطرية للمنزل." value={homeVisits} onValueChange={setHomeVisits} />
+    <ToggleField style={styles.toggleField} label="هل تتوفر زيارات منزلية؟" description="يمكن للمستخدمين طلب زيارة بيطرية للمنزل." value={homeVisits} onValueChange={setHomeVisits} />
 
-    <ToggleField label="استقبال حالات إسعافية؟" description="يظهر هذا الخيار للمستخدمين ضمن معلومات العيادة." value={emergencyService} onValueChange={setEmergencyService} />
+    <ToggleField style={styles.toggleField} label="استقبال حالات إسعافية؟" description="يظهر هذا الخيار للمستخدمين ضمن معلومات العيادة." value={emergencyService} onValueChange={setEmergencyService} />
   </>
 ) : (
   <>
-    <ToggleField label="هل تتوفر لديكم منشأة إيواء؟" description="أضف تفاصيل السعة إذا كانت الجمعية تمتلك مأوى." value={hasShelter} onValueChange={setHasShelter} />
+    <ToggleField style={styles.toggleField} label="هل تتوفر لديكم منشأة إيواء؟" description="أضف تفاصيل السعة إذا كانت الجمعية تمتلك مأوى." value={hasShelter} onValueChange={setHasShelter} />
 
     {hasShelter ? (
-      <View style={styles.fieldGroup}>
+      <View style={[styles.fieldGroup, styles.toggleDependentGroup]}>
         <View
           style={[
             styles.inputContainer,
@@ -111,10 +111,10 @@ export default function EntityCapabilitiesSection({ form }: { form: RegisterEnti
       </View>
     ) : null}
 
-    <ToggleField label="تستقبلون متطوعين؟" description="يمكن للمستخدمين إرسال طلبات انضمام للجمعية." value={acceptsVolunteers} onValueChange={setAcceptsVolunteers} />
+    <ToggleField style={styles.toggleField} label="تستقبلون متطوعين؟" description="يمكن للمستخدمين إرسال طلبات انضمام للجمعية." value={acceptsVolunteers} onValueChange={setAcceptsVolunteers} />
 
     {acceptsVolunteers ? (
-      <View style={styles.fieldGroup}>
+      <View style={[styles.fieldGroup, styles.toggleDependentGroup]}>
         <View
           style={[
             styles.textAreaContainer,
