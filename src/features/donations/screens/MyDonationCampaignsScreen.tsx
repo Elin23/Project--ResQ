@@ -130,7 +130,7 @@ const styles = StyleSheet.create({
   cardHeader: { flexDirection: "row", direction: "rtl", alignItems: "flex-start", justifyContent: "space-between", gap: SPACING.md },
   amountRow: { flexDirection: "row", direction: "rtl", alignItems: "baseline", gap: SPACING.xs },
   progressTrack: { height: 9, borderRadius: RADIUS.full, backgroundColor: COLORS.surfaceMuted, overflow: "hidden" },
-  progressFill: { height: "100%", borderRadius: RADIUS.full, backgroundColor: COLORS.success },
+  progressFill: { height: "100%", borderRadius: RADIUS.full, backgroundColor: COLORS.successFill },
   footer: { flexDirection: "row", direction: "rtl", alignItems: "center", justifyContent: "space-between", gap: SPACING.md },
   manageLink: { flexDirection: "row", direction: "rtl", alignItems: "center", gap: SPACING.xxs },
   flex: { flex: 1 },

@@ -404,7 +404,7 @@ export const styles = StyleSheet.create({
     justifyContent: "center",
     gap: 8,
     borderRadius: RADIUS.md,
-    backgroundColor: COLORS.primaryStrong,
+    backgroundColor: COLORS.primaryStrongFill,
   },
   contactButtonText: {
     fontFamily: FONTS.medium,

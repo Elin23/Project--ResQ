@@ -228,7 +228,7 @@ const styles = StyleSheet.create({
   providerSelected: { borderWidth: 2, borderColor: COLORS.primaryStrong, backgroundColor: COLORS.primarySoft },
   radio: { width: 22, height: 22, borderRadius: RADIUS.full, borderWidth: 2, borderColor: COLORS.borderStrong, alignItems: "center", justifyContent: "center" },
   radioSelected: { borderColor: COLORS.primaryStrong },
-  radioDot: { width: 10, height: 10, borderRadius: RADIUS.full, backgroundColor: COLORS.primaryStrong },
+  radioDot: { width: 10, height: 10, borderRadius: RADIUS.full, backgroundColor: COLORS.primaryStrongFill },
   recipientHeader: { flexDirection: "row", direction: "rtl", alignItems: "center", justifyContent: "space-between", gap: SPACING.sm, flexWrap: "wrap" },
   officialBadge: { flexDirection: "row", direction: "rtl", alignItems: "center", gap: SPACING.xs, paddingHorizontal: SPACING.sm, paddingVertical: SPACING.xs, borderRadius: RADIUS.full, backgroundColor: COLORS.successSoft },
   recipientCard: { gap: SPACING.sm },

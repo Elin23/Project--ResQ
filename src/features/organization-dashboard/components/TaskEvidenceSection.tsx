@@ -22,7 +22,7 @@ export default function TaskEvidenceSection({ images, onCamera, onGallery }: Pro
 
 const styles = StyleSheet.create({
   actions: { flexDirection: "row", direction: "rtl", gap: SPACING.md },
-  action: { flex: 1, minHeight: 96, borderWidth: 1.5, borderStyle: "dashed", borderColor: COLORS.rescueBorder, borderRadius: RADIUS.md, alignItems: "center", justifyContent: "center", gap: SPACING.xs, backgroundColor: COLORS.white },
+  action: { flex: 1, minHeight: 96, borderWidth: 1.5, borderStyle: "dashed", borderColor: COLORS.rescueBorder, borderRadius: RADIUS.md, alignItems: "center", justifyContent: "center", gap: SPACING.xs, backgroundColor: COLORS.surface },
   previewRow: { flexDirection: "row", direction: "rtl", gap: SPACING.sm, marginTop: SPACING.sm },
   preview: { width: 58, height: 58, borderRadius: RADIUS.sm },
   pressed: { opacity: 0.72 },

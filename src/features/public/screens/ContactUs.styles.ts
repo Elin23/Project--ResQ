@@ -432,7 +432,7 @@ export const styles = StyleSheet.create({
     gap: 9,
     marginTop: 24,
     borderRadius: RADIUS.md,
-    backgroundColor: COLORS.primaryStrong,
+    backgroundColor: COLORS.primaryStrongFill,
     shadowColor: COLORS.black,
     shadowOffset: { width: 0, height: 5 },
     shadowOpacity: 0.1,

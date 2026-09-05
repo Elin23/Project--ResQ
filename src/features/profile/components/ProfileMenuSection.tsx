@@ -27,7 +27,7 @@ export default function ProfileMenuSection({ section, onPress }: { section: Sect
 }
 const styles = StyleSheet.create({
   wrap: { gap: SPACING.sm, marginBottom: SPACING.md },
-  card: { backgroundColor: COLORS.white, borderRadius: RADIUS.lg, borderWidth: 1, borderColor: COLORS.border, overflow: "hidden" },
+  card: { backgroundColor: COLORS.surface, borderRadius: RADIUS.lg, borderWidth: 1, borderColor: COLORS.border, overflow: "hidden" },
   border: { borderBottomWidth: 1, borderBottomColor: COLORS.divider, borderRadius: RADIUS.xs },
   leading: { width: 32, alignItems: "center", justifyContent: "center" },
   trailing: { flexDirection: "row", direction: "rtl", alignItems: "center", gap: SPACING.sm },

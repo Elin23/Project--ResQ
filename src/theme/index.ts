@@ -1,3 +1,5 @@
+import { Appearance } from "react-native";
+
 /**
  * ResQ Design System 2.0
  *
@@ -60,126 +62,263 @@ export const PALETTE = {
   neutral800: "#332D2A",
   neutral900: "#1A1A1A",
   neutral950: "#000000",
+  // Dark ramp. Added for the dark scheme; every light value above is untouched.
+  darkBg: "#121116",
+  darkSurface: "#1F1E25",
+  darkSurfaceMuted: "#26242D",
+  darkSurfaceElevated: "#2C2A34",
+  darkBorder: "#35323E",
+  darkBorderStrong: "#474352",
+  darkDivider: "#2B2934",
+  darkDisabled: "#55515F",
+  darkText: "#ECEBEF",
+  darkTextSecondary: "#B6B2C0",
+  darkTextMuted: "#8F8B99",
+  darkPlaceholder: "#7A7684",
+  darkIcon: "#DCD9E3",
+  darkIconMuted: "#9C98A6",
 } as const;
+
+/**
+ * Which palette this JS bundle booted with.
+ *
+ * COLORS is a plain object, and most of its call sites sit inside module-level
+ * StyleSheet.create blocks that JavaScript evaluates once, at import time. That makes
+ * the scheme a boot-time decision rather than a render-time one: the app follows the
+ * OS setting and picks up a change the next time it launches.
+ */
+const bootScheme = Appearance.getColorScheme();
+export const COLOR_SCHEME: "light" | "dark" = bootScheme === "dark" ? "dark" : "light";
+const isDark = COLOR_SCHEME === "dark";
+
+/** Reads the left value in the light scheme, the right one in the dark scheme. */
+const pick = <T,>(light: T, dark: T): T => (isDark ? dark : light);
 
 export const COLORS = {
   // Brand
-  primary: PALETTE.orange500,
-  primaryPressed: PALETTE.orange600,
-  primaryStrong: PALETTE.orange700,
-  primarySoft: PALETTE.orange100,
-  secondary: PALETTE.green500,
-  secondaryStrong: PALETTE.green600,
-  secondarySoft: PALETTE.green50,
-  accent: PALETTE.blue500,
+  primary: pick(PALETTE.orange500, PALETTE.orange400),
+  primaryPressed: pick(PALETTE.orange600, PALETTE.orange500),
+  primaryStrong: pick(PALETTE.orange700, PALETTE.orange300),
+  primarySoft: pick(PALETTE.orange100, "#35220F"),
+  secondary: pick(PALETTE.green500, "#5FD07B"),
+  secondaryStrong: pick(PALETTE.green600, "#7EDC94"),
+  secondarySoft: pick(PALETTE.green50, "#14251A"),
+  accent: pick(PALETTE.blue500, "#5CC8F7"),
+
+  // Saturated fills, split out from the brand/status tokens above: one value cannot
+  // clear 4.5:1 against both the dark canvas and the white label it carries. Each
+  // light value is identical to the token it was split from, so the light scheme
+  // renders exactly as it did before.
+  primaryFill: pick(PALETTE.orange500, "#B8551C"),
+  primaryStrongFill: pick(PALETTE.orange700, "#BD5416"),
+  secondaryStrongFill: pick(PALETTE.green600, "#1C7038"),
+  dangerFill: pick(PALETTE.red600, "#B3332C"),
+  successFill: pick(PALETTE.green600, "#1C7038"),
+  successDarkFill: pick("#00731E", "#16652E"),
 
   // Surfaces
-  background: PALETTE.neutral0,
-  surface: PALETTE.neutral0,
-  surfaceSubtle: PALETTE.neutral0,
-  surfaceMuted: PALETTE.neutral100,
-  surfaceElevated: PALETTE.neutral0,
+  background: pick(PALETTE.neutral0, PALETTE.darkBg),
+  surface: pick(PALETTE.neutral0, PALETTE.darkSurface),
+  surfaceSubtle: pick(PALETTE.neutral0, PALETTE.darkSurface),
+  surfaceMuted: pick(PALETTE.neutral100, PALETTE.darkSurfaceMuted),
+  surfaceElevated: pick(PALETTE.neutral0, PALETTE.darkSurfaceElevated),
 
   // Content
-  text: PALETTE.neutral900,
-  textSecondary: PALETTE.neutral700,
-  textMuted: PALETTE.neutral650,
+  text: pick(PALETTE.neutral900, PALETTE.darkText),
+  textSecondary: pick(PALETTE.neutral700, PALETTE.darkTextSecondary),
+  textMuted: pick(PALETTE.neutral650, PALETTE.darkTextMuted),
   textInverse: PALETTE.neutral0,
-  icon: PALETTE.neutral800,
-  iconMuted: PALETTE.neutral600,
-  placeholder: PALETTE.neutral500,
+  icon: pick(PALETTE.neutral800, PALETTE.darkIcon),
+  iconMuted: pick(PALETTE.neutral600, PALETTE.darkIconMuted),
+  placeholder: pick(PALETTE.neutral500, PALETTE.darkPlaceholder),
 
   // Borders / disabled
-  border: PALETTE.neutral300,
-  borderStrong: PALETTE.neutral400,
-  divider: PALETTE.neutral200,
-  disabled: PALETTE.neutral400,
-  disabledSurface: PALETTE.neutral150,
+  border: pick(PALETTE.neutral300, PALETTE.darkBorder),
+  borderStrong: pick(PALETTE.neutral400, PALETTE.darkBorderStrong),
+  divider: pick(PALETTE.neutral200, PALETTE.darkDivider),
+  disabled: pick(PALETTE.neutral400, PALETTE.darkDisabled),
+  disabledSurface: pick(PALETTE.neutral150, PALETTE.darkSurfaceMuted),
 
   // Status
-  success: PALETTE.green600,
-  successSoft: PALETTE.green50,
-  danger: PALETTE.red600,
-  dangerSoft: PALETTE.red50,
-  warning: PALETTE.amber700,
-  warningSoft: PALETTE.amber50,
-  info: PALETTE.blue500,
-  infoSoft: PALETTE.blue50,
+  success: pick(PALETTE.green600, "#6FD188"),
+  successSoft: pick(PALETTE.green50, "#14251A"),
+  danger: pick(PALETTE.red600, "#FF8B8B"),
+  dangerSoft: pick(PALETTE.red50, "#2E1719"),
+  warning: pick(PALETTE.amber700, PALETTE.amber500),
+  warningSoft: pick(PALETTE.amber50, "#2E2310"),
+  info: pick(PALETTE.blue500, "#5CC8F7"),
+  infoSoft: pick(PALETTE.blue50, "#10262E"),
 
   // Generic
   white: PALETTE.neutral0,
   black: PALETTE.neutral950,
   transparent: "transparent",
-  backdrop: "#00000066",
-  glassSurface: "rgba(248,249,248,0.54)",
-  glassSurfaceIos: "rgba(248,249,248,0.58)",
-  glassSurfaceAndroid: "rgba(248,249,248,0.70)",
+  backdrop: pick("#00000066", "#000000A6"),
+  glassSurface: pick("rgba(248,249,248,0.54)", "rgba(30,29,36,0.62)"),
+  glassSurfaceIos: pick("rgba(248,249,248,0.58)", "rgba(30,29,36,0.66)"),
+  glassSurfaceAndroid: pick("rgba(248,249,248,0.70)", "rgba(28,27,33,0.88)"),
   /** Opaque equivalent of the glass tint: native has no real backdrop blur, so the bar paints solid there. */
-  glassSurfaceSolid: "#F8F9F8",
-  glassBorder: "rgba(255,255,255,0.72)",
-  glassActive: "rgba(255,136,73,0.16)",
+  glassSurfaceSolid: pick("#F8F9F8", "#1C1B21"),
+  glassBorder: pick("rgba(255,255,255,0.72)", "rgba(255,255,255,0.10)"),
+  glassActive: pick("rgba(255,136,73,0.16)", "rgba(255,136,73,0.26)"),
   /** Active tab tint for the floating navigation, kept separate from primaryStrong. */
-  navActive: "#FF8C42",
+  navActive: pick("#FF8C42", PALETTE.orange400),
   shadow: PALETTE.neutral950,
   onColor: PALETTE.neutral0,
 
   // Compatibility aliases - migrate feature code gradually to semantic tokens.
-  neutral: PALETTE.neutral300,
-  lightgray: PALETTE.neutral100,
-  darkgray: PALETTE.neutral200,
-  brown: PALETTE.orange700,
-  brownDark: PALETTE.orange900,
-  bgblue: PALETTE.blue800,
-  textblue: PALETTE.blue500,
-  bggreen: PALETTE.green800,
-  textgreen: PALETTE.green800,
-  strengthStrong: PALETTE.green600,
-  strengthMedium: "#E38A2E",
-  strengthWeak: PALETTE.red500,
-  statusPending: PALETTE.orange500,
-  statusPendingLight: "#FFE7A8",
-  orgStatOrangeBg: PALETTE.orange100,
-  orgStatOrangeBorder: "#FFC9AE",
-  orgStatGreenBg: PALETTE.green100,
-  orgStatGreenBorder: "#A6E7AE",
-  orgStatBlueBg: PALETTE.blue100,
-  orgStatBlueBorder: PALETTE.blue300,
-  orgStatYellowBg: PALETTE.amber50,
-  orgStatYellowBorder: PALETTE.amber300,
-  contactPhoneBg: PALETTE.orange100,
-  contactEmailBg: "#E9F7FD",
-  orgDashboardHeroBg: "#FFF2EA",
-  orgDashboardHeroBorder: "#F3CDB8",
-  orgDashboardHeroMark: "#F3E4DD",
-  orgAchievementGreenBg: PALETTE.green50,
-  orgAchievementGreenBorder: "#B8E3BC",
-  orgAchievementOrangeBg: "#FFF3EA",
-  orgAchievementOrangeBorder: "#FFD0B5",
-  orgAchievementBlueBg: PALETTE.blue50,
-  orgAchievementBlueBorder: "#B3E2F6",
-  orgAchievementLockedBg: "#F3F1F1",
-  orgAchievementLockedBorder: "#DCC7BA",
-  statusApproved: PALETTE.blue500,
-  statusClosed: PALETTE.green500,
-  rescueSoft: "#FFF5F0",
-  rescueBorder: "#EFCFBE",
-  rescueDangerSoft: PALETTE.red50,
-  rescueMapOverlay: "#FFF8F3",
-  rescueSuccess: PALETTE.green500,
-  rescueSuccessSoft: "#E9F8EB",
-  rescueInput: "#F4F4F7",
-  rating: PALETTE.amber500,
-  urgent: PALETTE.red700,
-  peach: PALETTE.orange300,
-  brownMuted: "#564338",
-  ink: "#1A1C1E",
-  navy: PALETTE.blue900,
-  tan: "#DDC1B3",
-  offwhite: "#EEEEF0",
-  successDark: "#00731E",
-  successLight: PALETTE.green300,
+  neutral: pick(PALETTE.neutral300, PALETTE.darkBorder),
+  lightgray: pick(PALETTE.neutral100, PALETTE.darkSurfaceMuted),
+  darkgray: pick(PALETTE.neutral200, PALETTE.darkDivider),
+  brown: pick(PALETTE.orange700, PALETTE.orange300),
+  brownDark: pick(PALETTE.orange900, PALETTE.orange200),
+  bgblue: pick(PALETTE.blue800, "#7FD3F2"),
+  textblue: pick(PALETTE.blue500, "#5CC8F7"),
+  bggreen: pick(PALETTE.green800, "#7EDC94"),
+  textgreen: pick(PALETTE.green800, "#7EDC94"),
+  strengthStrong: pick(PALETTE.green600, "#6FD188"),
+  strengthMedium: pick("#E38A2E", "#F0A85A"),
+  strengthWeak: pick(PALETTE.red500, "#FF8B8B"),
+  statusPending: pick(PALETTE.orange500, PALETTE.orange400),
+  statusPendingLight: pick("#FFE7A8", "#3A2F16"),
+  orgStatOrangeBg: pick(PALETTE.orange100, "#35220F"),
+  orgStatOrangeBorder: pick("#FFC9AE", "#5C3A1E"),
+  orgStatGreenBg: pick(PALETTE.green100, "#14251A"),
+  orgStatGreenBorder: pick("#A6E7AE", "#2A5233"),
+  orgStatBlueBg: pick(PALETTE.blue100, "#10262E"),
+  orgStatBlueBorder: pick(PALETTE.blue300, "#235064"),
+  orgStatYellowBg: pick(PALETTE.amber50, "#2E2310"),
+  orgStatYellowBorder: pick(PALETTE.amber300, "#5A4520"),
+  contactPhoneBg: pick(PALETTE.orange100, "#35220F"),
+  contactEmailBg: pick("#E9F7FD", "#10262E"),
+  orgDashboardHeroBg: pick("#FFF2EA", "#2A1C12"),
+  orgDashboardHeroBorder: pick("#F3CDB8", "#4A3325"),
+  orgDashboardHeroMark: pick("#F3E4DD", "#3A2A22"),
+  orgAchievementGreenBg: pick(PALETTE.green50, "#14251A"),
+  orgAchievementGreenBorder: pick("#B8E3BC", "#2A5233"),
+  orgAchievementOrangeBg: pick("#FFF3EA", "#33210F"),
+  orgAchievementOrangeBorder: pick("#FFD0B5", "#5C3A1E"),
+  orgAchievementBlueBg: pick(PALETTE.blue50, "#10262E"),
+  orgAchievementBlueBorder: pick("#B3E2F6", "#235064"),
+  orgAchievementLockedBg: pick("#F3F1F1", "#211F26"),
+  orgAchievementLockedBorder: pick("#DCC7BA", "#3D3640"),
+  statusApproved: pick(PALETTE.blue500, "#5CC8F7"),
+  statusClosed: pick(PALETTE.green500, "#6FD188"),
+  rescueSoft: pick("#FFF5F0", "#2A1C12"),
+  rescueBorder: pick("#EFCFBE", "#4A3325"),
+  rescueDangerSoft: pick(PALETTE.red50, "#2E1719"),
+  rescueMapOverlay: pick("#FFF8F3", "#201A15"),
+  rescueSuccess: pick(PALETTE.green500, "#6FD188"),
+  rescueSuccessSoft: pick("#E9F8EB", "#14251A"),
+  rescueInput: pick("#F4F4F7", PALETTE.darkSurfaceMuted),
+  rating: pick(PALETTE.amber500, "#FFC24D"),
+  urgent: pick(PALETTE.red700, "#FF8B8B"),
+  peach: pick(PALETTE.orange300, "#4A3325"),
+  brownMuted: pick("#564338", "#C9BDB2"),
+  ink: pick("#1A1C1E", PALETTE.darkText),
+  navy: pick(PALETTE.blue900, "#7FD3F2"),
+  tan: pick("#DDC1B3", "#4A3B33"),
+  offwhite: pick("#EEEEF0", PALETTE.darkSurfaceMuted),
+  successDark: pick("#00731E", "#6FD188"),
+  successLight: pick(PALETTE.green300, "#1E4A2A"),
 } as const;
 
+
+/**
+ * Google Maps styling for the dark scheme.
+ *
+ * Google Maps paints its own tiles and ignores the app palette, so a default map
+ * stays bright white inside a dark screen. This array retints the base map to sit
+ * on the same canvas as the rest of the app while keeping roads, water and labels
+ * readable. Points of interest stay unstyled so rescue-relevant places (vets,
+ * shelters, parks) remain findable.
+ *
+ * Applies to the Google provider only, which is what the native maps use.
+ */
+const DARK_MAP_STYLE = [
+  { elementType: "geometry", stylers: [{ color: "#1B1A21" }] },
+  { elementType: "labels.icon", stylers: [{ visibility: "off" }] },
+  { elementType: "labels.text.fill", stylers: [{ color: "#8F8B99" }] },
+  { elementType: "labels.text.stroke", stylers: [{ color: "#121116" }] },
+  {
+    featureType: "administrative",
+    elementType: "geometry",
+    stylers: [{ color: "#302E38" }],
+  },
+  {
+    featureType: "administrative.locality",
+    elementType: "labels.text.fill",
+    stylers: [{ color: "#B6B2C0" }],
+  },
+  {
+    featureType: "poi",
+    elementType: "labels.text.fill",
+    stylers: [{ color: "#9C98A6" }],
+  },
+  {
+    featureType: "poi.park",
+    elementType: "geometry",
+    stylers: [{ color: "#1C2A20" }],
+  },
+  {
+    featureType: "poi.park",
+    elementType: "labels.text.fill",
+    stylers: [{ color: "#6FD188" }],
+  },
+  {
+    featureType: "road",
+    elementType: "geometry",
+    stylers: [{ color: "#26242D" }],
+  },
+  {
+    featureType: "road",
+    elementType: "geometry.stroke",
+    stylers: [{ color: "#201F26" }],
+  },
+  {
+    featureType: "road",
+    elementType: "labels.text.fill",
+    stylers: [{ color: "#8F8B99" }],
+  },
+  {
+    featureType: "road.arterial",
+    elementType: "geometry",
+    stylers: [{ color: "#302E38" }],
+  },
+  {
+    featureType: "road.highway",
+    elementType: "geometry",
+    stylers: [{ color: "#423F4D" }],
+  },
+  {
+    featureType: "road.highway",
+    elementType: "labels.text.fill",
+    stylers: [{ color: "#C9BDB2" }],
+  },
+  {
+    featureType: "transit",
+    elementType: "geometry",
+    stylers: [{ color: "#26242D" }],
+  },
+  {
+    featureType: "transit.station",
+    elementType: "labels.text.fill",
+    stylers: [{ color: "#9C98A6" }],
+  },
+  {
+    featureType: "water",
+    elementType: "geometry",
+    stylers: [{ color: "#0E1A22" }],
+  },
+  {
+    featureType: "water",
+    elementType: "labels.text.fill",
+    stylers: [{ color: "#4A6472" }],
+  },
+];
+
+/** Empty in the light scheme, which leaves Google's default styling untouched. */
+export const MAP_STYLE = isDark ? DARK_MAP_STYLE : [];
 
 export const SCREEN_SURFACES = {
   /** Canonical product canvas used by normal app/workspace screens. */

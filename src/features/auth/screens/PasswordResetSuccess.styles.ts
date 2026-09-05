@@ -203,7 +203,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     borderRadius: RADIUS.md,
-    backgroundColor: COLORS.secondaryStrong,
+    backgroundColor: COLORS.secondaryStrongFill,
   },
   statusText: {
     flex: 1,

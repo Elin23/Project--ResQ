@@ -371,7 +371,7 @@ const styles = StyleSheet.create({
   },
   carouselDotActive: {
     width: 16,
-    backgroundColor: COLORS.white,
+    backgroundColor: COLORS.surface,
   },
   badgeStart: {
     alignSelf: "flex-start",
@@ -531,7 +531,7 @@ const styles = StyleSheet.create({
     backgroundColor: COLORS.primarySoft,
   },
   organizationAvatar: {
-    backgroundColor: COLORS.secondaryStrong,
+    backgroundColor: COLORS.secondaryStrongFill,
   },
   personCopy: {
     flex: 1,

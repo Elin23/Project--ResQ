@@ -2,7 +2,7 @@ import MapView, { Marker, type MapPressEvent, PROVIDER_GOOGLE, type Region } fro
 import { StyleSheet, View } from "react-native";
 
 import AppText from "@/src/components/ui/AppText";
-import { COLORS, RADIUS, SPACING } from "@/src/theme";
+import { COLORS, RADIUS, SPACING, MAP_STYLE } from "@/src/theme";
 
 export type FeedingPointLocationValue = {
   latitude: number;
@@ -29,6 +29,7 @@ export default function FeedingPointLocationPicker({ value, onChange }: Props) {
   return (
     <View style={styles.wrapper}>
       <MapView
+      customMapStyle={MAP_STYLE}
         provider={PROVIDER_GOOGLE}
         style={styles.map}
         initialRegion={region}

@@ -48,7 +48,7 @@ const styles = StyleSheet.create({
     borderRadius: RADIUS.lg,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: COLORS.primaryStrong,
+    backgroundColor: COLORS.primaryStrongFill,
     borderWidth: StyleSheet.hairlineWidth,
     borderColor: "rgba(255,255,255,0.52)",
     ...SHADOWS.md,

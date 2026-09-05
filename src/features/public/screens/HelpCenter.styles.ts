@@ -242,7 +242,7 @@ export const styles = StyleSheet.create({
     paddingHorizontal: 20,
     paddingVertical: 22,
     borderRadius: RADIUS.lg,
-    backgroundColor: COLORS.primary,
+    backgroundColor: COLORS.primaryFill,
     shadowColor: COLORS.black,
     shadowOffset: { width: 0, height: 8 },
     shadowOpacity: 0.12,
@@ -276,7 +276,7 @@ export const styles = StyleSheet.create({
     gap: 8,
     marginTop: 18,
     borderRadius: RADIUS["2xl"],
-    backgroundColor: COLORS.primaryStrong,
+    backgroundColor: COLORS.primaryStrongFill,
   },
   supportPrimaryText: {
     fontFamily: FONTS.medium,
@@ -295,7 +295,7 @@ export const styles = StyleSheet.create({
     borderRadius: RADIUS["2xl"],
     borderWidth: 1,
     borderColor: COLORS.border,
-    backgroundColor: COLORS.primary,
+    backgroundColor: COLORS.primaryFill,
   },
   supportSecondaryText: {
     fontFamily: FONTS.medium,
@@ -400,7 +400,7 @@ export const styles = StyleSheet.create({
     paddingHorizontal: 18,
     paddingVertical: 10,
     borderRadius: RADIUS.xl,
-    backgroundColor: COLORS.primaryStrong,
+    backgroundColor: COLORS.primaryStrongFill,
   },
   emptyButtonText: {
     fontFamily: FONTS.medium,

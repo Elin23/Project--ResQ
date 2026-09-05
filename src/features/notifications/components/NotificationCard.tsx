@@ -26,8 +26,8 @@ export default function NotificationCard({ item, onPress }: Props) {
 }
 const styles = StyleSheet.create({
   card: { position: "relative", flexDirection: "row", direction: "rtl", alignItems: "center", gap: SPACING.md, marginBottom: SPACING.sm },
-  unreadBar: { position: "absolute", start: 0, top: 0, bottom: 0, width: 4, backgroundColor: COLORS.successDark },
+  unreadBar: { position: "absolute", start: 0, top: 0, bottom: 0, width: 4, backgroundColor: COLORS.successDarkFill },
   iconWrap: { width: 44, height: 44, borderRadius: RADIUS.full, alignItems: "center", justifyContent: "center" },
   content: { flex: 1, gap: SPACING.xs, minWidth: 0 },
-  dot: { width: 8, height: 8, borderRadius: RADIUS.full, backgroundColor: COLORS.successDark },
+  dot: { width: 8, height: 8, borderRadius: RADIUS.full, backgroundColor: COLORS.successDarkFill },
 });

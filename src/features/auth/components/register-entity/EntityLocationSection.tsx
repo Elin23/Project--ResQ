@@ -2,7 +2,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { Pressable, TextInput, View } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 import AppText from "@/src/components/ui/AppText";
-import { COLORS, PALETTE } from "@/src/theme";
+import { COLORS, PALETTE, MAP_STYLE } from "@/src/theme";
 import { styles } from "../../screens/RegisterEntity.styles";
 import type { RegisterEntityForm } from "../../hooks/useRegisterEntityForm";
 
@@ -87,6 +87,7 @@ export default function EntityLocationSection({ form }: { form: RegisterEntityFo
   ]}
 >
   <MapView
+      customMapStyle={MAP_STYLE}
     style={styles.mapPreview}
     region={{
       latitude: selectedLocation?.latitude ?? mapRegion.latitude,

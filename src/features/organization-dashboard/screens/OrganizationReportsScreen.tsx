@@ -58,10 +58,10 @@ export default function OrganizationReportsScreen() {
 
 const styles = StyleSheet.create({
   content: { paddingTop: 0, paddingBottom: 110, gap: SPACING.lg },
-  counter: { minWidth: 36, height: 36, borderRadius: RADIUS.full, alignItems: "center", justifyContent: "center", backgroundColor: COLORS.white },
+  counter: { minWidth: 36, height: 36, borderRadius: RADIUS.full, alignItems: "center", justifyContent: "center", backgroundColor: COLORS.surface },
   list: { gap: SPACING.md },
-  card: { padding: SPACING.lg, gap: SPACING.sm, borderRadius: RADIUS.lg, borderWidth: 1, borderColor: COLORS.border, backgroundColor: COLORS.white },
+  card: { padding: SPACING.lg, gap: SPACING.sm, borderRadius: RADIUS.lg, borderWidth: 1, borderColor: COLORS.border, backgroundColor: COLORS.surface },
   cardTop: { flexDirection: "row", direction: "rtl", alignItems: "center", justifyContent: "space-between" },
   badge: { alignSelf: "flex-start", paddingHorizontal: SPACING.sm, paddingVertical: SPACING.xs, borderRadius: RADIUS.full, backgroundColor: COLORS.lightgray },
-  urgentBadge: { backgroundColor: COLORS.danger },
+  urgentBadge: { backgroundColor: COLORS.dangerFill },
 });

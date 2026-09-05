@@ -67,7 +67,7 @@ export default function FeedingPointCard({ point, onPress }: Props) {
         <StatusBadge
           label="متحقق"
           color={COLORS.white}
-          background={COLORS.successDark}
+          background={COLORS.successDarkFill}
           size="sm"
           style={styles.verifiedBadge}
         />
@@ -148,7 +148,7 @@ export default function FeedingPointCard({ point, onPress }: Props) {
             variant="custom"
             size="small"
             fullWidth={false}
-            backgroundColor={COLORS.white}
+            backgroundColor={COLORS.surface}
             borderColor={COLORS.border}
             borderWidth={1}
             textColor={COLORS.text}
@@ -161,7 +161,7 @@ export default function FeedingPointCard({ point, onPress }: Props) {
           onPress={onPress}
           variant="custom"
           size="small"
-          backgroundColor={COLORS.white}
+          backgroundColor={COLORS.surface}
           borderColor={meta.color}
           borderWidth={1}
           textColor={meta.color}

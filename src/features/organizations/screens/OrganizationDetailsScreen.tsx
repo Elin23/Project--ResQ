@@ -75,7 +75,7 @@ export default function OrganizationDetailsScreen() {
           />
         )) : <EmptyState compact icon="paw-outline" title="لا توجد حيوانات متاحة للتبني" description="ستظهر هنا حالات التبني الخاصة بالجمعية عند إضافتها."/>}
       </> : null}
-      <ActionStack style={styles.actions}><Button title="تبرع للجمعية" onPress={() => router.push("/donations")} backgroundColor={COLORS.brown} borderColor={COLORS.brown}/><Button title="التواصل مع الجمعية" onPress={() => router.push("/contact-us")} variant="outline" /></ActionStack>
+      <ActionStack style={styles.actions}><Button title="تبرع للجمعية" onPress={() => router.push("/donations")} backgroundColor={COLORS.primaryStrongFill} borderColor={COLORS.brown}/><Button title="التواصل مع الجمعية" onPress={() => router.push("/contact-us")} variant="outline" /></ActionStack>
     </View>
   </Screen>;
 }

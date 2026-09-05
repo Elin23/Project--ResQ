@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
   recommendedRow: { gap: SPACING.md, direction: "rtl" },
   recommendedCard: { borderRadius: RADIUS.md, backgroundColor: COLORS.background, overflow: "hidden", borderWidth: 1, borderColor: COLORS.border },
   recommendedImageWrap: { height: 128 }, recommendedImage: { width: "100%", height: "100%" },
-  verifiedPill: { position: "absolute", top: SPACING.sm, right: SPACING.sm, backgroundColor: COLORS.successDark, borderRadius: RADIUS.full, paddingHorizontal: SPACING.sm, paddingVertical: 4, flexDirection: "row", direction: "rtl", gap: 3, alignItems: "center" },
+  verifiedPill: { position: "absolute", top: SPACING.sm, right: SPACING.sm, backgroundColor: COLORS.successDarkFill, borderRadius: RADIUS.full, paddingHorizontal: SPACING.sm, paddingVertical: 4, flexDirection: "row", direction: "rtl", gap: 3, alignItems: "center" },
   recommendedBody: { padding: SPACING.md, alignItems: "stretch" },
   communityTitle: { marginTop: SPACING.xl },
   orgList: { width: "100%", gap: SPACING.md },

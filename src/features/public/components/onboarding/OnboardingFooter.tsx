@@ -31,7 +31,7 @@ export default function OnboardingFooter({ currentIndex, indicatorWidths, isChan
           );
         })}
       </View>
-      <Button title={isLastSlide ? "ابدأ الآن" : "التالي"} onPress={onNext} variant="custom" size="large" icon={isLastSlide ? "paw-outline" : "arrow-forward"} iconPosition="end" iconSize={21} loading={isCompleting} loadingText="جاري الانتقال..." disabled={isChanging || isCompleting} fullWidth backgroundColor={COLORS.primary} borderColor={COLORS.primary} borderWidth={0} textColor={COLORS.icon} radius={14} style={[styles.nextButton, { width: cardWidth, height: buttonHeight, minHeight: buttonHeight }]} textStyle={styles.nextButtonText} />
+      <Button title={isLastSlide ? "ابدأ الآن" : "التالي"} onPress={onNext} variant="custom" size="large" icon={isLastSlide ? "paw-outline" : "arrow-forward"} iconPosition="end" iconSize={21} loading={isCompleting} loadingText="جاري الانتقال..." disabled={isChanging || isCompleting} fullWidth backgroundColor={COLORS.primaryFill} borderColor={COLORS.primary} borderWidth={0} textColor={COLORS.icon} radius={14} style={[styles.nextButton, { width: cardWidth, height: buttonHeight, minHeight: buttonHeight }]} textStyle={styles.nextButtonText} />
     </Animated.View>
   );
 }

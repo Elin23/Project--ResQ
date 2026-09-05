@@ -52,7 +52,7 @@ export default function ActiveRescueTaskCard({ task, onOpen, onUpdate }: Props) 
           onPress={onUpdate}
           size="small"
           fullWidth={false}
-          backgroundColor={COLORS.primary}
+          backgroundColor={COLORS.primaryFill}
           borderColor={COLORS.primary}
           textColor={COLORS.textInverse}
           icon="refresh-outline"
@@ -89,7 +89,7 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     marginTop: SPACING.xs,
   },
-  progress: { height: "100%", borderRadius: RADIUS.full, backgroundColor: COLORS.primary },
+  progress: { height: "100%", borderRadius: RADIUS.full, backgroundColor: COLORS.primaryFill },
   actions: { flexDirection: "row", direction: "rtl", gap: SPACING.sm, marginTop: SPACING.md },
   actionsNarrow: { flexDirection: "column" },
   actionButton: { flex: 1 },

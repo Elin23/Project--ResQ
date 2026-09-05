@@ -1,7 +1,7 @@
 import MapView, { Marker, PROVIDER_GOOGLE, type MapPressEvent, type Region } from 'react-native-maps';
 import { StyleSheet, View } from 'react-native';
 import AppText from '@/src/components/ui/AppText';
-import { COLORS, RADIUS, SPACING } from '@/src/theme';
+import { COLORS, RADIUS, SPACING, MAP_STYLE } from '@/src/theme';
 
 export type MapPlaceLocationValue = { latitude: number; longitude: number };
 type Props = { value: MapPlaceLocationValue; onChange: (value: MapPlaceLocationValue) => void };
@@ -10,7 +10,8 @@ export default function MapPlaceLocationPicker({ value, onChange }: Props) {
   const region: Region = { ...value, latitudeDelta: 0.012, longitudeDelta: 0.012 };
   const onPress = (event: MapPressEvent) => onChange(event.nativeEvent.coordinate);
   return <View style={styles.wrapper}>
-    <MapView provider={PROVIDER_GOOGLE} style={styles.map} region={region} onPress={onPress}>
+    <MapView
+      customMapStyle={MAP_STYLE} provider={PROVIDER_GOOGLE} style={styles.map} region={region} onPress={onPress}>
       <Marker coordinate={value} draggable onDragEnd={(event) => onChange(event.nativeEvent.coordinate)} />
     </MapView>
     <View style={styles.hint} pointerEvents="none"><AppText variant="caption" color={COLORS.textSecondary} align="center">اضغط على الخريطة أو اسحب العلامة لتحديد موقع الجهة بدقة</AppText></View>

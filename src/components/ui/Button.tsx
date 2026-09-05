@@ -58,10 +58,10 @@ const variantConfig: Record<
   Exclude<ButtonVariant, "custom">,
   { backgroundColor: string; borderColor: string; borderWidth: number; textColor: string }
 > = {
-  primary: { backgroundColor: COLORS.primaryStrong, borderColor: COLORS.primaryStrong, borderWidth: 0, textColor: COLORS.textInverse },
-  secondary: { backgroundColor: COLORS.secondaryStrong, borderColor: COLORS.secondaryStrong, borderWidth: 0, textColor: COLORS.textInverse },
+  primary: { backgroundColor: COLORS.primaryStrongFill, borderColor: COLORS.primaryStrongFill, borderWidth: 0, textColor: COLORS.textInverse },
+  secondary: { backgroundColor: COLORS.secondaryStrongFill, borderColor: COLORS.secondaryStrongFill, borderWidth: 0, textColor: COLORS.textInverse },
   outline: { backgroundColor: COLORS.transparent, borderColor: COLORS.primary, borderWidth: 1, textColor: COLORS.primaryStrong },
-  danger: { backgroundColor: COLORS.danger, borderColor: COLORS.danger, borderWidth: 0, textColor: COLORS.textInverse },
+  danger: { backgroundColor: COLORS.dangerFill, borderColor: COLORS.dangerFill, borderWidth: 0, textColor: COLORS.textInverse },
   text: { backgroundColor: COLORS.transparent, borderColor: COLORS.transparent, borderWidth: 0, textColor: COLORS.primaryStrong },
   ghost: { backgroundColor: COLORS.transparent, borderColor: COLORS.transparent, borderWidth: 0, textColor: COLORS.textSecondary },
 };

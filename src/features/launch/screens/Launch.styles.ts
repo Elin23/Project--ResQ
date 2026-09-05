@@ -20,7 +20,7 @@ export const styles = StyleSheet.create({
   },
   leftGlow: {
     position: "absolute",
-    backgroundColor: COLORS.primary,
+    backgroundColor: COLORS.primaryFill,
     opacity: 0.12,
     shadowColor: COLORS.primaryPressed,
     shadowOffset: {
@@ -38,7 +38,7 @@ export const styles = StyleSheet.create({
   },
   particle: {
     position: "absolute",
-    backgroundColor: COLORS.primary,
+    backgroundColor: COLORS.primaryFill,
   },
   particleOne: {
     width: 7,
@@ -67,7 +67,7 @@ export const styles = StyleSheet.create({
   },
   pulseCircle: {
     position: "absolute",
-    backgroundColor: COLORS.primary,
+    backgroundColor: COLORS.primaryFill,
   },
   softCircle: {
     position: "absolute",
@@ -139,7 +139,7 @@ export const styles = StyleSheet.create({
     width: 4,
     height: 4,
     borderRadius: RADIUS.xs,
-    backgroundColor: COLORS.primary,
+    backgroundColor: COLORS.primaryFill,
   },
   decorationLine: {
     width: 25,

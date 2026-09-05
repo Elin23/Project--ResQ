@@ -4,7 +4,7 @@ import MapView, { Marker, PROVIDER_GOOGLE, type Region } from "react-native-maps
 import { StyleSheet, View } from "react-native";
 
 import type { ServicePlace, ServicePlaceType } from "@/src/domain/service-places";
-import { COLORS, RADIUS } from "@/src/theme";
+import { COLORS, RADIUS, MAP_STYLE } from "@/src/theme";
 
 export type ServicePlacesMapProps = {
   places: ServicePlace[];
@@ -66,6 +66,7 @@ export default function ServicePlacesMap({
 
   return (
     <MapView
+      customMapStyle={MAP_STYLE}
       ref={mapRef}
       provider={PROVIDER_GOOGLE}
       style={[styles.map, { height }]}

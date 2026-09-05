@@ -447,7 +447,7 @@ const styles = StyleSheet.create({
     height: 5,
     marginTop: 10,
     borderRadius: RADIUS.full,
-    backgroundColor: COLORS.primary,
+    backgroundColor: COLORS.primaryFill,
   },
   illustrationLineSmall: {
     width: 52,
@@ -461,7 +461,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingVertical: 6,
     borderRadius: RADIUS.sm,
-    backgroundColor: COLORS.primary,
+    backgroundColor: COLORS.primaryFill,
   },
   illustrationButtonText: {
     fontFamily: FONTS.medium,
@@ -593,7 +593,7 @@ const styles = StyleSheet.create({
     borderRadius: RADIUS.full,
   },
   greenBadge: {
-    backgroundColor: COLORS.secondaryStrong,
+    backgroundColor: COLORS.secondaryStrongFill,
   },
   orangeBadge: {
     backgroundColor: COLORS.divider,

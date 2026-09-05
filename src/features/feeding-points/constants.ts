@@ -25,7 +25,7 @@ export const STATUS_META: Record<DisplayStatus, StatusMeta> = {
   needsFood: {
     label: 'تحتاج تعبئة',
     color: COLORS.danger,
-    background: COLORS.danger + ALPHA_SOFT,
+    background: COLORS.dangerFill + ALPHA_SOFT,
     icon: 'alert-circle',
   },
   unknown: {

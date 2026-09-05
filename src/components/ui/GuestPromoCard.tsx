@@ -48,7 +48,7 @@ export default function GuestPromoCard({ onCreateAccount, onLogin }: Props) {
         onPress={onCreateAccount}
         variant="custom"
         size="medium"
-        backgroundColor={COLORS.brown}
+        backgroundColor={COLORS.primaryStrongFill}
         borderColor={COLORS.brown}
         borderWidth={1}
         textColor={COLORS.onColor}

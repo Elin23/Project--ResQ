@@ -55,10 +55,10 @@ export default function ServicePlacesMap({ places, selectedId, onSelectPlace, he
 
 const styles = StyleSheet.create({
   container: { width: "100%", borderRadius: RADIUS.lg, backgroundColor: COLORS.disabledSurface, overflow: "hidden" },
-  roadA: { position: "absolute", left: -20, right: -20, top: "38%", height: 12, backgroundColor: COLORS.white, opacity: 0.7, transform: [{ rotate: "-8deg" }] },
-  roadB: { position: "absolute", top: -20, bottom: -20, left: "62%", width: 12, backgroundColor: COLORS.white, opacity: 0.6, transform: [{ rotate: "9deg" }] },
+  roadA: { position: "absolute", left: -20, right: -20, top: "38%", height: 12, backgroundColor: COLORS.surface, opacity: 0.7, transform: [{ rotate: "-8deg" }] },
+  roadB: { position: "absolute", top: -20, bottom: -20, left: "62%", width: 12, backgroundColor: COLORS.surface, opacity: 0.6, transform: [{ rotate: "9deg" }] },
   pin: { position: "absolute" },
   dot: { width: 32, height: 32, borderRadius: RADIUS.lg, borderWidth: 2, borderColor: COLORS.white, alignItems: "center", justifyContent: "center" },
   dotSelected: { width: 40, height: 40, borderRadius: RADIUS.xl, borderWidth: 3 },
-  webBadge: { position: "absolute", top: SPACING.sm, left: SPACING.sm, flexDirection: "row", direction: "rtl", alignItems: "center", gap: SPACING.xs, paddingHorizontal: SPACING.sm, paddingVertical: SPACING.xs, borderRadius: RADIUS.full, backgroundColor: COLORS.white + "E6" },
+  webBadge: { position: "absolute", top: SPACING.sm, left: SPACING.sm, flexDirection: "row", direction: "rtl", alignItems: "center", gap: SPACING.xs, paddingHorizontal: SPACING.sm, paddingVertical: SPACING.xs, borderRadius: RADIUS.full, backgroundColor: COLORS.surface + "E6" },
 });

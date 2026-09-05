@@ -92,7 +92,7 @@ const styles = StyleSheet.create({
     width: "120%",
     height: 4,
     borderRadius: RADIUS.xs,
-    backgroundColor: COLORS.white,
+    backgroundColor: COLORS.surface,
     transform: [{ rotate: "-8deg" }],
   },
   mapLineTwo: {
@@ -102,7 +102,7 @@ const styles = StyleSheet.create({
     width: "115%",
     height: 5,
     borderRadius: RADIUS.xs,
-    backgroundColor: COLORS.white,
+    backgroundColor: COLORS.surface,
     transform: [{ rotate: "10deg" }],
   },
   mapLineThree: {
@@ -112,7 +112,7 @@ const styles = StyleSheet.create({
     width: 4,
     height: 240,
     borderRadius: RADIUS.xs,
-    backgroundColor: COLORS.white,
+    backgroundColor: COLORS.surface,
     transform: [{ rotate: "17deg" }],
   },
   marker: {
@@ -133,7 +133,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     padding: SPACING.lg,
-    backgroundColor: COLORS.white + "99",
+    backgroundColor: COLORS.surface + "99",
   },
   iconContainer: {
     width: 42,

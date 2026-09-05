@@ -47,5 +47,5 @@ export default function OrganizationReportDetailsScreen() {
 const styles = StyleSheet.create({
   content: { paddingTop: 0 },
   body: { padding: SPACING.lg, gap: SPACING.lg },
-  card: { padding: SPACING.lg, gap: SPACING.sm, borderRadius: RADIUS.lg, borderWidth: 1, borderColor: COLORS.border, backgroundColor: COLORS.white },
+  card: { padding: SPACING.lg, gap: SPACING.sm, borderRadius: RADIUS.lg, borderWidth: 1, borderColor: COLORS.border, backgroundColor: COLORS.surface },
 });

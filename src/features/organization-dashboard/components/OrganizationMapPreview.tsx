@@ -28,7 +28,7 @@ export default function OrganizationMapPreview({ onOpenMap }: Props) {
             onPress={onOpenMap}
             variant="custom"
             size="small"
-            backgroundColor={COLORS.white}
+            backgroundColor={COLORS.surface}
             borderColor={COLORS.white}
             textColor={COLORS.text}
             icon="map-outline"
@@ -50,7 +50,7 @@ const styles = StyleSheet.create({
     borderRadius: RADIUS.full,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: COLORS.danger,
+    backgroundColor: COLORS.dangerFill,
     borderWidth: 4,
     borderColor: COLORS.white,
   },
@@ -59,7 +59,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: SPACING.sm,
     paddingVertical: SPACING.xs,
     borderRadius: RADIUS.full,
-    backgroundColor: COLORS.white,
+    backgroundColor: COLORS.surface,
   },
   buttonWrap: { position: "absolute", right: SPACING.md, left: SPACING.md, bottom: SPACING.md },
 });

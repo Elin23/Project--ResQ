@@ -121,7 +121,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  dotActive: { backgroundColor: COLORS.primaryStrong },
+  dotActive: { backgroundColor: COLORS.primaryStrongFill },
   actions: { width: "100%" },
   detailsButton: { flex: 1 },
   shareButton: { borderWidth: StyleSheet.hairlineWidth, borderColor: COLORS.borderStrong },

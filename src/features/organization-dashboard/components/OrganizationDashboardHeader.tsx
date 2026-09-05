@@ -70,7 +70,7 @@ const styles = StyleSheet.create({
     width: 6,
     height: 6,
     borderRadius: RADIUS.full,
-    backgroundColor: COLORS.danger,
+    backgroundColor: COLORS.dangerFill,
     borderWidth: 1,
     borderColor: COLORS.surfaceElevated,
   },

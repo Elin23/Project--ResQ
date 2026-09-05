@@ -68,7 +68,7 @@ export const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     borderRadius: RADIUS["2xl"],
-    backgroundColor: COLORS.primary,
+    backgroundColor: COLORS.primaryFill,
     shadowColor: COLORS.black,
     shadowOffset: { width: 0, height: 6 },
     shadowOpacity: 0.12,
@@ -536,7 +536,7 @@ export const styles = StyleSheet.create({
     justifyContent: "center",
     marginTop: 18,
     borderRadius: RADIUS.md,
-    backgroundColor: COLORS.primaryStrong,
+    backgroundColor: COLORS.primaryStrongFill,
   },
   modalDoneText: {
     fontFamily: FONTS.medium,

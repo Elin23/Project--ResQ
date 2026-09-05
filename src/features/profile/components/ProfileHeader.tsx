@@ -80,7 +80,7 @@ const styles = StyleSheet.create({
   },
   avatarWrap: { position: "relative" },
   avatar: { width: 76, height: 76, borderRadius: RADIUS.full, borderWidth: 2, borderColor: COLORS.primary },
-  verified: { position: "absolute", left: -1, bottom: 3, width: 24, height: 24, borderRadius: RADIUS.full, backgroundColor: COLORS.success, borderWidth: 2, borderColor: COLORS.surfaceElevated, alignItems: "center", justifyContent: "center" },
+  verified: { position: "absolute", left: -1, bottom: 3, width: 24, height: 24, borderRadius: RADIUS.full, backgroundColor: COLORS.successFill, borderWidth: 2, borderColor: COLORS.surfaceElevated, alignItems: "center", justifyContent: "center" },
   identityText: { flex: 1, minWidth: 0, alignItems: "stretch", gap: SPACING.xs },
   fullWidth: { width: "100%" },
   metaRow: { width: "100%", flexDirection: "row", direction: "rtl", alignItems: "center", flexWrap: "wrap", gap: SPACING.sm },

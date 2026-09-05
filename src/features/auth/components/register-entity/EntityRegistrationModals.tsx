@@ -5,7 +5,7 @@ import MapView, { Marker } from "react-native-maps";
 import { SafeAreaView } from "react-native-safe-area-context";
 import AppText from "@/src/components/ui/AppText";
 import Button from "@/src/components/ui/Button";
-import { COLORS, PALETTE } from "@/src/theme";
+import { COLORS, PALETTE, MAP_STYLE } from "@/src/theme";
 import { styles } from "../../screens/RegisterEntity.styles";
 import type { RegisterEntityForm } from "../../hooks/useRegisterEntityForm";
 
@@ -40,6 +40,7 @@ export default function EntityRegistrationModals({ form }: { form: RegisterEntit
 
     <View style={styles.mapPickerWrap}>
       <MapView
+      customMapStyle={MAP_STYLE}
         style={styles.mapPicker}
         region={mapRegion}
         onRegionChangeComplete={setMapRegion}

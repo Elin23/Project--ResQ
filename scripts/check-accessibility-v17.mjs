@@ -69,6 +69,17 @@ const pairs = [
   ['body text', '#1A1A1A', '#FFFFFF', 4.5],
   ['secondary text', '#4D514A', '#FFFFFF', 4.5],
   ['focus/selected brand', '#B64E00', '#FFF0E8', 3],
+  // Dark scheme. The palette splits saturated fills away from the accent tokens
+  // precisely so both of these columns can clear 4.5:1; keep them in step with
+  // the pick() pairs in src/theme/index.ts.
+  ['dark body text', '#ECEBEF', '#121116', 4.5],
+  ['dark secondary text', '#B6B2C0', '#121116', 4.5],
+  ['dark muted text', '#8F8B99', '#121116', 4.5],
+  ['dark brand accent', '#FFB68D', '#121116', 4.5],
+  ['dark danger text', '#FF8B8B', '#121116', 4.5],
+  ['dark primary CTA', '#FFFFFF', '#BD5416', 4.5],
+  ['dark secondary CTA', '#FFFFFF', '#1C7038', 4.5],
+  ['dark danger CTA', '#FFFFFF', '#B3332C', 4.5],
 ];
 for (const [label, fg, bg, min] of pairs) {
   const value = contrast(fg, bg);

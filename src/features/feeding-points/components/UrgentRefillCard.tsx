@@ -62,7 +62,7 @@ export default function UrgentRefillCard({ point, distanceLabel, onPress }: Prop
         icon="hand-left-outline"
         iconPosition="start"
         fullWidth
-        backgroundColor={COLORS.primary}
+        backgroundColor={COLORS.primaryFill}
         borderColor={COLORS.primary}
         textColor={COLORS.white}
         radius={RADIUS.md}

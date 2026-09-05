@@ -180,7 +180,7 @@ const styles = StyleSheet.create({
     borderRadius: RADIUS.full,
     alignItems: "center",
     justifyContent: "center",
-    backgroundColor: COLORS.brown,
+    backgroundColor: COLORS.primaryStrongFill,
   },
   section: { width: "100%", marginTop: SPACING.lg, marginBottom: SPACING.sm },
   row: {

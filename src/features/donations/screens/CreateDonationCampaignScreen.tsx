@@ -560,7 +560,7 @@ const styles = StyleSheet.create({
   toggleCard: { flexDirection: "row", direction: "rtl", alignItems: "center", gap: SPACING.md },
   toggleCardSelected: { borderColor: COLORS.primaryStrong, backgroundColor: COLORS.primarySoft },
   toggleIcon: { width: 42, height: 42, borderRadius: RADIUS.full, backgroundColor: COLORS.dangerSoft, alignItems: "center", justifyContent: "center" },
-  toggleIconSelected: { backgroundColor: COLORS.primaryStrong },
+  toggleIconSelected: { backgroundColor: COLORS.primaryStrongFill },
   impactList: { gap: SPACING.sm },
   impactItem: { flexDirection: "row", direction: "rtl", alignItems: "center", gap: SPACING.md },
   impactIcon: { width: 44, height: 44, borderRadius: RADIUS.full, backgroundColor: COLORS.primarySoft, alignItems: "center", justifyContent: "center" },

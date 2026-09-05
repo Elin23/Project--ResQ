@@ -16,7 +16,7 @@ export default function ContributionHeroCard() {
       disabled
       padding={SPACING.lg}
       radius={RADIUS.xl}
-      backgroundColor={COLORS.primary}
+      backgroundColor={COLORS.primaryFill}
       style={styles.card}
     >
       <View style={styles.content}>

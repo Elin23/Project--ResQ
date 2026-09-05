@@ -23,7 +23,7 @@ export const styles = StyleSheet.create({
   },
   sideGlow: {
     position: "absolute",
-    backgroundColor: COLORS.primary,
+    backgroundColor: COLORS.primaryFill,
   },
   heroSection: {
     width: "100%",

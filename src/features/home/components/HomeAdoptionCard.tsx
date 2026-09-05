@@ -33,7 +33,7 @@ export default function HomeAdoptionCard({
       disabled
       padding={SPACING.md}
       radius={RADIUS.lg}
-      backgroundColor={COLORS.white}
+      backgroundColor={COLORS.surface}
       borderColor={COLORS.border}
       borderWidth={1}
       style={[styles.card, { width: cardWidth }]}

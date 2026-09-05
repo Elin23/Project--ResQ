@@ -20,7 +20,7 @@ export default function CommunityStatsCard({ stats }: Props) {
       disabled
       padding={SPACING.lg}
       radius={RADIUS.xl}
-      backgroundColor={COLORS.brown}
+      backgroundColor={COLORS.primaryStrongFill}
       style={styles.card}
     >
       <AppText

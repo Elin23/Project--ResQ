@@ -43,6 +43,6 @@ const styles = StyleSheet.create({
   titleRow: { flexDirection: "row", direction: "rtl", alignItems: "center", gap: SPACING.sm },
   list: { gap: SPACING.xs },
   item: { flexDirection: "row", direction: "rtl", alignItems: "flex-start", gap: SPACING.sm },
-  dot: { width: 5, height: 5, borderRadius: RADIUS.full, backgroundColor: COLORS.danger, marginTop: SPACING.sm },
+  dot: { width: 5, height: 5, borderRadius: RADIUS.full, backgroundColor: COLORS.dangerFill, marginTop: SPACING.sm },
   copy: { flex: 1, minWidth: 0 },
 });

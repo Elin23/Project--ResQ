@@ -102,7 +102,7 @@ export default function OrganizationDashboardScreen() {
           onPress={dashboard.updateOrganizationLocation}
           size="medium"
           icon="locate-outline"
-          backgroundColor={COLORS.primary}
+          backgroundColor={COLORS.primaryFill}
           borderColor={COLORS.primary}
           textColor={COLORS.white}
           radius={RADIUS.lg}
@@ -123,7 +123,7 @@ const styles = StyleSheet.create({
     marginBottom: SPACING.lg,
     paddingHorizontal: SPACING.md,
     borderRadius: RADIUS.lg,
-    backgroundColor: COLORS.white,
+    backgroundColor: COLORS.surface,
     flexDirection: "row",
     direction: "rtl",
     alignItems: "center",

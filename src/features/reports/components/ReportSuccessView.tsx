@@ -431,7 +431,7 @@ const styles = StyleSheet.create({
     },
     primaryBrownButton: {
         width: '100%',
-        backgroundColor: COLORS.brown,
+        backgroundColor: COLORS.primaryStrongFill,
         paddingVertical: 14,
         borderRadius: RADIUS.lg,
         alignItems: 'center',
@@ -454,7 +454,7 @@ const styles = StyleSheet.create({
     trackReportButton: {
         flexDirection: 'row',
         direction: 'rtl',
-        backgroundColor: COLORS.brown,
+        backgroundColor: COLORS.primaryStrongFill,
         paddingVertical: 16,
         borderRadius: RADIUS.lg,
         alignItems: 'center',

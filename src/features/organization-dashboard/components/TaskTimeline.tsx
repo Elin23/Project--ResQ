@@ -41,9 +41,9 @@ const styles = StyleSheet.create({
   textWrap: { flex: 1, alignItems: "stretch", paddingTop: 2, paddingStart: SPACING.md },
   rail: { width: 32, alignItems: "center" },
   dot: { width: 24, height: 24, borderRadius: RADIUS.full, borderWidth: 2, borderColor: COLORS.rescueBorder, backgroundColor: COLORS.surface, alignItems: "center", justifyContent: "center" },
-  doneDot: { borderColor: COLORS.successDark, backgroundColor: COLORS.successDark },
+  doneDot: { borderColor: COLORS.successDark, backgroundColor: COLORS.successDarkFill },
   activeDot: { width: 30, height: 30, borderColor: COLORS.peach, backgroundColor: COLORS.rescueSoft },
-  innerDot: { width: 12, height: 12, borderRadius: RADIUS.full, backgroundColor: COLORS.primary },
+  innerDot: { width: 12, height: 12, borderRadius: RADIUS.full, backgroundColor: COLORS.primaryFill },
   line: { width: 2, flex: 1, minHeight: 42, backgroundColor: COLORS.rescueBorder },
-  doneLine: { backgroundColor: COLORS.successDark },
+  doneLine: { backgroundColor: COLORS.successDarkFill },
 });

@@ -44,5 +44,5 @@ export default function OrganizationProfileScreen() {
 const styles = StyleSheet.create({
   content: { paddingTop: 0 },
   body: { padding: SPACING.lg, gap: SPACING.lg },
-  card: { gap: SPACING.sm, padding: SPACING.lg, borderRadius: RADIUS.lg, backgroundColor: COLORS.white },
+  card: { gap: SPACING.sm, padding: SPACING.lg, borderRadius: RADIUS.lg, backgroundColor: COLORS.surface },
 });

@@ -352,7 +352,7 @@ export const registrationSuccessStyles = StyleSheet.create({
     width: "60%",
     height: "100%",
     borderRadius: RADIUS.xs,
-    backgroundColor: COLORS.secondaryStrong,
+    backgroundColor: COLORS.secondaryStrongFill,
   },
   primaryButton: {
     width: "100%",

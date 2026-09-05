@@ -108,7 +108,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     borderRadius: RADIUS["2xl"],
-    backgroundColor: COLORS.primary,
+    backgroundColor: COLORS.primaryFill,
     borderWidth: 2,
     borderColor: COLORS.textSecondary,
   },

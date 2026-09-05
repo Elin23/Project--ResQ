@@ -680,7 +680,7 @@ const styles = StyleSheet.create({
     height: 3,
     marginBottom: 6,
     borderRadius: RADIUS.xs,
-    backgroundColor: COLORS.primaryStrong,
+    backgroundColor: COLORS.primaryStrongFill,
   },
   phoneScreen: {
     flex: 1,
@@ -698,7 +698,7 @@ const styles = StyleSheet.create({
     height: 3,
     marginTop: 6,
     borderRadius: RADIUS.xs,
-    backgroundColor: COLORS.primaryStrong,
+    backgroundColor: COLORS.primaryStrongFill,
   },
   codeBubble: {
     position: "absolute",

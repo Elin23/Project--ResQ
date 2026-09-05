@@ -1,6 +1,6 @@
 import MapView, { Marker } from "react-native-maps";
 
-import { COLORS, RADIUS } from "@/src/theme";
+import { COLORS, RADIUS, MAP_STYLE } from "@/src/theme";
 import { MARKER_COLORS } from "../constants";
 import type { FeedingPointSummary } from "../types";
 import { getDisplayStatus } from "../utils/status";
@@ -22,6 +22,7 @@ export default function FeedingPointsMap({
 
   return (
     <MapView
+      customMapStyle={MAP_STYLE}
       style={{ width: "100%", height, borderRadius: RADIUS.lg }}
       initialRegion={{
         latitude: first.latitude,
