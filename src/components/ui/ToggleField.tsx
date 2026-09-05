@@ -1,4 +1,5 @@
 import { StyleSheet, Switch, View } from "react-native";
+import type { StyleProp, ViewStyle } from "react-native";
 
 import { COLORS, RADIUS, SPACING } from "@/src/theme";
 import AppText from "./AppText";
@@ -9,12 +10,13 @@ type Props = {
   value: boolean;
   onValueChange: (value: boolean) => void;
   disabled?: boolean;
+  style?: StyleProp<ViewStyle>;
 };
 
 /** Canonical binary control with an unmistakable ON/OFF state. */
-export default function ToggleField({ label, description, value, onValueChange, disabled = false }: Props) {
+export default function ToggleField({ label, description, value, onValueChange, disabled = false, style }: Props) {
   return (
-    <View style={[styles.container, value && styles.containerOn, disabled && styles.disabled]}>
+    <View style={[styles.container, value && styles.containerOn, disabled && styles.disabled, style]}>
       <View style={styles.copy}>
         <View style={styles.titleRow}>
           <AppText variant="body" weight="bold">{label}</AppText>

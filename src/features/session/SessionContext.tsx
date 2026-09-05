@@ -15,6 +15,7 @@ import type {
   AuthenticatedAccount,
   SessionPrincipal,
 } from "@/src/types/accounts";
+import { resetOnboarding } from "@/src/utils/onboardingStorage";
 import { can, type AppCapability } from "./accessPolicy";
 
 type StoredSession = {
@@ -42,6 +43,7 @@ type SessionContextValue = {
   continueAsGuest: () => Promise<void>;
   startAuthenticatedSession: (input: StartSessionInput) => Promise<void>;
   signOut: () => Promise<void>;
+  deleteAccount: () => Promise<void>;
 };
 
 const STORAGE_KEY = "resq.session.v3";
@@ -139,6 +141,18 @@ export function SessionProvider({ children }: PropsWithChildren) {
     ]);
   }, []);
 
+  // Local account erasure while the backend is not connected: every persisted
+  // trace of the account leaves the device and the session drops to anonymous.
+  // The server-side deletion request belongs here once the API is wired.
+  const deleteAccount = useCallback(async () => {
+    setPrincipal({ kind: "anonymous" });
+    await Promise.all([
+      AsyncStorage.removeItem(STORAGE_KEY),
+      AsyncStorage.removeItem(LEGACY_STORAGE_KEY),
+      resetOnboarding(),
+    ]);
+  }, []);
+
   const value = useMemo<SessionContextValue>(() => {
     const account = principal.kind === "authenticated" ? principal.account : null;
     return {
@@ -153,8 +167,9 @@ export function SessionProvider({ children }: PropsWithChildren) {
       continueAsGuest,
       startAuthenticatedSession,
       signOut,
+      deleteAccount,
     };
-  }, [continueAsGuest, isReady, principal, signOut, startAuthenticatedSession]);
+  }, [continueAsGuest, deleteAccount, isReady, principal, signOut, startAuthenticatedSession]);
 
   return <SessionContext.Provider value={value}>{children}</SessionContext.Provider>;
 }

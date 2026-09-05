@@ -9,6 +9,8 @@ type Props = {
   size?: number;
   color?: string;
   disabled?: boolean;
+  /** لأزرار التبديل (مفضلة، حفظ…) — بتنقال لقارئ الشاشة كحالة مختارة */
+  selected?: boolean;
   hitSlop?: number;
   contained?: boolean;
   style?: StyleProp<ViewStyle>;
@@ -21,6 +23,7 @@ export default function IconButton({
   size = ICON_SIZES.md,
   color = COLORS.icon,
   disabled = false,
+  selected,
   hitSlop = 8,
   contained = false,
   style,
@@ -29,7 +32,7 @@ export default function IconButton({
     <Pressable
       accessibilityRole="button"
       accessibilityLabel={accessibilityLabel}
-      accessibilityState={{ disabled }}
+      accessibilityState={{ disabled, selected }}
       disabled={disabled}
       hitSlop={hitSlop}
       onPress={onPress}

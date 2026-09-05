@@ -15,6 +15,8 @@ import LoadingState from "@/src/components/ui/LoadingState";
 import Screen from "@/src/components/ui/Screen";
 import ScreenHeader from "@/src/components/ui/ScreenHeader";
 import ReadingSection from "@/src/components/ui/ReadingSection";
+import { useFeedback } from "@/src/components/ui/FeedbackProvider";
+import { useFavorites } from "@/src/features/favorites";
 import { useSession } from "@/src/features/session/SessionContext";
 import { donationCampaignOwnerRoute, donationCheckoutRoute, organizationDetailsRoute } from "@/src/navigation/routes";
 import { COLORS, RADIUS, SPACING } from "@/src/theme";
@@ -40,8 +42,9 @@ export default function DonationCampaignDetailsScreen() {
   const router = useRouter();
   const { id } = useLocalSearchParams<{ id: string }>();
   const { accountKind } = useSession();
+  const { showFeedback } = useFeedback();
+  const { isFavorite, toggleFavorite } = useFavorites();
   const state = useDonationCampaignDetails(id);
-  const [favorite, setFavorite] = useState(false);
   const [selectedAmount, setSelectedAmount] = useState<number>(50000);
   const [customAmount, setCustomAmount] = useState("");
   const [supportMessage, setSupportMessage] = useState("");
@@ -61,6 +64,18 @@ export default function DonationCampaignDetailsScreen() {
   const progress = progressFor(campaign);
   const remaining = daysRemaining(campaign);
   const canDonate = campaign.status === "active";
+  const favorite = isFavorite("campaign", campaign.id);
+
+  const handleToggleFavorite = () => {
+    const added = toggleFavorite({ kind: "campaign", id: campaign.id, title: campaign.title });
+    showFeedback({
+      title: added ? "تمت الإضافة إلى المحفوظات" : "تمت الإزالة من المحفوظات",
+      message: added
+        ? `${campaign.title} صارت ضمن حملاتك المحفوظة.`
+        : `${campaign.title} انشالت من حملاتك المحفوظة.`,
+      tone: added ? "success" : "info",
+    });
+  };
 
   const shareCampaign = () =>
     Share.share({
@@ -98,7 +113,8 @@ export default function DonationCampaignDetailsScreen() {
               icon={favorite ? "heart" : "heart-outline"}
               color={favorite ? COLORS.danger : COLORS.icon}
               accessibilityLabel={favorite ? "إزالة من المحفوظات" : "حفظ الحملة"}
-              onPress={() => setFavorite((value) => !value)}
+              selected={favorite}
+              onPress={handleToggleFavorite}
             />
             <IconButton icon="ellipsis-vertical" accessibilityLabel="خيارات الحملة" onPress={() => void shareCampaign()} />
           </View>

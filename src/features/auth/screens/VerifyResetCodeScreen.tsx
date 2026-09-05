@@ -225,19 +225,21 @@ export default function VerifyResetCodeScreen() {
                   </Pressable>
                 </View>
 
-                <OtpCodeInput
-                  ref={codeInputRef}
-                  value={code}
-                  length={RESET_CODE_LENGTH}
-                  status={verificationStatus}
-                  disabled={
-                    isSubmitting ||
-                    isNavigating ||
-                    verificationStatus === "success"
-                  }
-                  onChangeText={handleCodeChange}
-                  onSubmit={handleVerifyCode}
-                />
+                <View style={styles.otpSection}>
+                  <OtpCodeInput
+                    ref={codeInputRef}
+                    value={code}
+                    length={RESET_CODE_LENGTH}
+                    status={verificationStatus}
+                    disabled={
+                      isSubmitting ||
+                      isNavigating ||
+                      verificationStatus === "success"
+                    }
+                    onChangeText={handleCodeChange}
+                    onSubmit={handleVerifyCode}
+                  />
+                </View>
 
                 {verificationStatus === "success" ? (
                   <Animated.View style={styles.successMessage}>

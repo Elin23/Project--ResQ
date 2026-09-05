@@ -160,6 +160,8 @@ export const styles = StyleSheet.create({
     writingDirection: "rtl",
   },
   fieldGroup: { width: "100%", marginBottom: 16, marginTop: 16 },
+  toggleField: { marginTop: 16 },
+  toggleDependentGroup: { marginTop: 10, marginBottom: 0 },
   inputContainer: {
     width: "100%",
     minHeight: 57,

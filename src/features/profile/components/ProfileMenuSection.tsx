@@ -18,7 +18,7 @@ export default function ProfileMenuSection({ section, onPress }: { section: Sect
             onPress={() => onPress(item.route, item.label)}
             style={index < section.items.length - 1 ? styles.border : undefined}
             leading={<View style={styles.leading}><Ionicons name={item.icon} size={ICON_SIZES.md} color={item.color} /></View>}
-            trailing={<View style={styles.trailing}>{item.value ? <AppText variant="label" color={COLORS.warning}>{item.value}</AppText> : null}<DirectionalIcon direction="back" size={ICON_SIZES.sm} color={COLORS.brownMuted} /></View>}
+            trailing={<View style={styles.trailing}>{item.value ? <AppText variant="label" color={COLORS.warning}>{item.value}</AppText> : null}<DirectionalIcon direction="next" size={ICON_SIZES.sm} color={COLORS.brownMuted} /></View>}
           />
         ))}
       </View>

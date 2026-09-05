@@ -13,7 +13,7 @@ import ErrorState from "@/src/components/ui/ErrorState";
 import Screen from "@/src/components/ui/Screen";
 import StickyActionBar from "@/src/components/ui/StickyActionBar";
 import { useFeedback } from "@/src/components/ui/FeedbackProvider";
-import { COLORS, RADIUS, SPACING } from "@/src/theme";
+import { COLORS, DENSITY, RADIUS, SPACING } from "@/src/theme";
 import { ORGANIZATION_TASK_TIMELINE } from "../constants/organizationTask";
 import { useOrganizationTaskDetails } from "../hooks/useOrganizationTaskDetails";
 import OrganizationTaskHeader from "../components/OrganizationTaskHeader";
@@ -42,7 +42,7 @@ export default function OrganizationTaskDetailsScreen() {
           <DetailRow label="نوع الحيوان" value={task.animalType} icon="paw-outline" tone="soft" />
           <DetailRow label="المدينة" value={task.city} icon="location-outline" tone="soft" />
         </View>
-        <Card disabled shadow={false} backgroundColor={COLORS.rescueInput}>
+        <Card disabled shadow={false} backgroundColor={COLORS.rescueInput} style={styles.summaryCard}>
           <DetailRow label="الحالة الصحية" value={task.healthStatus} icon="medkit-outline" valueColor={COLORS.danger} />
           <View style={styles.divider} />
           <AppText variant="caption" color={COLORS.textSecondary}>ملاحظات المبلّغ</AppText>
@@ -91,9 +91,9 @@ export default function OrganizationTaskDetailsScreen() {
 
 
 const styles = StyleSheet.create({
-  scroll: { paddingVertical: 0 }, content: { paddingHorizontal: SPACING.md, paddingBottom: SPACING.lg },
-  statusRow: { flexDirection: "row", direction: "rtl", alignItems: "center", justifyContent: "space-between", gap: SPACING.sm, marginBottom: SPACING.md }, urgentPill: { backgroundColor: COLORS.danger, borderRadius: RADIUS.full, paddingHorizontal: SPACING.sm, paddingVertical: SPACING.xs }, codeWrap: { flex: 1, alignItems: "stretch" },
-  heroWrap: { position: "relative", marginVertical: SPACING.sm }, hero: { width: "100%", height: 220, borderRadius: RADIUS.lg, resizeMode: "cover" }, counter: { position: "absolute", left: SPACING.md, bottom: SPACING.md, backgroundColor: COLORS.backdrop, paddingHorizontal: SPACING.sm, paddingVertical: SPACING.xs, borderRadius: RADIUS.full },
-  twoCols: { flexDirection: "row", direction: "rtl", gap: SPACING.sm, flexWrap: "wrap" }, divider: { height: 1, width: "100%", backgroundColor: COLORS.border, marginVertical: SPACING.sm }, timeRow: { flexDirection: "row", direction: "rtl", alignItems: "center", justifyContent: "flex-end", gap: SPACING.xs, marginTop: SPACING.sm },
-  map: { width: "100%", height: 170, resizeMode: "cover" }, mapButton: { position: "absolute", left: SPACING.md, right: SPACING.md, bottom: SPACING.md }, reporterCard: { flexDirection: "row", direction: "rtl", alignItems: "center", gap: SPACING.sm }, contactIcon: { width: 44, height: 44, borderRadius: RADIUS.full, backgroundColor: COLORS.rescueSoft, alignItems: "center", justifyContent: "center" }, reporterText: { flex: 1, alignItems: "stretch" }, emergencyTitle: { flexDirection: "row", direction: "rtl", alignItems: "center", gap: SPACING.xs }, avatar: { width: 48, height: 48, borderRadius: RADIUS.full, backgroundColor: COLORS.success, alignItems: "center", justifyContent: "center" },
+  scroll: { paddingVertical: 0 }, content: { paddingHorizontal: SPACING.lg, paddingTop: SPACING.lg, paddingBottom: SPACING.xl, gap: DENSITY.sectionGap },
+  statusRow: { flexDirection: "row", direction: "rtl", alignItems: "center", justifyContent: "space-between", gap: SPACING.sm, marginBottom: SPACING.lg }, urgentPill: { backgroundColor: COLORS.danger, borderRadius: RADIUS.full, paddingHorizontal: SPACING.sm, paddingVertical: SPACING.xs }, codeWrap: { flex: 1, alignItems: "stretch", gap: SPACING.xxs },
+  heroWrap: { position: "relative" }, hero: { width: "100%", height: 220, borderRadius: RADIUS.lg, resizeMode: "cover" }, counter: { position: "absolute", left: SPACING.md, bottom: SPACING.md, backgroundColor: COLORS.backdrop, paddingHorizontal: SPACING.sm, paddingVertical: SPACING.xs, borderRadius: RADIUS.full },
+  twoCols: { flexDirection: "row", direction: "rtl", gap: SPACING.md, flexWrap: "wrap" }, summaryCard: { gap: SPACING.sm }, divider: { height: 1, width: "100%", backgroundColor: COLORS.border }, timeRow: { flexDirection: "row", direction: "rtl", alignItems: "center", justifyContent: "flex-end", gap: SPACING.xs },
+  map: { width: "100%", height: 170, resizeMode: "cover" }, mapButton: { position: "absolute", left: SPACING.md, right: SPACING.md, bottom: SPACING.md }, reporterCard: { flexDirection: "row", direction: "rtl", alignItems: "center", gap: SPACING.md }, contactIcon: { width: 44, height: 44, borderRadius: RADIUS.full, backgroundColor: COLORS.rescueSoft, alignItems: "center", justifyContent: "center" }, reporterText: { flex: 1, alignItems: "stretch", gap: SPACING.xxs }, emergencyTitle: { flexDirection: "row", direction: "rtl", alignItems: "center", gap: SPACING.xs, marginBottom: SPACING.md }, avatar: { width: 48, height: 48, borderRadius: RADIUS.full, backgroundColor: COLORS.success, alignItems: "center", justifyContent: "center" },
 });

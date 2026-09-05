@@ -1,7 +1,11 @@
 import { type Href, useLocalSearchParams, useRouter } from "expo-router";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Animated, Easing, Keyboard } from "react-native";
+import { APP_CONFIG } from "@/src/constants/config";
+import { findMockAccountByEmail } from "@/src/data/mockAccounts.seed";
 import { useSession } from "@/src/features/session/SessionContext";
+import { defaultRouteForPrincipal } from "@/src/features/session/sessionNavigation";
+import type { AuthenticatedAccount } from "@/src/types/accounts";
 
 import {
   LoginFormErrors,
@@ -120,10 +124,30 @@ export function useLoginForm() {
       setErrors({});
       await new Promise((resolve) => setTimeout(resolve, 900));
       // In production the API response must provide the canonical account kind.
-      // The current local prototype login represents a personal user account.
-      await startAuthenticatedSession({ kind: "user", status: "active", email: email.trim() });
-      const safeReturnTo = returnTo?.startsWith("/") && !returnTo.startsWith("//") ? returnTo : null;
-      router.replace((safeReturnTo ?? "/(user)/(tabs)/(home)") as Href);
+      // While mock mode is on, the local directory plays that role; any other
+      // address keeps signing in as a personal user account.
+      const matchedAccount = APP_CONFIG.useMockApi ? findMockAccountByEmail(email) : undefined;
+      if (matchedAccount && password !== matchedAccount.password) {
+        setErrors({ general: "البريد الإلكتروني أو كلمة المرور غير صحيحة." });
+        return;
+      }
+      const nextAccount: AuthenticatedAccount = matchedAccount
+        ? {
+            id: matchedAccount.id,
+            kind: matchedAccount.kind,
+            status: matchedAccount.status,
+            displayName: matchedAccount.displayName,
+            email: matchedAccount.email,
+          }
+        : { id: "local-user", kind: "user", status: "active", email: email.trim() };
+      await startAuthenticatedSession(nextAccount);
+      // Only personal accounts resume the gated destination; organization shells
+      // start from the route their own account status allows.
+      const safeReturnTo = nextAccount.kind === "user" && returnTo?.startsWith("/") && !returnTo.startsWith("//")
+        ? returnTo
+        : null;
+      const workspaceRoute = defaultRouteForPrincipal({ kind: "authenticated", account: nextAccount });
+      router.replace((safeReturnTo ?? workspaceRoute) as Href);
     } catch {
       setErrors({ general: "تعذر تسجيل الدخول. تحقق من بياناتك واتصالك بالإنترنت ثم حاول مجددًا." });
     } finally {

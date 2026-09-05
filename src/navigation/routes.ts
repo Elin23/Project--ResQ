@@ -42,6 +42,7 @@ export const ROUTES = {
 
   profile: "/profile",
   editProfile: "/profile/edit",
+  favorites: "/profile/favorites",
 
   myMapPlaces: "/map-places",
   mapPlaceApply: "/map-places/apply",
