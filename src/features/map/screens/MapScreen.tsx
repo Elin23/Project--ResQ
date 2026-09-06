@@ -178,7 +178,7 @@ const styles = StyleSheet.create({
   filters: { width: "100%", flexDirection: "row", direction: "rtl", flexWrap: "wrap", gap: SPACING.xs },
   mapWrap: { paddingHorizontal: LAYOUT.screenPadding, gap: SPACING.sm },
   locateButton: { alignSelf: "flex-start" },
-  nearbySection: { paddingHorizontal: LAYOUT.screenPadding, gap: SPACING.sm },
+  nearbySection: { paddingHorizontal: LAYOUT.screenPadding, gap: SPACING.md, paddingTop: SPACING.md},
   cards: { gap: SPACING.sm },
   stateBox: { minHeight: 320, paddingHorizontal: LAYOUT.screenPadding, alignItems: "center", justifyContent: "center", gap: SPACING.md },
   refreshStatus: { marginHorizontal: LAYOUT.screenPadding, marginTop: SPACING.sm },
