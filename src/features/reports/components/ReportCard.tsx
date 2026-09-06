@@ -1,4 +1,5 @@
-import { View, Image, StyleSheet } from "react-native";
+import { View, StyleSheet } from "react-native";
+import RemoteImage from "@/src/components/ui/RemoteImage";
 import Card from "@/src/components/ui/Card";
 import Chip from "@/src/components/ui/Chip";
 import AppText from "@/src/components/ui/AppText";
@@ -17,7 +18,7 @@ const STATUS_CONFIG = {
 export default function ReportCard({ report, onHelpPress }: Props) {
   const status = STATUS_CONFIG[report.status];
   return <Card padding={0}>
-    <View style={styles.imageWrapper}><Image source={{ uri: report.imageUrl }} style={styles.image} /><View style={styles.chipOverlay}><Chip label={status.label} color={status.color} /></View></View>
+    <View style={styles.imageWrapper}><RemoteImage uri={report.imageUrl} style={styles.image} accessibilityLabel="صورة البلاغ" /><View style={styles.chipOverlay}><Chip label={status.label} color={status.color} /></View></View>
     <View style={styles.body}><AppText variant="h3" numberOfLines={2}>{report.description}</AppText><MetaRow icon="location" text="حي المزة، دمشق" /><Button title="استجابة" onPress={onHelpPress} /></View>
   </Card>;
 }

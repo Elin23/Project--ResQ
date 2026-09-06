@@ -1,5 +1,4 @@
-import { StyleSheet, Switch, View } from "react-native";
-import type { StyleProp, ViewStyle } from "react-native";
+import { StyleSheet, Switch, View, type StyleProp, type ViewStyle } from "react-native";
 
 import { COLORS, RADIUS, SPACING } from "@/src/theme";
 import AppText from "./AppText";

@@ -1,6 +1,5 @@
 import { Ionicons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
-import * as Location from "expo-location";
 import { useRouter } from "expo-router";
 import { useMemo, useState } from "react";
 import { Image, Pressable, StyleSheet, View } from "react-native";
@@ -22,6 +21,7 @@ import { useSession } from "@/src/features/session/SessionContext";
 import { useUnsavedChangesGuard } from "@/src/hooks/useUnsavedChangesGuard";
 import { usePermissionFeedback } from "@/src/hooks/usePermissionFeedback";
 import { feedingPointSubmissionDetailsRoute } from "@/src/navigation/routes";
+import { getReliableCurrentLocation, LocationUnavailableError } from "@/src/services/location/reliableLocation";
 import { COLORS, DENSITY, RADIUS, SPACING } from "@/src/theme";
 import FeedingPointLocationPicker, { type FeedingPointLocationValue } from "../components/FeedingPointLocationPicker";
 import { useCreateFeedingPointSubmission } from "../hooks/useCreateFeedingPointSubmission";
@@ -85,11 +85,16 @@ export default function CreateFeedingPointScreen() {
     if (locating) return;
     setLocating(true);
     try {
-      const permission = await Location.requestForegroundPermissionsAsync();
-      if (!handlePermission(permission, { title: "صلاحية الموقع مطلوبة", message: "اسمح بالوصول إلى الموقع لتحديد نقطة الإطعام بدقة." })) return;
-      const current = await Location.getCurrentPositionAsync({ accuracy: Location.Accuracy.Balanced });
-      const next = { latitude: current.coords.latitude, longitude: current.coords.longitude };
+      const result = await getReliableCurrentLocation({ timeoutMs: 8000 });
+      const next = { latitude: result.location.coords.latitude, longitude: result.location.coords.longitude };
       setLocation(next);
+      if (result.source === "last-known") {
+        showFeedback({
+          title: "تم استخدام آخر موقع معروف",
+          message: "تعذر الحصول على قراءة GPS جديدة بسرعة، لذلك استخدمنا آخر موقع حديث محفوظ على الجهاز. يمكنك تعديل النقطة يدويًا من الخريطة.",
+          tone: "warning",
+        });
+      }
       if (!address.trim()) {
         try {
           const [place] = await Location.reverseGeocodeAsync(next);
@@ -99,8 +104,15 @@ export default function CreateFeedingPointScreen() {
           // Coordinates remain valid even if reverse geocoding is unavailable.
         }
       }
-    } catch {
-      showFeedback({ title: "تعذر تحديد الموقع", message: "يمكنك اختيار الموقع يدويًا من الخريطة.", tone: "error" });
+    } catch (locationError) {
+      const message = locationError instanceof LocationUnavailableError
+        ? locationError.message
+        : "تعذر تحديد الموقع حاليًا.";
+      showFeedback({
+        title: "تعذر تحديد الموقع",
+        message: `${message} يمكنك اختيار الموقع يدويًا من الخريطة.`,
+        tone: "error",
+      });
     } finally {
       setLocating(false);
     }

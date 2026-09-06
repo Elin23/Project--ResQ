@@ -1,5 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
-import { Image, Pressable, StyleSheet, View } from "react-native";
+import { Pressable, StyleSheet, View } from "react-native";
+import RemoteImage from "@/src/components/ui/RemoteImage";
 
 import AppText from "@/src/components/ui/AppText";
 import ScreenHeader from "@/src/components/ui/ScreenHeader";
@@ -29,7 +30,7 @@ export default function ProfileHeader({ avatarUri, name, onEdit }: Props) {
       <View style={styles.identityOuter}>
         <View style={styles.identity}>
           <View style={styles.avatarWrap}>
-            <Image source={{ uri: avatarUri }} style={styles.avatar} />
+            <RemoteImage uri={avatarUri} style={styles.avatar} accessibilityLabel="الصورة الشخصية" />
             <View style={styles.verified}>
               <Ionicons name="checkmark" size={ICON_SIZES.xs} color={COLORS.textInverse} />
             </View>

@@ -1,5 +1,6 @@
 import { useRouter } from "expo-router";
-import { Image, StyleSheet, View } from "react-native";
+import { StyleSheet, View } from "react-native";
+import RemoteImage from "@/src/components/ui/RemoteImage";
 
 import AppText from "@/src/components/ui/AppText";
 import Button from "@/src/components/ui/Button";
@@ -106,7 +107,7 @@ export default function MyAdoptionListingsScreen() {
                   }
                   style={styles.listingCard}
                 >
-                  <Image source={{ uri: item.imageUrl }} style={styles.thumbnail} />
+                  <RemoteImage uri={item.imageUrl} style={styles.thumbnail} accessibilityLabel={item.name} />
                   <View style={styles.copy}>
                     <View style={styles.headerRow}>
                       <AppText variant="h3" weight="bold" numberOfLines={2} style={styles.title}>

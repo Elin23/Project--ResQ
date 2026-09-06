@@ -8,7 +8,8 @@ import {
   validatePasswordConfirmation,
 } from "@/src/features/auth/utils/passwordResetValidation";
 import { useSession } from "@/src/features/session/SessionContext";
-import { ROUTES } from "@/src/navigation/routes";
+import { goBackOrReplace } from "@/src/navigation/helpers";
+import { privacyPolicyRoute, ROUTES } from "@/src/navigation/routes";
 
 import {
   DEFAULT_SECURITY_SETTINGS,
@@ -111,7 +112,7 @@ export function useSecurityPrivacy(variant: SecurityPrivacyVariant) {
     changePassword,
     savePreferences,
     signOutEverywhere,
-    openPrivacyPolicy: () => router.push(ROUTES.privacyPolicy),
-    goBack: () => router.back(),
+    openPrivacyPolicy: () => router.push(privacyPolicyRoute(variant === "organization" ? "organization" : "user")),
+    goBack: () => goBackOrReplace(router, variant === "organization" ? ROUTES.organizationProfile : ROUTES.profile),
   };
 }

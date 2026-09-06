@@ -17,7 +17,9 @@ import IconButton from "@/src/components/ui/IconButton";
 import ScreenHeader from "@/src/components/ui/ScreenHeader";
 import ShellAwareScrollView from "@/src/components/ui/ShellAwareScrollView";
 import { styles } from "./About.styles";
-import type { AppRoute } from "@/src/navigation/routes";
+import { useSession } from "@/src/features/session/SessionContext";
+import { goBackOrReplace } from "@/src/navigation/helpers";
+import { helpCenterRoute, privacyPolicyRoute, ROUTES, termsAndConditionsRoute } from "@/src/navigation/routes";
 
 import {
   ABOUT_FEATURES,
@@ -29,6 +31,7 @@ import {
 
 export default function AboutScreen() {
   const router = useRouter();
+  const { accountKind } = useSession();
   const { width } = useWindowDimensions();
   const [licensesVisible, setLicensesVisible] = useState(false);
   const [headerElevated, setHeaderElevated] = useState(false);
@@ -37,16 +40,16 @@ export default function AboutScreen() {
   const contentWidth = Math.min(width - horizontalPadding * 2, 620);
 
   const handleBack = () => {
-    if (router.canGoBack()) {
-      router.back();
-      return;
-    }
-
-    router.replace("/");
+    goBackOrReplace(
+      router,
+      accountKind === "organization" ? ROUTES.organizationDashboard : ROUTES.userHome,
+    );
   };
 
-  const openRoute = (route: AppRoute) => {
-    router.push(route);
+  const openRoute = (route: "/help-center" | "/privacy-policy" | "/terms-and-conditions") => {
+    if (route === "/help-center") return router.push(helpCenterRoute(accountKind));
+    if (route === "/privacy-policy") return router.push(privacyPolicyRoute(accountKind));
+    return router.push(termsAndConditionsRoute(accountKind));
   };
 
   const openExternalUrl = async (url: string) => {

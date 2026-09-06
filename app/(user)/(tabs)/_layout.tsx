@@ -1,6 +1,7 @@
 import { Tabs } from "expo-router";
 
 import FloatingGlassTabBar from "@/src/components/ui/FloatingGlassTabBar";
+import WorkspaceBackBoundary from "@/src/navigation/WorkspaceBackBoundary";
 import { FloatingNavigationProvider } from "@/src/components/ui/FloatingNavigationContext";
 import { useSession } from "@/src/features/session/SessionContext";
 
@@ -27,6 +28,7 @@ export default function UserTabsLayout() {
 
   return (
     <FloatingNavigationProvider>
+      <WorkspaceBackBoundary kind="user" />
       <Tabs
         tabBar={(props) => <FloatingGlassTabBar {...props} tabs={tabs} />}
         screenOptions={{ headerShown: false, tabBarHideOnKeyboard: true }}

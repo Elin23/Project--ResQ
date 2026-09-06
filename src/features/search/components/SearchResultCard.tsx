@@ -1,5 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
-import { Image, StyleSheet, View } from "react-native";
+import { StyleSheet, View } from "react-native";
+import RemoteImage from "@/src/components/ui/RemoteImage";
 
 import { COLORS, RADIUS, SPACING } from "@/src/theme";
 import { SearchResult } from "@/src/types/search";
@@ -109,7 +110,7 @@ export default function SearchResultCard({ result, onPress }: Props) {
       style={styles.animalCard}
     >
       <View style={[styles.imageContainer, isNarrow && styles.imageContainerNarrow]}>
-        <Image source={result.image} resizeMode="cover" style={styles.image} />
+        <RemoteImage uri={typeof result.image === "object" && result.image && "uri" in result.image ? String(result.image.uri) : undefined} style={styles.image} accessibilityLabel={result.title} />
 
         {result.badge && (
           <View

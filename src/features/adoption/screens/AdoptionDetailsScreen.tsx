@@ -1,5 +1,6 @@
-import { Image, Share, StyleSheet, View } from "react-native";
+import { Share, StyleSheet, View } from "react-native";
 import { useRouter } from "expo-router";
+import RemoteImage from "@/src/components/ui/RemoteImage";
 
 import AppText from "@/src/components/ui/AppText";
 import Button from "@/src/components/ui/Button";
@@ -29,7 +30,7 @@ export default function AdoptionDetailsScreen() {
   const listing = details.listing;
   return <Screen scroll padded={false} contentContainerStyle={styles.content}>
     <ScreenHeader title="تفاصيل التبني" onBack={() => router.back()} />
-    <Image source={{ uri: listing.imageUrl }} style={styles.image} resizeMode="cover" />
+    <RemoteImage uri={listing.imageUrl} style={styles.image} accessibilityLabel={listing.name} />
     <View style={styles.body}>
       <View style={styles.titleBlock}>
         <View style={styles.titleRow}>

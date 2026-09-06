@@ -6,6 +6,7 @@ import type {
   UpdateDonationCampaignInput,
 } from "@/src/domain";
 import { DONATION_CAMPAIGN_SEED } from "../donationCampaigns.seed";
+import { assertOrganizationCampaignOwner } from "@/src/domain/policies";
 
 function clone(item: DonationCampaign): DonationCampaign {
   return {
@@ -80,6 +81,7 @@ export class InMemoryDonationCampaignRepository implements DonationCampaignRepos
   }
 
   async createDraft(input: CreateDonationCampaignInput) {
+    assertOrganizationCampaignOwner(input);
     validateDraftInput(input);
     const now = new Date().toISOString();
     const campaign: DonationCampaign = {

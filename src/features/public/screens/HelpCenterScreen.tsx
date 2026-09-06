@@ -15,7 +15,8 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 import AppText from "@/src/components/ui/AppText";
 import { useSession } from "@/src/features/session/SessionContext";
-import { aboutRoute, privacyPolicyRoute, termsAndConditionsRoute } from "@/src/navigation/routes";
+import { goBackOrReplace } from "@/src/navigation/helpers";
+import { aboutRoute, articleDetailsRoute, privacyPolicyRoute, ROUTES, termsAndConditionsRoute } from "@/src/navigation/routes";
 import ScreenHeader from "@/src/components/ui/ScreenHeader";
 import ShellAwareScrollView from "@/src/components/ui/ShellAwareScrollView";
 import EmptyState from "@/src/components/ui/EmptyState";
@@ -91,12 +92,10 @@ export default function HelpCenterScreen() {
   };
 
   const handleBack = () => {
-    if (router.canGoBack()) {
-      router.back();
-      return;
-    }
-
-    router.replace("/");
+    goBackOrReplace(
+      router,
+      accountKind === "organization" ? ROUTES.organizationDashboard : ROUTES.userHome,
+    );
   };
 
   const handleContactUs = () => {
@@ -283,11 +282,15 @@ export default function HelpCenterScreen() {
 
                     <View style={styles.articlesCard}>
                       {filteredArticles.map((item, index) => (
-                        <View
+                        <Pressable
                           key={item.id}
-                          style={[
+                          accessibilityRole="button"
+                          accessibilityLabel={`فتح مقال ${item.title}`}
+                          onPress={() => router.push(articleDetailsRoute(item.id, accountKind))}
+                          style={({ pressed }) => [
                             styles.articleRow,
                             index < filteredArticles.length - 1 && styles.articleBorder,
+                            pressed && styles.cardPressed,
                           ]}
                         >
 
@@ -315,7 +318,7 @@ export default function HelpCenterScreen() {
                               color={COLORS.primary}
                             />
                           </View>
-                        </View>
+                        </Pressable>
                       ))}
                     </View>
                   </View>

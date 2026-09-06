@@ -1,6 +1,8 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { Image, ImageBackground, Pressable, Share, StyleSheet, View } from "react-native";
+import { Image, Pressable, Share, StyleSheet, View } from "react-native";
+import RemoteImage from "@/src/components/ui/RemoteImage";
+import RemoteImageBackground from "@/src/components/ui/RemoteImageBackground";
 import { useMemo, useState } from "react";
 
 import ActionStack from "@/src/components/ui/ActionStack";
@@ -122,7 +124,7 @@ export default function DonationCampaignDetailsScreen() {
       />
 
       <View style={styles.body}>
-        <ImageBackground source={{ uri: campaign.coverImageUrl }} style={styles.hero} imageStyle={styles.heroImage}>
+        <RemoteImageBackground uri={campaign.coverImageUrl} style={styles.hero} imageStyle={styles.heroImage} accessibilityLabel={campaign.title}>
           <View style={styles.heroScrim} />
           {campaign.urgent ? (
             <View style={styles.urgentPill}>
@@ -136,11 +138,11 @@ export default function DonationCampaignDetailsScreen() {
           <AppText variant="h1" weight="bold" color={COLORS.textInverse} style={styles.heroCampaignTitle}>
             {campaign.title}
           </AppText>
-        </ImageBackground>
+        </RemoteImageBackground>
 
         <View style={styles.ownerRow}>
           {campaign.ownerLogoUrl ? (
-            <Image source={{ uri: campaign.ownerLogoUrl }} style={styles.ownerLogo} />
+            <RemoteImage uri={campaign.ownerLogoUrl} style={styles.ownerLogo} accessibilityLabel={campaign.ownerDisplayName} retryable={false} />
           ) : (
             <View style={styles.ownerLogoFallback}>
               <Ionicons name={"people-outline"} size={22} color={COLORS.primaryStrong} />

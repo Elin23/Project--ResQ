@@ -14,7 +14,8 @@ import { SafeAreaView } from "react-native-safe-area-context";
 
 import AppText from "@/src/components/ui/AppText";
 import { useSession } from "@/src/features/session/SessionContext";
-import { helpCenterRoute } from "@/src/navigation/routes";
+import { goBackOrReplace } from "@/src/navigation/helpers";
+import { helpCenterRoute, ROUTES } from "@/src/navigation/routes";
 import IconButton from "@/src/components/ui/IconButton";
 import ScreenHeader from "@/src/components/ui/ScreenHeader";
 import ShellAwareScrollView from "@/src/components/ui/ShellAwareScrollView";
@@ -41,12 +42,10 @@ export default function PrivacyPolicyScreen() {
 
 
   const handleBack = () => {
-    if (router.canGoBack()) {
-      router.back();
-      return;
-    }
-
-    router.replace("/register-entity");
+    goBackOrReplace(
+      router,
+      accountKind === "organization" ? ROUTES.organizationDashboard : ROUTES.userHome,
+    );
   };
 
   const handleShare = async () => {

@@ -41,3 +41,9 @@ export type { DonationTransferRepository } from "./donations/transferRepository"
 
 export type { ServicePlace, ServicePlaceType, ServicePlaceStatus, DailyOpeningHours, PlaceOpenState } from "./service-places/servicePlace";
 export type { ServicePlaceRepository, ServicePlaceQuery, UpdateOwnedServicePlaceInput } from "./service-places/servicePlaceRepository";
+
+export type { PublicContent, PublicContentKind } from "./content/content";
+export type { PublicContentRepository } from "./content/contentRepository";
+export type { SponsoredAd } from "./advertising/sponsoredAd";
+export type { SponsoredAdRepository } from "./advertising/sponsoredAdRepository";
+export { assertOrganizationCampaignOwner, MOBILE_BUSINESS_RULES } from "./policies";

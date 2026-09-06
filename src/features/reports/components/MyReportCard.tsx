@@ -1,5 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
-import { Image, Share, StyleSheet, View } from "react-native";
+import { Share, StyleSheet, View } from "react-native";
+import RemoteImage from "@/src/components/ui/RemoteImage";
 
 import ActionRow from "@/src/components/ui/ActionRow";
 import AppText from "@/src/components/ui/AppText";
@@ -30,7 +31,7 @@ export default function MyReportCard({ report, onDetailsPress }: Props) {
     <Card disabled padding={SPACING.md} style={styles.card}>
       <View style={styles.head}>
         {report.imageUrl ? (
-          <Image source={{ uri: report.imageUrl }} style={styles.image} />
+          <RemoteImage uri={report.imageUrl} style={styles.image} accessibilityLabel="صورة البلاغ" />
         ) : (
           <View style={styles.placeholder}>
             <Ionicons name="image-outline" size={ICON_SIZES.lg} color={COLORS.primaryStrong} />

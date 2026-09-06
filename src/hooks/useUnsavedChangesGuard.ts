@@ -1,6 +1,6 @@
 import { usePreventRemove } from "@react-navigation/native";
 import { useNavigation } from "expo-router";
-import { useCallback, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 
 import { useUnsavedChangesDecision } from "@/src/components/ui/UnsavedChangesDecisionProvider";
 
@@ -27,8 +27,18 @@ export function useUnsavedChangesGuard(enabled: boolean, options: Options = {}) 
     if (!action) return;
     pendingActionRef.current = null;
     setBypass(true);
-    requestAnimationFrame(() => navigation.dispatch(action));
+    requestAnimationFrame(() => {
+      navigation.dispatch(action);
+      // If the navigation action is ignored (for example at a stack boundary),
+      // do not leave the guard permanently disabled on the mounted screen.
+      requestAnimationFrame(() => setBypass(false));
+    });
   }, [navigation]);
+
+
+  useEffect(() => {
+    if (!enabled) setBypass(false);
+  }, [enabled]);
 
   usePreventRemove(enabled && !bypass, ({ data }) => {
     pendingActionRef.current = data.action;

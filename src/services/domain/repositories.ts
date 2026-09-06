@@ -9,6 +9,8 @@ import { InMemoryMapPlaceApplicationRepository } from "@/src/data/repositories/i
 import { InMemoryMapPlaceChangeRequestRepository } from "@/src/data/repositories/inMemoryMapPlaceChangeRequestRepository";
 import { InMemoryDonationCampaignRepository } from "@/src/data/repositories/inMemoryDonationCampaignRepository";
 import { InMemoryDonationTransferRepository } from "@/src/data/repositories/inMemoryDonationTransferRepository";
+import { InMemoryPublicContentRepository } from "@/src/data/repositories/inMemoryPublicContentRepository";
+import { InMemorySponsoredAdRepository } from "@/src/data/repositories/inMemorySponsoredAdRepository";
 
 const reportRepository = new InMemoryReportRepository();
 const adoptionRepository = new InMemoryAdoptionRepository();
@@ -30,4 +32,6 @@ export const repositories = {
   mapPlaceChangeRequests: mapPlaceChangeRequestRepository,
   donationCampaigns: donationCampaignRepository,
   donationTransfers: new InMemoryDonationTransferRepository(donationCampaignRepository),
+  publicContent: new InMemoryPublicContentRepository(),
+  sponsoredAds: new InMemorySponsoredAdRepository(),
 } as const;

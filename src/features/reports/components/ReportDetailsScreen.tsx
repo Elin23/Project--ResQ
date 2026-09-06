@@ -19,9 +19,8 @@ import { COLORS, ICON_SIZES, RADIUS, SPACING } from "@/src/theme";
 
 import ReportLocationMap from "./ReportLocationMap";
 
-const CUSTOM_FIRST_IMAGE = require("../../../../assets/images/dogg.png");
 const REPORT_IMAGES = [
-  CUSTOM_FIRST_IMAGE,
+  { uri: "https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?q=80&w=800&auto=format&fit=crop" },
   { uri: "https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?q=80&w=800&auto=format&fit=crop" },
   { uri: "https://images.unsplash.com/photo-1543466835-00a7907e9de1?q=80&w=800&auto=format&fit=crop" },
   { uri: "https://images.unsplash.com/photo-1517849845537-4d257902454a?q=80&w=800&auto=format&fit=crop" },

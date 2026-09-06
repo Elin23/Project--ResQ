@@ -2,12 +2,12 @@ import { Ionicons } from "@expo/vector-icons";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useState } from "react";
 import {
-  Image,
   Linking,
   Share,
   StyleSheet,
   View,
 } from "react-native";
+import RemoteImage from "@/src/components/ui/RemoteImage";
 
 import AppText from "../../../components/ui/AppText";
 import { useFeedback } from "../../../components/ui/FeedbackProvider";
@@ -139,7 +139,7 @@ export default function FeedingPointDetailsScreen() {
       <View style={styles.body}>
         <View style={styles.hero}>
           {point.photoUrl ? (
-            <Image source={{ uri: point.photoUrl }} style={styles.heroImage} />
+            <RemoteImage uri={point.photoUrl} style={styles.heroImage} accessibilityLabel={point.name} />
           ) : (
             <Ionicons name="restaurant-outline" size={40} color={COLORS.placeholder} />
           )}

@@ -1,4 +1,5 @@
-import { Image, StyleSheet, View } from "react-native";
+import { StyleSheet, View } from "react-native";
+import RemoteImage from "@/src/components/ui/RemoteImage";
 import AppText from "@/src/components/ui/AppText";
 import Button from "@/src/components/ui/Button";
 import Card from "@/src/components/ui/Card";
@@ -26,7 +27,7 @@ export default function OrganizationCard({ organization, onOpen, onContact }: Pr
         </View>
         <AppText color={COLORS.textSecondary} numberOfLines={2} style={styles.description}>{organization.description}</AppText>
       </View>
-      <Image source={organization.image} style={[styles.image, isNarrow && styles.imageNarrow]} resizeMode="cover" />
+      <RemoteImage uri={typeof organization.image === "object" && organization.image && "uri" in organization.image ? String(organization.image.uri) : undefined} style={[styles.image, isNarrow && styles.imageNarrow]} accessibilityLabel={organization.name} />
     </View>
     <View style={styles.chips}>{organization.services.slice(0,3).map((service) => <View key={service} style={styles.chip}><AppText size={FONT_SIZES.caption} color={COLORS.successDark}>{service}</AppText></View>)}</View>
     <ActionRow style={isNarrow ? styles.actionsNarrow : undefined}>

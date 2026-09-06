@@ -261,7 +261,6 @@ export default function CreateReportForm() {
               weight="bold"
               color={COLORS.text}
               style={{ marginTop: 8, flexShrink: 0}}
-              numberOfLines={1}
             >
               اضغط هنا لرفع الصور
             </AppText>

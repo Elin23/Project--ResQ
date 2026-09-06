@@ -1,6 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { Image, StyleSheet, View } from "react-native";
+import { StyleSheet, View } from "react-native";
+import RemoteImage from "@/src/components/ui/RemoteImage";
 
 import AppText from "@/src/components/ui/AppText";
 import Card from "@/src/components/ui/Card";
@@ -29,7 +30,7 @@ export default function DonationCampaignOwnerScreen() {
       <View style={styles.content}>
         <Card disabled style={styles.identityCard}>
           {campaign.ownerLogoUrl ? (
-            <Image source={{ uri: campaign.ownerLogoUrl }} style={styles.logo} />
+            <RemoteImage uri={campaign.ownerLogoUrl} style={styles.logo} accessibilityLabel={campaign.ownerName} />
           ) : (
             <View style={styles.logoFallback}>
               <Ionicons name={"people-outline"} size={30} color={COLORS.primaryStrong} />

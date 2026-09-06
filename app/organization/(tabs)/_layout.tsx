@@ -1,6 +1,7 @@
 import { Tabs } from "expo-router";
 
 import FloatingGlassTabBar from "@/src/components/ui/FloatingGlassTabBar";
+import WorkspaceBackBoundary from "@/src/navigation/WorkspaceBackBoundary";
 import { FloatingNavigationProvider } from "@/src/components/ui/FloatingNavigationContext";
 
 const ORGANIZATION_TABS = {
@@ -14,6 +15,7 @@ const ORGANIZATION_TABS = {
 export default function OrganizationTabsLayout() {
   return (
     <FloatingNavigationProvider>
+      <WorkspaceBackBoundary kind="organization" />
       <Tabs
         tabBar={(props) => <FloatingGlassTabBar {...props} tabs={ORGANIZATION_TABS} />}
         screenOptions={{ headerShown: false, tabBarHideOnKeyboard: true }}

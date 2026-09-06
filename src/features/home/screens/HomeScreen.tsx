@@ -11,16 +11,20 @@ import CommunityStatsCard from "../components/CommunityStatsCard";
 import ContributionHeroCard from "../components/ContributionHeroCard";
 import GuestHomeIntro from "../components/GuestHomeIntro";
 import { COMMUNITY_STATS, USER_HOME_METRICS } from "../constants/home";
-import { adoptionDetailsRoute } from "@/src/navigation/routes";
+import { adoptionDetailsRoute, articleDetailsRoute, articlesRoute, successStoriesRoute, successStoryDetailsRoute } from "@/src/navigation/routes";
 import { useHomeScreen } from "../hooks/useHomeScreen";
 import HomeAdoptionSection from "../sections/HomeAdoptionSection";
 import HomeReportsSection from "../sections/HomeReportsSection";
 import HomeSuggestionsSection from "../sections/HomeSuggestionsSection";
+import HomeContentSection from "@/src/features/content/components/HomeContentSection";
+import HomeSponsoredAdSection from "@/src/features/advertising/components/HomeSponsoredAdSection";
+import { useSession } from "@/src/features/session/SessionContext";
 import { COLORS, SPACING } from "@/src/theme";
 import { styles } from "./Home.styles";
 
 export default function HomeScreen() {
   const { router, quickActions, isGuest, isPendingOrganization } = useHomeScreen();
+  const { accountKind } = useSession();
 
   return (
     <Screen scroll safeAreaEdges={["left", "right"]}>
@@ -59,6 +63,19 @@ export default function HomeScreen() {
 
         {!isGuest && !isPendingOrganization ? <HomeReportsSection onOpenReports={() => router.push("/reports")} /> : null}
         <HomeAdoptionSection onOpenAdoption={() => router.push("/adoptions")} onOpenAnimal={(id) => router.push(adoptionDetailsRoute(id))} />
+
+        <HomeContentSection
+          kind="article"
+          onViewAll={() => router.push(articlesRoute(accountKind))}
+          onOpen={(id) => router.push(articleDetailsRoute(id, accountKind))}
+        />
+        <HomeContentSection
+          kind="success-story"
+          onViewAll={() => router.push(successStoriesRoute(accountKind))}
+          onOpen={(id) => router.push(successStoryDetailsRoute(id, accountKind))}
+        />
+
+        <HomeSponsoredAdSection />
 
         <CommunityStatsCard stats={[...COMMUNITY_STATS]} />
         <HomeSuggestionsSection

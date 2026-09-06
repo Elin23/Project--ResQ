@@ -1,7 +1,8 @@
 import { Ionicons } from "@expo/vector-icons";
 import { Stack, useRouter } from "expo-router";
-import { Image, Pressable, ScrollView, StyleSheet, TextInput, View } from "react-native";
+import { Pressable, ScrollView, StyleSheet, TextInput, View } from "react-native";
 import AppText from "@/src/components/ui/AppText";
+import RemoteImage from "@/src/components/ui/RemoteImage";
 import EmptyState from "@/src/components/ui/EmptyState";
 import Screen from "@/src/components/ui/Screen";
 import ScreenHeader from "@/src/components/ui/ScreenHeader";
@@ -38,7 +39,7 @@ export default function OrganizationsScreen() {
 }
 
 function ImageCard({ item }: { item: (typeof ORGANIZATIONS)[number] }) {
-  return <><View style={styles.recommendedImageWrap}><Image source={item.image} style={styles.recommendedImage}/>{item.verified && <View style={styles.verifiedPill}><Ionicons name="checkmark-circle" size={14} color={COLORS.onColor}/><AppText variant="caption" color={COLORS.onColor}>موثوق</AppText></View>}</View><View style={styles.recommendedBody}><AppText weight="bold" numberOfLines={2}>{item.name}</AppText><AppText variant="caption" color={COLORS.textSecondary}>{item.city}، {item.country}</AppText></View></>;
+  return <><View style={styles.recommendedImageWrap}><RemoteImage uri={typeof item.image === "object" && item.image && "uri" in item.image ? String(item.image.uri) : undefined} style={styles.recommendedImage} accessibilityLabel={item.name} />{item.verified && <View style={styles.verifiedPill}><Ionicons name="checkmark-circle" size={14} color={COLORS.onColor}/><AppText variant="caption" color={COLORS.onColor}>موثوق</AppText></View>}</View><View style={styles.recommendedBody}><AppText weight="bold" numberOfLines={2}>{item.name}</AppText><AppText variant="caption" color={COLORS.textSecondary}>{item.city}، {item.country}</AppText></View></>;
 }
 
 const styles = StyleSheet.create({

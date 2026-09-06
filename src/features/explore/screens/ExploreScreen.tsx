@@ -4,11 +4,21 @@ import { Pressable, StyleSheet, View } from "react-native";
 import AppText from "@/src/components/ui/AppText";
 import Screen from "@/src/components/ui/Screen";
 import SearchResultCard from "@/src/features/search/components/SearchResultCard";
+import HomeContentSection from "@/src/features/content/components/HomeContentSection";
 import SharedSectionHeader from "@/src/components/ui/SectionHeader";
 import { ORGANIZATIONS } from "@/src/features/organizations/constants/organizations";
 import OrganizationCard from "@/src/features/organizations/components/OrganizationCard";
 import { useAdoptionListings } from "@/src/features/adoption/hooks/useAdoptionListings";
-import { ROUTES, adoptionDetailsRoute, adoptionRoute, organizationDetailsRoute } from "@/src/navigation/routes";
+import {
+  ROUTES,
+  adoptionDetailsRoute,
+  adoptionRoute,
+  articleDetailsRoute,
+  articlesRoute,
+  organizationDetailsRoute,
+  successStoriesRoute,
+  successStoryDetailsRoute,
+} from "@/src/navigation/routes";
 import { useSession } from "@/src/features/session/SessionContext";
 import { ARABIC_LAYOUT, COLORS, FONT_SIZES, RADIUS, SPACING } from "@/src/theme";
 
@@ -28,6 +38,8 @@ export default function ExploreScreen() {
           <Category title="الجمعيات والمنظمات" icon="people" onPress={() => router.push(ROUTES.organizations)} />
           <Category title="حالات التبني" icon="heart" onPress={() => router.push(adoptionRoute(browseKind))} />
           <Category title="العيادات" icon="medkit" onPress={() => router.push(ROUTES.search)} />
+          <Category title="مقالات ونصائح" icon="newspaper" onPress={() => router.push(articlesRoute(accountKind))} />
+          <Category title="قصص نجاح" icon="sparkles" onPress={() => router.push(successStoriesRoute(accountKind))} />
         </View>
 
         <SharedSectionHeader title="جمعيات موصى بها" actionLabel="عرض الكل" onActionPress={() => router.push(ROUTES.organizations)} />
@@ -43,6 +55,17 @@ export default function ExploreScreen() {
             onPress={() => router.push(adoptionDetailsRoute(listing.id, browseKind))}
           />
         ))}
+
+        <HomeContentSection
+          kind="article"
+          onViewAll={() => router.push(articlesRoute(accountKind))}
+          onOpen={(id) => router.push(articleDetailsRoute(id, accountKind))}
+        />
+        <HomeContentSection
+          kind="success-story"
+          onViewAll={() => router.push(successStoriesRoute(accountKind))}
+          onOpen={(id) => router.push(successStoryDetailsRoute(id, accountKind))}
+        />
     </Screen>
   );
 }
@@ -51,5 +74,5 @@ function Category({ title, icon, onPress }: { title: string; icon: keyof typeof 
   return <Pressable accessibilityRole="button" onPress={onPress} style={({ pressed }) => [styles.category, pressed && styles.pressed]}><View style={styles.categoryIcon}><Ionicons name={icon} size={25} color={COLORS.brown} /></View><AppText weight="medium" size={FONT_SIZES.label} style={styles.categoryText}>{title}</AppText></Pressable>;
 }
 const styles = StyleSheet.create({
-  content: { paddingBottom: SPACING.xl, gap: SPACING.sm }, hero: { alignItems: "stretch", marginBottom: SPACING.lg }, subtitle: { marginTop: SPACING.sm, width: "100%", textAlign: ARABIC_LAYOUT.textAlign, writingDirection: ARABIC_LAYOUT.direction, lineHeight: 24 }, categoryRow: { flexDirection: "row", direction: "rtl", gap: SPACING.sm }, category: { flex: 1, minHeight: 112, padding: SPACING.sm, borderRadius: RADIUS.lg, backgroundColor: COLORS.background, borderWidth: 1, borderColor: COLORS.border, alignItems: "center", justifyContent: "center", gap: SPACING.sm }, categoryIcon: { width: 48, height: 48, borderRadius: RADIUS.full, backgroundColor: COLORS.peach, alignItems: "center", justifyContent: "center" }, categoryText: { textAlign: "center" }, pressed: { opacity: 0.78, transform: [{ scale: 0.98 }] },
+  content: { paddingBottom: SPACING.xl, gap: SPACING.sm }, hero: { alignItems: "stretch", marginBottom: SPACING.lg }, subtitle: { marginTop: SPACING.sm, width: "100%", textAlign: ARABIC_LAYOUT.textAlign, writingDirection: ARABIC_LAYOUT.direction, lineHeight: 24 }, categoryRow: { flexDirection: "row", direction: "rtl", flexWrap: "wrap", gap: SPACING.sm }, category: { flexGrow: 1, flexBasis: "30%", minWidth: 100, minHeight: 112, padding: SPACING.sm, borderRadius: RADIUS.lg, backgroundColor: COLORS.background, borderWidth: 1, borderColor: COLORS.border, alignItems: "center", justifyContent: "center", gap: SPACING.sm }, categoryIcon: { width: 48, height: 48, borderRadius: RADIUS.full, backgroundColor: COLORS.peach, alignItems: "center", justifyContent: "center" }, categoryText: { textAlign: "center" }, pressed: { opacity: 0.78, transform: [{ scale: 0.98 }] },
 });

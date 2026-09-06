@@ -1,4 +1,5 @@
-import { Image, StyleSheet, View } from "react-native";
+import { StyleSheet, View } from "react-native";
+import RemoteImage from "@/src/components/ui/RemoteImage";
 
 import {
     COLORS,
@@ -38,10 +39,10 @@ export default function HomeAdoptionCard({
       borderWidth={1}
       style={[styles.card, { width: cardWidth }]}
     >
-      <Image
-        source={{ uri: imageUrl }}
-        resizeMode="cover"
+      <RemoteImage
+        uri={imageUrl}
         style={[styles.image, (isNarrow || isShort) && styles.imageCompact]}
+        accessibilityLabel={name}
       />
 
       <View style={styles.content}>

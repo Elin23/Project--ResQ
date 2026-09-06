@@ -1,6 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
 import { Redirect, Stack, useLocalSearchParams, useRouter } from "expo-router";
-import { Image, Share, StyleSheet, View } from "react-native";
+import { Share, StyleSheet, View } from "react-native";
+import RemoteImage from "@/src/components/ui/RemoteImage";
 
 import AppText from "@/src/components/ui/AppText";
 import Button from "@/src/components/ui/Button";
@@ -63,7 +64,7 @@ export default function SearchResultDetailsScreen() {
       />
 
       {result.type === "animal" ? (
-        <Image source={result.image} resizeMode="cover" style={styles.heroImage} />
+        <RemoteImage uri={typeof result.image === "object" && result.image && "uri" in result.image ? String(result.image.uri) : undefined} style={styles.heroImage} accessibilityLabel={result.title} />
       ) : (
         <View style={styles.clinicHero}>
           <Ionicons name="medkit" size={54} color={COLORS.onColor} />

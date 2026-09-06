@@ -1,7 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import { DateTimePickerEvent } from "@react-native-community/datetimepicker";
 import * as ImagePicker from "expo-image-picker";
-import * as Location from "expo-location";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useMemo, useRef, useState } from "react";
 import { Image, Platform, Pressable, ScrollView, useWindowDimensions, View } from "react-native";
@@ -9,6 +8,8 @@ import type { MapPressEvent, Region } from "react-native-maps";
 import AppText from "@/src/components/ui/AppText";
 import { COLORS } from "@/src/theme";
 import { usePermissionFeedback } from "@/src/hooks/usePermissionFeedback";
+import { useFeedback } from "@/src/components/ui/FeedbackProvider";
+import { getReliableCurrentLocation, LocationUnavailableError } from "@/src/services/location/reliableLocation";
 import { styles } from "@/src/features/auth/screens/RegisterEntity.styles";
 import { SYRIAN_GOVERNORATES } from "@/src/features/auth/constants/governorates";
 import { ENTITY_CLINIC_ANIMALS, ENTITY_CLINIC_SERVICES, ENTITY_CLINIC_TYPES, ENTITY_ORGANIZATION_ACTIVITIES, ENTITY_ORGANIZATION_ANIMALS, ENTITY_ORGANIZATION_TYPES } from "@/src/features/auth/constants/registerEntity";
@@ -21,6 +22,7 @@ export function useRegisterEntityForm() {
   const params = useLocalSearchParams<{ entityType?: string }>();
   const { width } = useWindowDimensions();
   const { handlePermission } = usePermissionFeedback();
+  const { showFeedback } = useFeedback();
 
   const entityType: RegisterEntityType = "organization";
   const isClinic = false;
@@ -279,24 +281,35 @@ export function useRegisterEntityForm() {
     try {
       setIsLocating(true);
 
-      const permission = await Location.requestForegroundPermissionsAsync();
-
-      if (!handlePermission(permission, { title: "صلاحية الموقع مطلوبة", message: "اسمح بالوصول إلى الموقع لتحديد موقع الجمعية بدقة." })) return;
-
-      const currentLocation = await Location.getCurrentPositionAsync({
-        accuracy: Location.Accuracy.High,
-      });
+      const result = await getReliableCurrentLocation({ timeoutMs: 9000 });
 
       const coordinate = {
-        latitude: currentLocation.coords.latitude,
-        longitude: currentLocation.coords.longitude,
+        latitude: result.location.coords.latitude,
+        longitude: result.location.coords.longitude,
       };
+
+      if (result.source === "last-known") {
+        showFeedback({
+          title: "تم استخدام آخر موقع معروف",
+          message: "تعذر الحصول على قراءة GPS جديدة بسرعة. تحقق من النقطة على الخريطة قبل اعتمادها.",
+          tone: "warning",
+        });
+      }
 
       setTemporaryLocation(coordinate);
       setMapRegion({
         ...coordinate,
         latitudeDelta: 0.02,
         longitudeDelta: 0.02,
+      });
+    } catch (locationError) {
+      const message = locationError instanceof LocationUnavailableError
+        ? locationError.message
+        : "تعذر تحديد الموقع حاليًا.";
+      showFeedback({
+        title: "تعذر تحديد الموقع",
+        message: `${message} يمكنك تحديد الموقع يدويًا من الخريطة.`,
+        tone: "error",
       });
     } finally {
       setIsLocating(false);

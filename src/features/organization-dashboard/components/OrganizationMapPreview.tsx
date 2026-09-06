@@ -1,7 +1,8 @@
 import { Ionicons } from "@expo/vector-icons";
-import { ImageBackground, StyleSheet, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 
 import AppText from "@/src/components/ui/AppText";
+import RemoteImageBackground from "@/src/components/ui/RemoteImageBackground";
 import Button from "@/src/components/ui/Button";
 import Card from "@/src/components/ui/Card";
 import { COLORS, FONT_SIZES, RADIUS, SPACING } from "@/src/theme";
@@ -11,10 +12,11 @@ type Props = { onOpenMap: () => void };
 export default function OrganizationMapPreview({ onOpenMap }: Props) {
   return (
     <Card padding={0} radius={RADIUS.lg} style={styles.card} onPress={onOpenMap}>
-      <ImageBackground
-        source={require("@/assets/images/organizations/org-map.png")}
+      <RemoteImageBackground
+        uri="https://images.unsplash.com/photo-1524661135-423995f22d0b?auto=format&fit=crop&w=1200&q=80"
         style={styles.map}
         imageStyle={styles.image}
+        accessibilityLabel="معاينة خريطة الجمعية"
       >
         <View style={styles.marker}>
           <Ionicons name="paw" size={22} color={COLORS.white} />
@@ -35,7 +37,7 @@ export default function OrganizationMapPreview({ onOpenMap }: Props) {
             radius={RADIUS.full}
           />
         </View>
-      </ImageBackground>
+      </RemoteImageBackground>
     </Card>
   );
 }

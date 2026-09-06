@@ -1,5 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
-import { Image, Pressable, StyleSheet, View } from "react-native";
+import { Pressable, StyleSheet, View } from "react-native";
+import RemoteImage from "@/src/components/ui/RemoteImage";
 
 import AppText from "../../../components/ui/AppText";
 import IconButton from "../../../components/ui/IconButton";
@@ -45,7 +46,7 @@ export default function MapPinPreviewCard({
       <Pressable accessibilityRole="button" accessibilityLabel={`فتح تفاصيل نقطة الإطعام ${point.name}، الحالة ${meta.label}`} onPress={onPress} style={styles.card}>
         <View style={styles.thumbnail}>
           {point.thumbnailUrl ? (
-            <Image source={{ uri: point.thumbnailUrl }} style={styles.image} />
+            <RemoteImage uri={point.thumbnailUrl} style={styles.image} accessibilityLabel={point.name} />
           ) : (
             <Ionicons name="restaurant-outline" size={20} color={COLORS.primary} />
           )}

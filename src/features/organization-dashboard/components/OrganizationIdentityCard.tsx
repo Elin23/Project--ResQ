@@ -1,7 +1,8 @@
 import { Ionicons } from "@expo/vector-icons";
-import { Image, StyleSheet, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 
 import AppText from "@/src/components/ui/AppText";
+import RemoteImage from "@/src/components/ui/RemoteImage";
 import { COLORS, ICON_SIZES, LAYOUT, RADIUS, SPACING } from "@/src/theme";
 
 type Props = { name: string };
@@ -12,7 +13,7 @@ export default function OrganizationIdentityCard({ name }: Props) {
     <View style={styles.outer}>
       <View style={styles.identity}>
         <View style={styles.logoWrap}>
-          <Image source={require("@/assets/images/organizations/org-logo.png")} style={styles.logo} />
+          <RemoteImage uri="https://images.unsplash.com/photo-1601758228041-f3b2795255f1?auto=format&fit=crop&w=500&q=82" style={styles.logo} accessibilityLabel="شعار الجمعية" />
           <View style={styles.verified}>
             <Ionicons name="checkmark" size={ICON_SIZES.xs} color={COLORS.textInverse} />
           </View>

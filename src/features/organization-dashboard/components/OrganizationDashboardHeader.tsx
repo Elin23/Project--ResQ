@@ -1,7 +1,8 @@
 import { Ionicons } from "@expo/vector-icons";
-import { Image, Pressable, StyleSheet, View } from "react-native";
+import { Pressable, StyleSheet, View } from "react-native";
 
 import AppText from "@/src/components/ui/AppText";
+import RemoteImage from "@/src/components/ui/RemoteImage";
 import ScreenHeader from "@/src/components/ui/ScreenHeader";
 import { COLORS, ICON_SIZES, LAYOUT, RADIUS, SPACING } from "@/src/theme";
 
@@ -32,10 +33,7 @@ export default function OrganizationDashboardHeader({ onNotificationsPress }: Pr
       <View style={styles.identityOuter}>
         <View style={styles.identityRow}>
           <View style={styles.avatarWrap}>
-            <Image
-              source={require("@/assets/images/organizations/org-logo.png")}
-              style={styles.avatar}
-            />
+            <RemoteImage uri="https://images.unsplash.com/photo-1601758228041-f3b2795255f1?auto=format&fit=crop&w=500&q=82" style={styles.avatar} accessibilityLabel="شعار الجمعية" />
             <View style={styles.verifiedBadge}>
               <Ionicons name="checkmark" size={12} color={COLORS.textInverse} />
             </View>

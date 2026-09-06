@@ -1,5 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
-import { Image, StyleSheet, View } from "react-native";
+import { StyleSheet, View } from "react-native";
+import RemoteImage from "@/src/components/ui/RemoteImage";
 
 import { COLORS, FONTS, RADIUS, SPACING } from "@/src/theme";
 import AppText from "@/src/components/ui/AppText";
@@ -41,11 +42,7 @@ export default function NearbyReportCard({
       style={[styles.card, { width: cardWidth }]}
     >
       <View style={[styles.imageContainer, (isNarrow || isShort) && styles.imageContainerCompact]}>
-        <Image
-          source={{ uri: imageUrl }}
-          resizeMode="cover"
-          style={styles.image}
-        />
+        <RemoteImage uri={imageUrl} style={styles.image} accessibilityLabel={title} />
 
         {urgent ? (
           <View style={styles.badge}>

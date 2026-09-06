@@ -191,8 +191,7 @@ export default function ContactUsScreen() {
                   </AppText>
 
                   <AppText
-                    numberOfLines={1}
-                    style={[
+                      style={[
                       styles.counterText,
                       remainingCharacters < 0 && styles.counterError,
                     ]}

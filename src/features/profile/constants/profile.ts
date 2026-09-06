@@ -41,6 +41,8 @@ export const PROFILE_SECTIONS: ProfileMenuSection[] = [
   ]},
   { title: "تطبيق ResQ", items: [
     { id: "notifications", label: "الإشعارات", icon: "notifications-outline", color: COLORS.bgblue, route: "/notifications" },
+    { id: "articles", label: "المقالات والنصائح", icon: "newspaper-outline", color: COLORS.warning, route: ROUTES.articles },
+    { id: "success-stories", label: "قصص النجاح", icon: "sparkles-outline", color: COLORS.successDark, route: ROUTES.successStories },
     // معلّقة حتى تُنفَّذ شاشاتها — أزل التعليق لإعادتها إلى القائمة.
     // { id: "theme", label: "المظهر", icon: "moon-outline", color: COLORS.bgblue, value: "فاتح" },
     // { id: "language", label: "اللغة", icon: "globe-outline", color: COLORS.bgblue, value: "العربية" },
@@ -50,6 +52,7 @@ export const PROFILE_SECTIONS: ProfileMenuSection[] = [
     { id: "help", label: "مركز المساعدة", icon: "help-circle-outline", color: COLORS.brownMuted, route: "/help-center" },
     { id: "privacy", label: "سياسة الخصوصية", icon: "shield-checkmark-outline", color: COLORS.brownMuted, route: "/privacy-policy" },
     { id: "terms", label: "الشروط والأحكام", icon: "hammer-outline", color: COLORS.brownMuted, route: "/terms-and-conditions" },
+    { id: "about", label: "عن ResQ", icon: "information-circle-outline", color: COLORS.brownMuted, route: ROUTES.about },
     // معلّق حتى يُربط بمتجر التطبيقات — أزل التعليق لإعادته إلى القائمة.
     // { id: "rating", label: "تقييم التطبيق", icon: "star-outline", color: COLORS.brownMuted },
   ]},

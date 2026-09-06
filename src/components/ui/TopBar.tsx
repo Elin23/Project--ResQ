@@ -1,9 +1,10 @@
 import { Ionicons } from "@expo/vector-icons";
-import { Image, Pressable, StyleProp, StyleSheet, View, ViewStyle } from "react-native";
+import { Pressable, StyleProp, StyleSheet, View, ViewStyle } from "react-native";
 import { SafeAreaView } from "react-native-safe-area-context";
 import { COLORS, CONTROL_SIZES, DENSITY, ICON_SIZES, LAYOUT, RADIUS, SPACING } from "@/src/theme";
 import AppText from "./AppText";
 import IconButton from "./IconButton";
+import RemoteImage from "./RemoteImage";
 
 type Props = {
   onNotificationsPress?: () => void;
@@ -35,7 +36,7 @@ export default function TopBar({
               style={({ pressed }) => [styles.avatarButton, pressed && styles.pressed]}
             >
               {avatarUri ? (
-                <Image source={{ uri: avatarUri }} style={styles.avatar} />
+                <RemoteImage uri={avatarUri} style={styles.avatar} accessibilityLabel="الصورة الشخصية" retryable={false} />
               ) : (
                 <View style={styles.avatarFallback}>
                   <Ionicons name="person" size={ICON_SIZES.sm} color={COLORS.primaryStrong} />

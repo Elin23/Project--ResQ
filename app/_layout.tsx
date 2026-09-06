@@ -39,7 +39,6 @@ const LightNavigationTheme = {
   colors: { ...DefaultTheme.colors, background: COLORS.background, card: COLORS.white },
 };
 export default function RootLayout() {
-  console.log("isRTL:", I18nManager.isRTL);
   const [fontsLoaded] = useFonts({
     IBMPlexSansArabic_400Regular,
     IBMPlexSansArabic_500Medium,

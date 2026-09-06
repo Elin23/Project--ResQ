@@ -66,6 +66,8 @@ export const ROUTES = {
   about: "/about",
   privacyPolicy: "/privacy-policy",
   termsAndConditions: "/terms-and-conditions",
+  articles: "/articles",
+  successStories: "/success-stories",
 } as const;
 
 export type AppRoute = (typeof ROUTES)[keyof typeof ROUTES];
@@ -402,4 +404,33 @@ export function termsAndConditionsRoute(accountKind: AccountKind | null) {
 export function aboutRoute(accountKind: AccountKind | null) {
   if (accountKind === "organization") return "/organization/about" as const;
   return ROUTES.about;
+}
+
+
+/** Public editorial articles while preserving the active workspace. */
+export function articlesRoute(accountKind: AccountKind | null) {
+  if (accountKind === "organization") return "/organization/articles" as const;
+  return ROUTES.articles;
+}
+
+/** Public article details while preserving the active workspace. */
+export function articleDetailsRoute(id: string, accountKind: AccountKind | null = null) {
+  if (accountKind === "organization") {
+    return { pathname: "/organization/articles/[id]", params: { id } } as const;
+  }
+  return { pathname: "/articles/[id]", params: { id } } as const;
+}
+
+/** Public success stories while preserving the active workspace. */
+export function successStoriesRoute(accountKind: AccountKind | null) {
+  if (accountKind === "organization") return "/organization/success-stories" as const;
+  return ROUTES.successStories;
+}
+
+/** Public success-story details while preserving the active workspace. */
+export function successStoryDetailsRoute(id: string, accountKind: AccountKind | null = null) {
+  if (accountKind === "organization") {
+    return { pathname: "/organization/success-stories/[id]", params: { id } } as const;
+  }
+  return { pathname: "/success-stories/[id]", params: { id } } as const;
 }

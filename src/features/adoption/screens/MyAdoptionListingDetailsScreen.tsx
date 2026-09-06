@@ -1,7 +1,8 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import { useState } from "react";
-import { Image, StyleSheet, View } from "react-native";
+import { StyleSheet, View } from "react-native";
+import RemoteImage from "@/src/components/ui/RemoteImage";
 
 import ActionStack from "@/src/components/ui/ActionStack";
 import AppText from "@/src/components/ui/AppText";
@@ -101,7 +102,7 @@ export default function MyAdoptionListingDetailsScreen() {
       />
 
       <View style={styles.content}>
-        <Image source={{ uri: listing.imageUrl }} style={styles.hero} />
+        <RemoteImage uri={listing.imageUrl} style={styles.hero} accessibilityLabel={listing.name} />
 
         <View style={styles.titleBlock}>
           <View style={styles.titleRow}>

@@ -50,3 +50,6 @@ export { default as SelectionSheet } from "./SelectionSheet";
 export { UnsavedChangesDecisionProvider, useUnsavedChangesDecision } from "./UnsavedChangesDecisionProvider";
 
 export { default as ToggleField } from "./ToggleField";
+
+export { default as RemoteImage } from "./RemoteImage";
+export { default as RemoteImageBackground } from "./RemoteImageBackground";

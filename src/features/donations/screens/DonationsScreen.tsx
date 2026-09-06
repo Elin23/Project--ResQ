@@ -1,14 +1,14 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
 import {
-  Image,
-  ImageBackground,
   Pressable,
   RefreshControl,
   ScrollView,
   StyleSheet,
   View,
 } from "react-native";
+import RemoteImage from "@/src/components/ui/RemoteImage";
+import RemoteImageBackground from "@/src/components/ui/RemoteImageBackground";
 import { useMemo, useState } from "react";
 
 import AppText from "@/src/components/ui/AppText";
@@ -292,7 +292,7 @@ export default function DonationsScreen() {
 function HeroCampaign({ campaign, onPress, compact = false }: { campaign: DonationCampaign; onPress: () => void; compact?: boolean }) {
   return (
     <Pressable accessibilityRole="button" accessibilityLabel={`فتح حملة ${campaign.title}`} onPress={onPress}>
-      <ImageBackground source={{ uri: campaign.coverImageUrl }} style={[styles.hero, compact && styles.heroNarrow]} imageStyle={styles.heroImage}>
+      <RemoteImageBackground uri={campaign.coverImageUrl} style={[styles.hero, compact && styles.heroNarrow]} imageStyle={styles.heroImage} accessibilityLabel={campaign.title}>
         <View style={styles.heroScrim} />
         <View style={[styles.heroCopy, compact && styles.heroCopyNarrow]}>
           <AppText variant="h1" weight="bold" color={COLORS.white} style={styles.heroTitle}>
@@ -305,7 +305,7 @@ function HeroCampaign({ campaign, onPress, compact = false }: { campaign: Donati
             <AppText variant="label" weight="bold" color={COLORS.textInverse}>تبرع الآن</AppText>
           </View>
         </View>
-      </ImageBackground>
+      </RemoteImageBackground>
     </Pressable>
   );
 }
@@ -316,7 +316,7 @@ function PrimaryCampaignCard({ campaign, onPress, compact = false }: { campaign:
   return (
     <Card onPress={onPress} padding={0} elevation="sm" style={styles.primaryCard}>
       <View style={[styles.primaryImageWrap, compact && styles.primaryImageWrapNarrow]}>
-        <Image source={{ uri: campaign.coverImageUrl }} style={styles.primaryImage} />
+        <RemoteImage uri={campaign.coverImageUrl} style={styles.primaryImage} accessibilityLabel={campaign.title} />
         {campaign.urgent ? (
           <View style={styles.urgentBadge}>
             <AppText variant="caption" weight="bold" color={COLORS.textInverse}>! عاجل</AppText>
@@ -351,7 +351,7 @@ function CompactCampaignCard({ campaign, onPress }: { campaign: DonationCampaign
   const progress = progressFor(campaign);
   return (
     <Card onPress={onPress} style={styles.compactCard}>
-      <Image source={{ uri: campaign.coverImageUrl }} style={styles.compactImage} />
+      <RemoteImage uri={campaign.coverImageUrl} style={styles.compactImage} accessibilityLabel={campaign.title} />
       <View style={styles.compactBody}>
         <AppText variant="label" weight="bold" numberOfLines={2}>{campaign.title}</AppText>
         <AppText variant="caption" color={COLORS.textSecondary} numberOfLines={2}>{campaign.ownerDisplayName}</AppText>

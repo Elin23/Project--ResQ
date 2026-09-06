@@ -13,7 +13,7 @@ const campaignInput = {
   description: "حملة لتغطية تكاليف الفحوص والعلاج الضروري للحيوانات المصابة.",
   category: "medical" as const,
   urgent: true,
-  coverImageUrl: "https://picsum.photos/seed/test-donation/800/600",
+  coverImageUrl: "https://images.unsplash.com/photo-1548199973-03cce0bbc87b?auto=format&fit=crop&w=1000&q=82",
   location: { governorate: "دمشق", city: "دمشق" },
   impactItems: [{ id: "medical", title: "علاج الحالات", icon: "medkit-outline" }],
   targetAmount: 100000,
@@ -55,7 +55,7 @@ describe("Donation campaign lifecycle", () => {
     expect(rejected.status).toBe("rejected");
     const updated = await campaigns.updateOwned(draft.id, campaignInput.ownerAccountId, {
       ...campaignInput,
-      coverImageUrl: "https://picsum.photos/seed/better-image/800/600",
+      coverImageUrl: "https://images.unsplash.com/photo-1552053831-71594a27632d?auto=format&fit=crop&w=1000&q=82",
     });
     expect(updated.status).toBe("draft");
     expect(updated.rejectionReason).toBeUndefined();

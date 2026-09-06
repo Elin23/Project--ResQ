@@ -1,4 +1,5 @@
-import { Image, StyleSheet, View } from "react-native";
+import { StyleSheet, View } from "react-native";
+import RemoteImage from "@/src/components/ui/RemoteImage";
 
 import {
     COLORS,
@@ -41,7 +42,7 @@ export default function ActiveReportCard({
       style={styles.card}
     >
       <View style={styles.topRow}>
-        <Image source={{ uri: imageUrl }} style={[styles.image, isNarrow && styles.imageNarrow]} />
+        <RemoteImage uri={imageUrl} style={[styles.image, isNarrow && styles.imageNarrow]} accessibilityLabel={title} />
 
         <View style={styles.body}>
           <View style={styles.titleRow}>

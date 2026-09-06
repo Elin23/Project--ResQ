@@ -50,6 +50,10 @@ export const SCREEN_CATALOG: readonly ScreenDefinition[] = [
   { route: "/adoptions", owner: "shared", access: "mixed", purpose: "Browse available adoption listings", states: DATA },
   { route: "/adoptions/[id]", owner: "shared", access: "mixed", purpose: "View an adoption listing", states: DATA },
   { route: "/search", owner: "user", access: "mixed", purpose: "Search animals, organizations and content", states: DATA },
+  { route: "/articles", owner: "public", access: "mixed", purpose: "Browse public animal-care articles", states: DATA },
+  { route: "/articles/[id]", owner: "public", access: "mixed", purpose: "Read a public animal-care article", states: DATA },
+  { route: "/success-stories", owner: "public", access: "mixed", purpose: "Browse public rescue success stories", states: DATA },
+  { route: "/success-stories/[id]", owner: "public", access: "mixed", purpose: "Read a public rescue success story", states: DATA },
 
   { route: "/organization", owner: "organization", access: "active-account", purpose: "Organization operating dashboard", states: DATA },
   { route: "/organization/reports", owner: "organization", access: "active-account", purpose: "Incoming rescue reports for organization triage", states: DATA },
@@ -62,6 +66,10 @@ export const SCREEN_CATALOG: readonly ScreenDefinition[] = [
   { route: "/organization/profile", owner: "organization", access: "active-account", purpose: "Organization profile and operations settings", states: DATA },
   { route: "/organization/security", owner: "organization", access: "active-account", purpose: "Organization account security and privacy settings", states: ["content", "error", "success"] },
   { route: "/organization/data", owner: "organization", access: "active-account", purpose: "Organization official data and operating profile", states: ["content", "error", "success"] },
+  { route: "/organization/articles", owner: "public", access: "active-account", purpose: "Browse public articles inside the organization workspace", states: DATA },
+  { route: "/organization/articles/[id]", owner: "public", access: "active-account", purpose: "Read a public article inside the organization workspace", states: DATA },
+  { route: "/organization/success-stories", owner: "public", access: "active-account", purpose: "Browse public success stories inside the organization workspace", states: DATA },
+  { route: "/organization/success-stories/[id]", owner: "public", access: "active-account", purpose: "Read a public success story inside the organization workspace", states: DATA },
 
 
   { route: "/organizations", owner: "shared", access: "mixed", purpose: "Browse approved organizations", states: DATA },

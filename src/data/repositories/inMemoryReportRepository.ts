@@ -16,7 +16,7 @@ export class InMemoryReportRepository implements ReportRepository {
       title: input.title,
       description: input.description,
       subtitle: input.subtitle,
-      imageUrl: input.imageUrl ?? "https://picsum.photos/seed/resq-new-report/600/400",
+      imageUrl: input.imageUrl ?? "https://images.unsplash.com/photo-1517849845537-4d257902454a?auto=format&fit=crop&w=900&q=82",
       locationName: input.locationName,
       latitude: input.latitude,
       longitude: input.longitude,

@@ -6,6 +6,12 @@ module.exports = () => {
     "expo-font",
     "expo-localization",
     "@react-native-community/datetimepicker",
+    [
+      "expo-location",
+      {
+        locationWhenInUsePermission: "يستخدم ResQ موقعك لتحديد البلاغات ونقاط الإطعام والخدمات القريبة بدقة.",
+      },
+    ],
   ];
 
   if (googleMapsApiKey) {

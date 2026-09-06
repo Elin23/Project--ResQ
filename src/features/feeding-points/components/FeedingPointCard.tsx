@@ -1,5 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
-import { Image, Linking, StyleSheet, View } from "react-native";
+import { Linking, StyleSheet, View } from "react-native";
+import RemoteImage from "@/src/components/ui/RemoteImage";
 
 import AppText from "../../../components/ui/AppText";
 import Button from "../../../components/ui/Button";
@@ -76,7 +77,7 @@ export default function FeedingPointCard({ point, onPress }: Props) {
       <View style={styles.row}>
         <View style={styles.thumbnailWrap}>
           {point.thumbnailUrl ? (
-            <Image source={{ uri: point.thumbnailUrl }} style={styles.image} />
+            <RemoteImage uri={point.thumbnailUrl} style={styles.image} accessibilityLabel={point.name} />
           ) : (
             <View style={styles.thumbnailFallback}>
               <Ionicons name="restaurant-outline" size={24} color={COLORS.primary} />

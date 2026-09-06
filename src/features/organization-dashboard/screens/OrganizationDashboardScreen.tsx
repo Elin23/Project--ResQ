@@ -16,6 +16,8 @@ import OrganizationDashboardHeader from "../components/OrganizationDashboardHead
 import OrganizationMapPreview from "../components/OrganizationMapPreview";
 import OrganizationQuickActions from "../components/OrganizationQuickActions";
 import OrganizationSummaryCard from "../components/OrganizationSummaryCard";
+import HomeContentSection from "@/src/features/content/components/HomeContentSection";
+import HomeSponsoredAdSection from "@/src/features/advertising/components/HomeSponsoredAdSection";
 
 export default function OrganizationDashboardScreen() {
   const dashboard = useOrganizationDashboard();
@@ -90,6 +92,17 @@ export default function OrganizationDashboardScreen() {
 
         <View style={styles.section}>
           <OrganizationMapPreview onOpenMap={dashboard.openMap} />
+        </View>
+
+        <View style={styles.section}>
+          <HomeContentSection kind="article" onViewAll={dashboard.openArticles} onOpen={dashboard.openArticle} />
+        </View>
+        <View style={styles.section}>
+          <HomeContentSection kind="success-story" onViewAll={dashboard.openSuccessStories} onOpen={dashboard.openSuccessStory} />
+        </View>
+
+        <View style={styles.section}>
+          <HomeSponsoredAdSection />
         </View>
 
         <View style={styles.section}>

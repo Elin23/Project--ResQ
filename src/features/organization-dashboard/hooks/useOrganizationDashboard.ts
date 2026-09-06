@@ -1,7 +1,7 @@
 import { useCallback, useMemo } from "react";
 import { useRouter } from "expo-router";
 
-import { adoptionMyListingsRoute, createCampaignRoute, feedingPointsRoute, myCampaignsRoute, organizationDetailsRoute, organizationReportDetailsRoute, organizationTaskDetailsRoute, veterinaryClinicsRoute, ROUTES } from "@/src/navigation/routes";
+import { adoptionMyListingsRoute, articleDetailsRoute, articlesRoute, createCampaignRoute, feedingPointsRoute, myCampaignsRoute, organizationDetailsRoute, organizationReportDetailsRoute, organizationTaskDetailsRoute, successStoriesRoute, successStoryDetailsRoute, veterinaryClinicsRoute, ROUTES } from "@/src/navigation/routes";
 import { repositories } from "@/src/services/domain/repositories";
 import { domainServices } from "@/src/services/domain/services";
 import { useAsyncResource } from "@/src/hooks/useAsyncResource";
@@ -12,7 +12,7 @@ import { useSession } from "@/src/features/session/SessionContext";
 import type { WorkspaceMetric } from "@/src/components/ui/WorkspaceMetricGrid";
 import { useFeedback } from "@/src/components/ui/FeedbackProvider";
 
-const fallbackImage = require("@/assets/images/dogg.png");
+const fallbackImage = { uri: "https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?auto=format&fit=crop&w=900&q=82" };
 
 function relativeLabel(createdAt: string) {
   const minutes = Math.max(1, Math.round((Date.now() - new Date(createdAt).getTime()) / 60000));
@@ -73,6 +73,10 @@ export function useOrganizationDashboard() {
     createCampaign: () => router.push(createCampaignRoute("organization")),
     openCampaigns: () => router.push(myCampaignsRoute("organization")),
     openVeterinaryClinics: () => router.push(veterinaryClinicsRoute("organization")),
+    openArticles: () => router.push(articlesRoute("organization")),
+    openArticle: (id: string) => router.push(articleDetailsRoute(id, "organization")),
+    openSuccessStories: () => router.push(successStoriesRoute("organization")),
+    openSuccessStory: (id: string) => router.push(successStoryDetailsRoute(id, "organization")),
     updateOrganizationLocation: () => showFeedback({ title: "تحديث موقع الجمعية", message: "سيتم اعتماد الموقع الجديد بعد تأكيده من الخريطة.", tone: "info" }),
     openOrganizationProfile: () => router.push(organizationDetailsRoute(organizationId)),
   };
