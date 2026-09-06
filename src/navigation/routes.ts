@@ -56,6 +56,7 @@ export const ROUTES = {
   organizationNotifications: "/organization/notifications",
   organizationProfile: "/organization/profile",
   organizationSecurity: "/organization/security",
+  organizationData: "/organization/data",
 
 
   donations: "/donations",

@@ -61,6 +61,7 @@ export const SCREEN_CATALOG: readonly ScreenDefinition[] = [
   { route: "/organization/notifications", owner: "organization", access: "active-account", purpose: "Organization notifications", states: DATA },
   { route: "/organization/profile", owner: "organization", access: "active-account", purpose: "Organization profile and operations settings", states: DATA },
   { route: "/organization/security", owner: "organization", access: "active-account", purpose: "Organization account security and privacy settings", states: ["content", "error", "success"] },
+  { route: "/organization/data", owner: "organization", access: "active-account", purpose: "Organization official data and operating profile", states: ["content", "error", "success"] },
 
 
   { route: "/organizations", owner: "shared", access: "mixed", purpose: "Browse approved organizations", states: DATA },

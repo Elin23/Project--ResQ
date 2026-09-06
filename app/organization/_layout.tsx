@@ -16,6 +16,7 @@ export default function OrganizationWorkspaceLayout() {
       <Stack.Screen name="(tabs)" />
       <Stack.Screen name="tasks/[id]" />
       <Stack.Screen name="security" />
+      <Stack.Screen name="data" />
     </Stack>
   );
 }

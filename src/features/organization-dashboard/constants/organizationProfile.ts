@@ -31,7 +31,7 @@ export const ORGANIZATION_PROFILE_STATS: WorkspaceMetric[] = [
 export function organizationProfileSections(publicProfileId: string): ProfileMenuSection[] {
   return [
     { title: "إعدادات الجمعية", items: [
-      { id: "organization-data", label: "بيانات الجمعية", icon: "business-outline", color: COLORS.primaryStrong },
+      { id: "organization-data", label: "بيانات الجمعية", icon: "business-outline", color: COLORS.primaryStrong, route: ROUTES.organizationData },
       { id: "public-profile", label: "الملف العام للجمعية", icon: "eye-outline", color: COLORS.info, route: organizationDetailsRoute(publicProfileId) },
       { id: "security", label: "الأمان والخصوصية", icon: "shield-half-outline", color: COLORS.warning, route: ROUTES.organizationSecurity },
     ]},
