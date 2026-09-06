@@ -42,6 +42,7 @@ export const ROUTES = {
 
   profile: "/profile",
   editProfile: "/profile/edit",
+  securityPrivacy: "/profile/security",
   favorites: "/profile/favorites",
 
   myMapPlaces: "/map-places",
@@ -54,6 +55,7 @@ export const ROUTES = {
   organizationMap: "/organization/map",
   organizationNotifications: "/organization/notifications",
   organizationProfile: "/organization/profile",
+  organizationSecurity: "/organization/security",
 
 
   donations: "/donations",
@@ -372,4 +374,31 @@ export function donationDetailsRoute(id: string, accountKind: AccountKind | null
     return { pathname: "/organization/donations/transfers/[id]", params: { id } } as const;
   }
   return { pathname: "/donations/transfers/[id]", params: { id } } as const;
+}
+
+/**
+ * صفحات الدعم والمحتوى العام داخل مساحة العمل الحالية.
+ * ملفات مجموعة (user) محجوبة عن حسابات الجمعيات، فلكل مساحة نسخة مسار خاصة بها.
+ */
+export function helpCenterRoute(accountKind: AccountKind | null) {
+  if (accountKind === "organization") return "/organization/help-center" as const;
+  return ROUTES.helpCenter;
+}
+
+/** سياسة الخصوصية في مساحة العمل الحالية. */
+export function privacyPolicyRoute(accountKind: AccountKind | null) {
+  if (accountKind === "organization") return "/organization/privacy-policy" as const;
+  return ROUTES.privacyPolicy;
+}
+
+/** الشروط والأحكام في مساحة العمل الحالية. */
+export function termsAndConditionsRoute(accountKind: AccountKind | null) {
+  if (accountKind === "organization") return "/organization/terms-and-conditions" as const;
+  return ROUTES.termsAndConditions;
+}
+
+/** صفحة "عن ResQ" في مساحة العمل الحالية. */
+export function aboutRoute(accountKind: AccountKind | null) {
+  if (accountKind === "organization") return "/organization/about" as const;
+  return ROUTES.about;
 }

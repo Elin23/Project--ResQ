@@ -15,6 +15,7 @@ export default function OrganizationWorkspaceLayout() {
     <Stack screenOptions={{ headerShown: false, animation: "fade" }}>
       <Stack.Screen name="(tabs)" />
       <Stack.Screen name="tasks/[id]" />
+      <Stack.Screen name="security" />
     </Stack>
   );
 }

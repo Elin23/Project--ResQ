@@ -25,7 +25,7 @@ export const PROFILE_STATS: ProfileStat[] = [
 export const PROFILE_SECTIONS: ProfileMenuSection[] = [
   { title: "إعدادات الحساب", items: [
     { id: "personal", label: "البيانات الشخصية", icon: "person-outline", color: COLORS.brown, route: "/profile/edit" },
-    { id: "security", label: "الأمان والخصوصية", icon: "shield-half-outline", color: COLORS.warning },
+    { id: "security", label: "الأمان والخصوصية", icon: "shield-half-outline", color: COLORS.warning, route: ROUTES.securityPrivacy },
     // معلّق حتى تُنفَّذ شاشته — أزل التعليق لإعادته إلى القائمة.
     // { id: "contact", label: "الهاتف والبريد", icon: "id-card-outline", color: COLORS.brown },
   ]},
