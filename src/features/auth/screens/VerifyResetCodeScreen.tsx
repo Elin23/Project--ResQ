@@ -293,6 +293,7 @@ export default function VerifyResetCodeScreen() {
                   iconSize={22}
                   loading={isSubmitting}
                   loadingText="جاري التحقق..."
+                  numberOfLines={1}
                   disabled={
                     isNavigating ||
                     code.length !== RESET_CODE_LENGTH ||

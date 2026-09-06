@@ -113,8 +113,10 @@ export const styles = StyleSheet.create({
     backgroundColor: PALETTE.green700,
   },
   sectionTitle: {
+    flex: 1,
     fontFamily: FONTS.medium,
     fontSize: TYPOGRAPHY.h3.fontSize,
+    lineHeight: TYPOGRAPHY.h3.lineHeight,
     color: PALETTE.green700,
     textAlign: "auto",
     writingDirection: "rtl",
@@ -255,8 +257,10 @@ export const styles = StyleSheet.create({
     marginBottom: 8,
   },
   passwordStrengthTitle: {
+    flex: 1,
     fontFamily: FONTS.regular,
     fontSize: TYPOGRAPHY.label.fontSize,
+    lineHeight: TYPOGRAPHY.label.lineHeight,
     color: COLORS.textSecondary,
     textAlign: "auto",
     writingDirection: "rtl",

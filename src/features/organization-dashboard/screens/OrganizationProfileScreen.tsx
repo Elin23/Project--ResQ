@@ -1,48 +1,85 @@
-import { StyleSheet, View } from "react-native";
-import { useRouter } from "expo-router";
+import { Ionicons } from "@expo/vector-icons";
+import { Pressable, StyleSheet, View } from "react-native";
 
+import ActionStack from "@/src/components/ui/ActionStack";
 import AppText from "@/src/components/ui/AppText";
 import Button from "@/src/components/ui/Button";
-import ActionStack from "@/src/components/ui/ActionStack";
+import ConfirmDialog from "@/src/components/ui/ConfirmDialog";
 import Screen from "@/src/components/ui/Screen";
 import ScreenHeader from "@/src/components/ui/ScreenHeader";
-import { useFeedback } from "@/src/components/ui/FeedbackProvider";
-import { useSession } from "@/src/features/session/SessionContext";
-import { organizationDetailsRoute, ROUTES } from "@/src/navigation/routes";
-import { COLORS, RADIUS, SPACING } from "@/src/theme";
+import WorkspaceMetricGrid from "@/src/components/ui/WorkspaceMetricGrid";
+import ProfileMenuSection from "@/src/features/profile/components/ProfileMenuSection";
+import { useDecisionDialog } from "@/src/hooks/useDecisionDialog";
+import { COLORS, ICON_SIZES, LAYOUT, RADIUS, SPACING } from "@/src/theme";
+import OrganizationIdentityCard from "../components/OrganizationIdentityCard";
+import { useOrganizationProfile } from "../hooks/useOrganizationProfile";
 
 export default function OrganizationProfileScreen() {
-  const router = useRouter();
-  const { account, signOut } = useSession();
-  const { showFeedback } = useFeedback();
-
-  const logout = async () => {
-    await signOut();
-    router.replace(ROUTES.login);
-  };
+  const { name, stats, sections, handleItemPress, openPublicProfile, logout } = useOrganizationProfile();
+  const decision = useDecisionDialog();
 
   return (
-    <Screen scroll padded={false} surface="app" contentContainerStyle={styles.content}>
-      <ScreenHeader title="حساب الجمعية" subtitle={account?.displayName ?? "الجمعية"} />
-      <View style={styles.body}>
+    <Screen scroll padded={false} surface="app" contentContainerStyle={styles.screen}>
+      <ScreenHeader
+        title="حساب الجمعية"
+        right={
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel="عرض الملف العام للجمعية"
+            hitSlop={8}
+            onPress={openPublicProfile}
+            style={({ pressed }) => [styles.publicProfileButton, pressed && styles.pressed]}
+          >
+            <Ionicons name="eye-outline" size={ICON_SIZES.sm} color={COLORS.primaryStrong} />
+            <AppText variant="label" weight="medium" color={COLORS.primaryStrong}>الملف العام</AppText>
+          </Pressable>
+        }
+      />
 
-      <View style={styles.card}>
-        <AppText weight="bold">إدارة مساحة العمل</AppText>
-        <AppText color={COLORS.textMuted}>أدر بيانات الجمعية وإعدادات مساحة العمل والملف العام من مكان واحد.</AppText>
-      </View>
+      <OrganizationIdentityCard name={name} />
 
-      <ActionStack>
-        <Button title="عرض الملف العام" onPress={() => router.push(organizationDetailsRoute("resq-syria"))} />
-        <Button title="إعدادات الجمعية" variant="outline" onPress={() => showFeedback({ title: "إعدادات الجمعية", message: "ستتوفر إعدادات الفريق والبيانات التنظيمية من هذه المساحة.", tone: "info" })} />
-        <Button title="تسجيل الخروج" variant="text" onPress={logout} />
-      </ActionStack>
+      <View style={styles.content}>
+        <WorkspaceMetricGrid metrics={stats} />
+        {sections.map((section) => (
+          <ProfileMenuSection key={section.title} section={section} onPress={handleItemPress} />
+        ))}
+        <ActionStack>
+          <Button
+            title="تسجيل الخروج"
+            variant="ghost"
+            onPress={() => decision.request(
+              { title: "تسجيل الخروج", message: "هل أنت متأكد من تسجيل الخروج من حساب الجمعية؟", confirmLabel: "تسجيل الخروج", destructive: false, icon: "log-out-outline" },
+              logout,
+            )}
+          />
+        </ActionStack>
       </View>
+      {decision.dialogProps ? <ConfirmDialog {...decision.dialogProps} /> : null}
     </Screen>
   );
 }
 
 const styles = StyleSheet.create({
-  content: { paddingTop: 0 },
-  body: { padding: SPACING.lg, gap: SPACING.lg },
-  card: { gap: SPACING.sm, padding: SPACING.lg, borderRadius: RADIUS.lg, backgroundColor: COLORS.white },
+  screen: { paddingTop: 0, paddingBottom: SPACING.xl },
+  publicProfileButton: {
+    minHeight: 38,
+    paddingHorizontal: SPACING.md,
+    flexDirection: "row",
+    direction: "rtl",
+    alignItems: "center",
+    gap: SPACING.xs,
+    borderWidth: 1,
+    borderColor: COLORS.primarySoft,
+    borderRadius: RADIUS.full,
+    backgroundColor: COLORS.primarySoft,
+  },
+  pressed: { opacity: 0.65 },
+  content: {
+    width: "100%",
+    maxWidth: LAYOUT.contentMaxWidth,
+    alignSelf: "center",
+    paddingHorizontal: LAYOUT.screenPadding,
+    paddingTop: SPACING.lg,
+    gap: SPACING.md,
+  },
 });

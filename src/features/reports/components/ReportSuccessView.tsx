@@ -1,480 +1,379 @@
-import { Feather, Ionicons } from "@expo/vector-icons";
+import { Ionicons } from "@expo/vector-icons";
 import { router } from "expo-router";
 import React from "react";
-import { Dimensions, Image, SafeAreaView, ScrollView, Share, StyleSheet, TouchableOpacity, View } from "react-native";
+import { Image, Share, StyleSheet, View, useWindowDimensions } from "react-native";
 
-import AppText from "@/src/components/ui/AppText";
-import ScreenHeader from "@/src/components/ui/ScreenHeader";
+import {
+    ActionStack,
+    AppText,
+    Button,
+    Card,
+    IconButton,
+    Screen,
+    ScreenHeader,
+} from "@/src/components/ui";
 import { useSession } from "@/src/features/session/SessionContext";
+import { LTR_TEXT } from "@/src/i18n/rtl";
 import { reportDetailsRoute, ROUTES } from "@/src/navigation/routes";
-import { COLORS, FONTS, FONT_SIZES, RADIUS, SPACING } from "@/src/theme";
+import { COLORS, DENSITY, ICON_SIZES, LAYOUT, RADIUS, SPACING } from "@/src/theme";
 
-const { width: SCREEN_WIDTH } = Dimensions.get('window');
-const HORIZONTAL_PADDING = SPACING.md;
+const REPORT_CODE = "RQ-2025-00481";
+const TIMELINE_NODE_SIZE = 26;
+const ILLUSTRATION_MAX_HEIGHT = 220;
+
+const TIMELINE_STEPS: { title: string; time?: string; done: boolean }[] = [
+    { title: "تم استلام البلاغ", time: "اليوم، 10:45 ص", done: true },
+    { title: "سيتم مراجعته من قبل الفريق", time: "بانتظار التأكيد", done: false },
+    { title: "تعيين متطوع أو جمعية", time: "بانتظار البدء", done: false },
+    { title: "وصول تحديثات مباشرة", done: false },
+];
+
+const PROMO_BENEFITS = [
+    "متابعة حالة البلاغ مباشرة",
+    "استقبال الإشعارات والتحذيرات",
+    "التعليق والمشاركة في عمليات الإنقاذ",
+];
 
 export default function ReportSuccessScreen() {
     const { isGuest, accountKind } = useSession();
+    const { width } = useWindowDimensions();
+    const illustrationHeight = Math.min(width * 0.52, ILLUSTRATION_MAX_HEIGHT);
 
     return (
-        <SafeAreaView style={styles.outerContainer}>
+        <Screen scroll padded={false} contentContainerStyle={styles.screenContent}>
             <ScreenHeader title="تم الإرسال بنجاح" onBack={() => router.back()} />
 
-            <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
-                
+            <View style={styles.body}>
+
                 {/* Illustration Graphic Area */}
                 <View style={styles.illustrationContainer}>
-                    <Image 
-                        source={require('@/assets/images/section-illustration.png')} 
-                        style={styles.illustrationImage} 
+                    <Image
+                        source={require("@/assets/images/section-illustration.png")}
+                        style={[styles.illustrationImage, { height: illustrationHeight }]}
                     />
                 </View>
 
                 {/* Header Title & Subtitle */}
                 <View style={styles.headerTextBlock}>
-                    <AppText style={styles.mainTitle}>تم إرسال البلاغ بنجاح</AppText>
-                    <AppText style={styles.subTitle}>
-                        شكراً لمساعدتك. تم استلام البلاغ وسيوم فريق ResQ بمراجعته في أقرب وقت ممكن.
+                    <AppText variant="h1" weight="bold" align="center" color={COLORS.brown}>
+                        تم إرسال البلاغ بنجاح
+                    </AppText>
+                    <AppText variant="bodyLarge" align="center" color={COLORS.textSecondary} style={styles.subTitle}>
+                        شكراً لمساعدتك. تم استلام البلاغ وسيقوم فريق ResQ بمراجعته في أقرب وقت ممكن.
                     </AppText>
                 </View>
 
                 {/* Report Number Card */}
-                <View style={styles.cardBox}>
+                <Card disabled radius={RADIUS.xl} padding={DENSITY.cardPadding}>
                     <View style={styles.cardContentRow}>
-                        <AppText style={styles.reportCodeText}>RQ-2025-00481</AppText>
-                        <View style={styles.cardRightGroup}>
-                            <AppText style={styles.cardLabelText}>رقم البلاغ</AppText>
-                            <TouchableOpacity accessibilityRole="button" accessibilityLabel="مشاركة رقم البلاغ" onPress={() => void Share.share({ message: "رقم البلاغ: RQ-2025-00481" })} style={styles.iconSquareButton} hitSlop={{ top: 5, bottom: 5, left: 5, right: 5 }}>
-                                <Feather name="share-2" size={16} color={COLORS.brown} />
-                            </TouchableOpacity>
+                        <View style={styles.cardCopyGroup}>
+                            <AppText variant="caption" color={COLORS.textSecondary}>رقم البلاغ</AppText>
+                            <AppText variant="h3" weight="bold" color={COLORS.ink} style={LTR_TEXT}>
+                                {REPORT_CODE}
+                            </AppText>
                         </View>
+
+                        <IconButton
+                            icon="share-social-outline"
+                            accessibilityLabel="مشاركة رقم البلاغ"
+                            color={COLORS.brown}
+                            contained
+                            onPress={() => void Share.share({ message: `رقم البلاغ: ${REPORT_CODE}` })}
+                        />
                     </View>
-                </View>
+                </Card>
 
                 {/* Status Estimation Card */}
-                <View style={styles.cardBox}>
+                <Card disabled radius={RADIUS.xl} padding={DENSITY.cardPadding}>
                     <View style={styles.cardContentRow}>
-                        <View style={styles.statusBadgeGray}>
-                            <AppText style={styles.statusBadgeGrayText}>قيد المراجعة</AppText>
-                        </View>
-                        <View style={styles.statusLeftInfo}>
+                        <View style={styles.cardCopyGroup}>
                             <View style={styles.statusTitleWithIcon}>
-                                <AppText style={styles.statusMainTitle}>تم الاستلام</AppText>
-                                <Ionicons name="checkmark-circle" size={20} color={COLORS.secondary} />
+                                <Ionicons name="checkmark-circle" size={ICON_SIZES.md} color={COLORS.secondary} />
+                                <AppText variant="body" weight="bold" color={COLORS.ink}>تم الاستلام</AppText>
                             </View>
-                            <AppText style={styles.statusSubInfoText}>المراجعة المتوقعة: 30–10 دقيقة</AppText>
+                            <AppText variant="caption" color={COLORS.textSecondary}>
+                                المراجعة المتوقعة: 10–30 دقيقة
+                            </AppText>
+                        </View>
+
+                        <View style={styles.statusBadgeGray}>
+                            <AppText variant="label" weight="medium" color={COLORS.textSecondary}>قيد المراجعة</AppText>
                         </View>
                     </View>
-                </View>
+                </Card>
 
                 {/* What Happens Next Section */}
-                <View style={styles.cardBoxColumn}>
-                    <AppText style={styles.sectionCardTitle}>ماذا سيحدث الآن؟</AppText>
+                <Card disabled radius={RADIUS.xl} padding={DENSITY.cardPadding} style={styles.timelineCard}>
+                    <AppText variant="h3" weight="bold" color={COLORS.ink}>ماذا سيحدث الآن؟</AppText>
 
                     <View style={styles.timelineContainer}>
-                        <View style={styles.timelineVerticalLine} />
+                        {TIMELINE_STEPS.map((step, index) => {
+                            const isLast = index === TIMELINE_STEPS.length - 1;
 
-                        {/* Step 1 */}
-                        <View style={styles.timelineRowItem}>
-                            <View style={styles.timelineTextGroup}>
-                                <AppText style={styles.timelineStepTitleActive}>تم استلام البلاغ</AppText>
-                                <AppText style={styles.timelineStepTime}>اليوم، 10:45 ص</AppText>
-                            </View>
-                            <View style={styles.nodeCircleActive}>
-                                <Ionicons name="checkmark" size={14} color={COLORS.white} />
-                            </View>
-                        </View>
+                            return (
+                                <View key={step.title} style={styles.timelineRowItem}>
+                                    <View style={styles.timelineRail}>
+                                        {step.done ? (
+                                            <View style={styles.nodeCircleActive}>
+                                                <Ionicons name="checkmark" size={ICON_SIZES.xs} color={COLORS.white} />
+                                            </View>
+                                        ) : (
+                                            <View style={styles.nodeCircleMuted} />
+                                        )}
+                                        {isLast ? null : <View style={styles.timelineVerticalLine} />}
+                                    </View>
 
-                        {/* Step 2 */}
-                        <View style={styles.timelineRowItem}>
-                            <View style={styles.timelineTextGroup}>
-                                <AppText style={styles.timelineStepTitleMuted}>سيتم مراجعته من قبل الفريق</AppText>
-                                <AppText style={styles.timelineStepTimeMuted}>بانتظار التأكيد</AppText>
-                            </View>
-                            <View style={styles.nodeCircleMuted} />
-                        </View>
-
-                        {/* Step 3 */}
-                        <View style={styles.timelineRowItem}>
-                            <View style={styles.timelineTextGroup}>
-                                <AppText style={styles.timelineStepTitleMuted}>تعيين متطوع أو جمعية</AppText>
-                                <AppText style={styles.timelineStepTimeMuted}>بانتظار البدء</AppText>
-                            </View>
-                            <View style={styles.nodeCircleMuted} />
-                        </View>
-
-                        {/* Step 4 */}
-                        <View style={[styles.timelineRowItem, { marginBottom: 0 }]}>
-                            <View style={styles.timelineTextGroup}>
-                                <AppText style={styles.timelineStepTitleMuted}>وصول تحديثات مباشرة</AppText>
-                            </View>
-                            <View style={styles.nodeCircleMuted} />
-                        </View>
+                                    <View style={[styles.timelineTextGroup, isLast && styles.timelineTextGroupLast]}>
+                                        <AppText
+                                            variant="body"
+                                            weight={step.done ? "bold" : "medium"}
+                                            color={step.done ? COLORS.successDark : COLORS.disabled}
+                                        >
+                                            {step.title}
+                                        </AppText>
+                                        {step.time ? (
+                                            <AppText
+                                                variant="caption"
+                                                color={step.done ? COLORS.textSecondary : COLORS.placeholder}
+                                            >
+                                                {step.time}
+                                            </AppText>
+                                        ) : null}
+                                    </View>
+                                </View>
+                            );
+                        })}
                     </View>
-                </View>
+                </Card>
 
                 {/* Urgent Note Banner */}
                 <View style={styles.urgentBannerBox}>
-                    <AppText style={styles.urgentBannerText}>
+                    <Ionicons
+                        name="information-circle-outline"
+                        size={ICON_SIZES.md}
+                        color={COLORS.accent}
+                        style={styles.urgentBannerIcon}
+                    />
+                    <AppText variant="label" color={COLORS.ink} style={styles.urgentBannerText}>
                         إذا كان البلاغ عاجلاً للغاية، فقد يتم التواصل معك للحصول على معلومات إضافية.
                     </AppText>
-                    <Feather name="info" size={20} color={COLORS.accent} style={{ marginTop: 2 }} />
                 </View>
 
                 {/* Create Account Promotion Box - تظهر فقط للزائر */}
-                {isGuest && (
-                    <View style={styles.promoAccountCard}>
-                        <AppText style={styles.promoCardTitle}>أنشئ حساباً لمتابعة البلاغات بسهولة</AppText>
+                {isGuest ? (
+                    <Card
+                        disabled
+                        radius={RADIUS.xl}
+                        padding={SPACING.lg}
+                        backgroundColor={COLORS.primarySoft}
+                        borderColor={COLORS.peach}
+                        style={styles.promoAccountCard}
+                    >
+                        <AppText variant="h3" weight="bold" align="center" color={COLORS.brownDark}>
+                            أنشئ حساباً لمتابعة البلاغات بسهولة
+                        </AppText>
 
                         <View style={styles.promoBulletsContainer}>
-                            <View style={styles.promoBulletRow}>
-                                <AppText style={styles.promoBulletText}>متابعة حالة البلاغ مباشرة</AppText>
-                                <Ionicons name="checkmark-circle-outline" size={18} color={COLORS.brown} />
-                            </View>
-                            <View style={styles.promoBulletRow}>
-                                <AppText style={styles.promoBulletText}>استقبال الإشعارات والتحذيرات</AppText>
-                                <Ionicons name="checkmark-circle-outline" size={18} color={COLORS.brown} />
-                            </View>
-                            <View style={styles.promoBulletRow}>
-                                <AppText style={styles.promoBulletText}>التعليق والمشاركة في عمليات الإنقاذ</AppText>
-                                <Ionicons name="checkmark-circle-outline" size={18} color={COLORS.brown} />
-                            </View>
+                            {PROMO_BENEFITS.map((benefit) => (
+                                <View key={benefit} style={styles.promoBulletRow}>
+                                    <Ionicons name="checkmark-circle-outline" size={ICON_SIZES.sm} color={COLORS.brown} />
+                                    <AppText variant="body" weight="medium" color={COLORS.brownDark} style={styles.promoBulletText}>
+                                        {benefit}
+                                    </AppText>
+                                </View>
+                            ))}
                         </View>
 
-                        <TouchableOpacity style={styles.primaryBrownButton} onPress={() => router.push(ROUTES.chooseAccount)}>
-                            <AppText style={styles.primaryBrownButtonText}>إنشاء حساب</AppText>
-                        </TouchableOpacity>
+                        <ActionStack>
+                            <Button
+                                title="إنشاء حساب"
+                                onPress={() => router.push(ROUTES.chooseAccount)}
+                                variant="custom"
+                                backgroundColor={COLORS.brown}
+                                textColor={COLORS.white}
+                                radius={RADIUS.lg}
+                            />
+                            <Button
+                                title="تسجيل الدخول"
+                                onPress={() => router.push(ROUTES.login)}
+                                variant="text"
+                                textColor={COLORS.brown}
+                            />
+                        </ActionStack>
+                    </Card>
+                ) : null}
 
-                        <TouchableOpacity style={styles.textLinkButton} onPress={() => router.push(ROUTES.login)}>
-                            <AppText style={styles.textLinkButtonText}>تسجيل الدخول</AppText>
-                        </TouchableOpacity>
-                    </View>
-                )}
+                {/* Bottom Actions */}
+                <ActionStack style={styles.footerActions}>
+                    <Button
+                        title="متابعة البلاغ"
+                        onPress={() => router.push(reportDetailsRoute("1", accountKind))}
+                        variant="custom"
+                        size="large"
+                        icon="chevron-back"
+                        iconPosition="end"
+                        backgroundColor={COLORS.brown}
+                        textColor={COLORS.white}
+                        radius={RADIUS.lg}
+                    />
+                    <Button
+                        title="العودة إلى الرئيسية"
+                        onPress={() => router.replace(ROUTES.home)}
+                        variant="ghost"
+                        textColor={COLORS.textSecondary}
+                    />
+                </ActionStack>
 
-                {/* Bottom Action Main Button */}
-                <TouchableOpacity style={styles.trackReportButton} onPress={() => router.push(reportDetailsRoute("1", accountKind))}>
-                    <Ionicons name="chevron-back" size={18} color={COLORS.white} />
-                    <AppText style={styles.trackReportButtonText}>متابعة البلاغ</AppText>
-                </TouchableOpacity>
-
-                {/* Footer Secondary Link */}
-                <TouchableOpacity style={styles.backHomeTouch} onPress={() => router.replace(ROUTES.home)}>
-                    <AppText style={styles.backHomeText}>العودة إلى الرئيسية</AppText>
-                </TouchableOpacity>
-
-            </ScrollView>
-        </SafeAreaView>
+            </View>
+        </Screen>
     );
 }
 
 const styles = StyleSheet.create({
-    outerContainer: {
-        flex: 1,
-        backgroundColor: COLORS.surface,
+    screenContent: {
+        paddingTop: 0,
     },
-    topBar: {
-        flexDirection: 'row',
-        direction: 'rtl',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        paddingHorizontal: HORIZONTAL_PADDING,
-        paddingVertical: SPACING.md,
-        backgroundColor: COLORS.background,
-        borderBottomWidth: 1,
-        borderBottomColor: COLORS.border,
-    },
-    topBarTitle: {
-        fontFamily: FONTS.bold,
-        fontSize: FONT_SIZES.title,
-        color: COLORS.ink,
-        textAlign: 'center',
-    },
-    scrollContent: {
-        paddingHorizontal: HORIZONTAL_PADDING,
-        paddingVertical: SPACING.lg,
+    body: {
+        width: "100%",
+        paddingHorizontal: LAYOUT.screenPadding,
+        paddingTop: SPACING.md,
+        paddingBottom: SPACING.xl,
+        gap: SPACING.md,
     },
     illustrationContainer: {
-        alignItems: 'center',
-        justifyContent: 'center',
-        marginBottom: SPACING.md,
+        width: "100%",
+        alignItems: "center",
+        justifyContent: "center",
     },
     illustrationImage: {
-        width: SCREEN_WIDTH * 0.72,  
-        height: SCREEN_WIDTH * 0.72, 
-        resizeMode: 'contain',       
+        width: "100%",
+        resizeMode: "contain",
     },
     headerTextBlock: {
-        alignItems: 'center',
-        marginBottom: SPACING.lg,
-    },
-    mainTitle: {
-        fontFamily: FONTS.bold,
-        fontSize: FONT_SIZES.headline,
-        color: COLORS.brown,
-        textAlign: 'center',
+        width: "100%",
+        alignItems: "center",
+        gap: SPACING.xs,
         marginBottom: SPACING.xs,
     },
     subTitle: {
-        fontFamily: FONTS.regular,
-        fontSize: FONT_SIZES.body,
-        color: COLORS.textSecondary,
-        textAlign: 'center',
-        lineHeight: 22,
         paddingHorizontal: SPACING.sm,
     },
-    cardBox: {
-        backgroundColor: COLORS.background,
-        borderRadius: RADIUS.xl,
-        padding: SPACING.md,
-        borderWidth: 1,
-        borderColor: COLORS.border,
-        marginBottom: SPACING.sm,
-    },
-    cardBoxColumn: {
-        backgroundColor: COLORS.background,
-        borderRadius: RADIUS.xl,
-        padding: SPACING.md,
-        borderWidth: 1,
-        borderColor: COLORS.border,
-        marginBottom: SPACING.sm,
-    },
     cardContentRow: {
-        flexDirection: 'row',
-        direction: 'rtl',
-        alignItems: 'center',
-        justifyContent: 'space-between',
+        width: "100%",
+        flexDirection: "row",
+        direction: "rtl",
+        alignItems: "center",
+        justifyContent: "space-between",
+        gap: SPACING.md,
     },
-    reportCodeText: {
-        fontFamily: FONTS.bold,
-        fontSize: FONT_SIZES.title,
-        color: COLORS.ink,
-    },
-    cardRightGroup: {
-        flexDirection: 'row',
-        direction: 'rtl',
-        alignItems: 'center',
-        gap: SPACING.sm,
-    },
-    cardLabelText: {
-        fontFamily: FONTS.medium,
-        fontSize: FONT_SIZES.label,
-        color: COLORS.textSecondary,
-    },
-    iconSquareButton: {
-        width: 36,
-        height: 36,
-        borderRadius: RADIUS.md,
-        backgroundColor: COLORS.lightgray,
-        alignItems: 'center',
-        justifyContent: 'center',
-    },
-    statusBadgeGray: {
-        backgroundColor: COLORS.lightgray,
-        paddingHorizontal: SPACING.md,
-        paddingVertical: 6,
-        borderRadius: RADIUS.md,
-    },
-    statusBadgeGrayText: {
-        fontFamily: FONTS.bold,
-        fontSize: FONT_SIZES.label,
-        color: COLORS.textSecondary,
-    },
-    statusLeftInfo: {
-        alignItems: 'flex-end',
+    cardCopyGroup: {
+        flex: 1,
+        minWidth: 0,
+        alignItems: "flex-start",
+        gap: SPACING.xxs,
     },
     statusTitleWithIcon: {
-        flexDirection: 'row',
-        direction: 'rtl',
-        alignItems: 'center',
+        flexDirection: "row",
+        direction: "rtl",
+        alignItems: "center",
         gap: SPACING.xs,
     },
-    statusMainTitle: {
-        fontFamily: FONTS.bold,
-        fontSize: FONT_SIZES.body,
-        color: COLORS.ink,
+    statusBadgeGray: {
+        flexShrink: 0,
+        backgroundColor: COLORS.lightgray,
+        paddingHorizontal: SPACING.md,
+        paddingVertical: SPACING.xs,
+        borderRadius: RADIUS.full,
     },
-    statusSubInfoText: {
-        fontFamily: FONTS.regular,
-        fontSize: FONT_SIZES.caption,
-        color: COLORS.textSecondary,
-        marginTop: 2,
-    },
-    sectionCardTitle: {
-        fontFamily: FONTS.bold,
-        fontSize: FONT_SIZES.title,
-        color: COLORS.ink,
-        textAlign: 'right',
-        marginBottom: SPACING.md,
+    timelineCard: {
+        gap: SPACING.md,
     },
     timelineContainer: {
-        position: 'relative',
-        paddingVertical: 4,
-        paddingStart: 0,
-    },
-    timelineVerticalLine: {
-        position: 'absolute',
-        right: 13,
-        top: 16,
-        bottom: 16,
-        width: 2,
-        backgroundColor: COLORS.border,
+        width: "100%",
     },
     timelineRowItem: {
-        flexDirection: 'row',
-        direction: 'rtl',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        marginBottom: 36, // زيادة المسافة (Gap) بين الخطوات بشكل مريح
+        width: "100%",
+        flexDirection: "row",
+        direction: "rtl",
+        alignItems: "flex-start",
+        gap: SPACING.md,
+    },
+    timelineRail: {
+        width: TIMELINE_NODE_SIZE,
+        alignSelf: "stretch",
+        alignItems: "center",
+    },
+    timelineVerticalLine: {
+        width: 2,
+        flex: 1,
+        minHeight: SPACING.lg,
+        marginVertical: SPACING.xs,
+        backgroundColor: COLORS.border,
     },
     timelineTextGroup: {
         flex: 1,
-        alignItems: 'flex-end',
-        paddingEnd: SPACING.md,
+        minWidth: 0,
+        alignItems: "stretch",
+        gap: SPACING.xxs,
+        paddingBottom: SPACING.lg,
     },
-    timelineStepTitleActive: {
-        fontFamily: FONTS.bold,
-        fontSize: FONT_SIZES.body,
-        color: COLORS.successDark,
-        textAlign: 'right',
-    },
-    timelineStepTime: {
-        fontFamily: FONTS.regular,
-        fontSize: FONT_SIZES.caption,
-        color: COLORS.textSecondary,
-        marginTop: 2,
-        textAlign: 'right',
-    },
-    timelineStepTitleMuted: {
-        fontFamily: FONTS.medium,
-        fontSize: FONT_SIZES.body,
-        color: COLORS.disabled,
-        textAlign: 'right',
-    },
-    timelineStepTimeMuted: {
-        fontFamily: FONTS.regular,
-        fontSize: FONT_SIZES.caption,
-        color: COLORS.placeholder,
-        marginTop: 2,
-        textAlign: 'right',
+    timelineTextGroupLast: {
+        paddingBottom: 0,
     },
     nodeCircleActive: {
-        width: 26,
-        height: 26,
-        borderRadius: RADIUS.md,
+        width: TIMELINE_NODE_SIZE,
+        height: TIMELINE_NODE_SIZE,
+        borderRadius: RADIUS.full,
         backgroundColor: COLORS.secondary,
-        alignItems: 'center',
-        justifyContent: 'center',
+        alignItems: "center",
+        justifyContent: "center",
     },
     nodeCircleMuted: {
-        width: 26,
-        height: 26,
-        borderRadius: RADIUS.md,
+        width: TIMELINE_NODE_SIZE,
+        height: TIMELINE_NODE_SIZE,
+        borderRadius: RADIUS.full,
         backgroundColor: COLORS.offwhite,
         borderWidth: 2,
         borderColor: COLORS.tan,
-        alignItems: 'center',
-        justifyContent: 'center',
     },
     urgentBannerBox: {
-        flexDirection: 'row',
-        direction: 'rtl',
-        alignItems: 'flex-start',
-        justifyContent: 'space-between',
+        width: "100%",
+        flexDirection: "row",
+        direction: "rtl",
+        alignItems: "flex-start",
+        gap: SPACING.sm,
         backgroundColor: COLORS.lightgray,
         borderWidth: 1,
         borderColor: COLORS.accent,
         borderRadius: RADIUS.xl,
-        padding: SPACING.md,
-        marginBottom: SPACING.md,
-        gap: SPACING.sm,
+        padding: DENSITY.cardPadding,
+    },
+    urgentBannerIcon: {
+        marginTop: SPACING.xxs,
     },
     urgentBannerText: {
         flex: 1,
-        fontFamily: FONTS.regular,
-        fontSize: FONT_SIZES.label,
-        color: COLORS.ink,
-        textAlign: 'right',
-        lineHeight: 20,
+        minWidth: 0,
     },
     promoAccountCard: {
-        backgroundColor: COLORS.primarySoft,
-        borderRadius: RADIUS.xl,
-        padding: SPACING.lg,
-        borderWidth: 1,
-        borderColor: COLORS.peach,
-        marginBottom: SPACING.lg,
-        alignItems: 'center',
-    },
-    promoCardTitle: {
-        fontFamily: FONTS.bold,
-        fontSize: FONT_SIZES.title,
-        color: COLORS.brownDark,
-        textAlign: 'center',
-        marginBottom: SPACING.md,
+        gap: SPACING.md,
     },
     promoBulletsContainer: {
-        width: '100%',
+        width: "100%",
         gap: SPACING.sm,
-        marginBottom: SPACING.lg,
     },
     promoBulletRow: {
-        flexDirection: 'row',
-        direction: 'rtl',
-        alignItems: 'center',
-        justifyContent: 'flex-end',
+        width: "100%",
+        flexDirection: "row",
+        direction: "rtl",
+        alignItems: "center",
         gap: SPACING.sm,
     },
     promoBulletText: {
-        fontFamily: FONTS.medium,
-        fontSize: FONT_SIZES.body,
-        color: COLORS.brownDark,
-        textAlign: 'right',
+        flex: 1,
+        minWidth: 0,
     },
-    primaryBrownButton: {
-        width: '100%',
-        backgroundColor: COLORS.brown,
-        paddingVertical: 14,
-        borderRadius: RADIUS.lg,
-        alignItems: 'center',
-        justifyContent: 'center',
-        marginBottom: SPACING.sm,
-    },
-    primaryBrownButtonText: {
-        fontFamily: FONTS.bold,
-        fontSize: FONT_SIZES.body,
-        color: COLORS.white,
-    },
-    textLinkButton: {
-        paddingVertical: SPACING.xs,
-    },
-    textLinkButtonText: {
-        fontFamily: FONTS.bold,
-        fontSize: FONT_SIZES.body,
-        color: COLORS.brown,
-    },
-    trackReportButton: {
-        flexDirection: 'row',
-        direction: 'rtl',
-        backgroundColor: COLORS.brown,
-        paddingVertical: 16,
-        borderRadius: RADIUS.lg,
-        alignItems: 'center',
-        justifyContent: 'center',
-        gap: SPACING.xs,
-        marginBottom: SPACING.md,
-    },
-    trackReportButtonText: {
-        fontFamily: FONTS.bold,
-        fontSize: FONT_SIZES.body,
-        color: COLORS.white,
-    },
-    backHomeTouch: {
-        alignItems: 'center',
-        paddingVertical: SPACING.sm,
-        marginBottom: SPACING.xl,
-    },
-    backHomeText: {
-        fontFamily: FONTS.medium,
-        fontSize: FONT_SIZES.body,
-        color: COLORS.textSecondary,
+    footerActions: {
+        marginTop: SPACING.xs,
     },
 });

@@ -320,8 +320,10 @@ const styles = StyleSheet.create({
   verifyButtonText: {
     fontFamily: FONTS.medium,
     fontSize: TYPOGRAPHY.h3.fontSize,
+    lineHeight: TYPOGRAPHY.h3.lineHeight,
     color: COLORS.icon,
     textAlign: "center",
+    flexShrink: 0,
   },
   disabledButtonText: {
     color: PALETTE.neutral0,

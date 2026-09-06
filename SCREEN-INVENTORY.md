@@ -1,8 +1,8 @@
 # SCREEN-INVENTORY — جرد شاشات تطبيق ResQ
 
-إجمالي الشاشات: **72** شاشة موزّعة على **17** ميزة، جميعها تحت `src/features/<feature>/screens/`.
+إجمالي الشاشات: **74** شاشة موزّعة على **17** ميزة، جميعها تحت `src/features/<feature>/screens/`.
 عمود «Screen» يبيّن ما إذا كانت الشاشة تستخدم غلاف `<Screen>` المشترك من `src/components/ui`.
-الحالة: 51 شاشة تستخدم الغلاف، 21 لا تستخدمه (موثّق كدين مؤجّل في `CLAUDE.md` القسم 8).
+الحالة: 53 شاشة تستخدم الغلاف، 21 لا تستخدمه (موثّق كدين مؤجّل في `CLAUDE.md` القسم 8).
 
 > ملاحظة: أسماء الشاشات بالعربية أدناه مشتقّة من أسماء الملفات وتحتاج مراجعة من فريق التصميم لمطابقتها للعناوين الفعلية المعروضة داخل التطبيق.
 
@@ -71,7 +71,7 @@
 | FeedingPointSubmissionsScreen.tsx | ✅ | التحديثات المُرسلة |
 | FeedingPointSubmissionDetailsScreen.tsx | ✅ | تفاصيل تحديث مُرسل |
 
-## organization-dashboard — لوحة الجهة (7 شاشات)
+## organization-dashboard — لوحة الجهة (8 شاشات)
 
 | الملف | Screen | الوصف |
 |---|---|---|
@@ -82,6 +82,7 @@
 | OrganizationTaskDetailsScreen.tsx | ✅ | تفاصيل مهمة |
 | OrganizationTaskCompletedScreen.tsx | ✅ | إنجاز مهمة |
 | OrganizationProfileScreen.tsx | ✅ | ملف الجهة |
+| OrganizationDataScreen.tsx | ✅ | بيانات الجمعية الرسمية |
 
 ## organizations — الجمعيات (2 شاشة)
 
@@ -115,7 +116,7 @@
 | EditOwnedMapPlaceScreen.tsx | ✅ | تعديل موقعي |
 | MapPlaceChangeRequestScreen.tsx | ✅ | طلب تعديل موقع |
 
-## home / explore / notifications / profile / search (7 شاشات)
+## home / explore / notifications / profile / search (8 شاشات)
 
 | الملف | Screen | الوصف |
 |---|---|---|
@@ -124,6 +125,7 @@
 | notifications/NotificationsScreen.tsx | ✅ | الإشعارات |
 | profile/ProfileScreen.tsx | ✅ | الملف الشخصي |
 | profile/EditProfileScreen.tsx | ✅ | تعديل الملف الشخصي |
+| profile/SecurityPrivacyScreen.tsx | ✅ | الأمان والخصوصية (المستخدم والجمعية) |
 | search/SearchScreen.tsx | ❌ | البحث |
 | search/SearchResultDetailsScreen.tsx | ✅ | تفاصيل نتيجة بحث |
 
