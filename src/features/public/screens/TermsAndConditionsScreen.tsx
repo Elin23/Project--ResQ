@@ -12,6 +12,8 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import AppText from "@/src/components/ui/AppText";
+import { useSession } from "@/src/features/session/SessionContext";
+import { helpCenterRoute } from "@/src/navigation/routes";
 import IconButton from "@/src/components/ui/IconButton";
 import ScreenHeader from "@/src/components/ui/ScreenHeader";
 import ShellAwareScrollView from "@/src/components/ui/ShellAwareScrollView";
@@ -25,6 +27,7 @@ import {
 
 export default function TermsAndConditionsScreen() {
   const router = useRouter();
+  const { accountKind } = useSession();
   const scrollRef = useRef<ScrollView>(null);
   const [headerElevated, setHeaderElevated] = useState(false);
   const { width } = useWindowDimensions();
@@ -50,7 +53,7 @@ export default function TermsAndConditionsScreen() {
   };
 
   const handleHelpCenter = () => {
-    router.push("/help-center");
+    router.push(helpCenterRoute(accountKind));
   };
 
   const scrollToSection = (id: string) => {

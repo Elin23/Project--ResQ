@@ -39,6 +39,7 @@ export const SCREEN_CATALOG: readonly ScreenDefinition[] = [
   { route: "/map", owner: "user", access: "mixed", purpose: "Explore nearby rescue activity", states: DATA },
   { route: "/notifications", owner: "user", access: "mixed", purpose: "Personal notifications", states: DATA },
   { route: "/profile", owner: "user", access: "authenticated", purpose: "Personal profile", states: DATA },
+  { route: "/profile/security", owner: "user", access: "authenticated", purpose: "Personal account security and privacy settings", states: ["content", "error", "success"] },
   { route: "/map-places", owner: "user", access: "authenticated", purpose: "Manage owned map places and appearance applications", states: DATA },
   { route: "/map-places/apply", owner: "user", access: "authenticated", purpose: "Submit a map-place appearance application", states: ["content", "error", "success"] },
   { route: "/map-places/applications/[id]", owner: "user", access: "authenticated", purpose: "View an owned map-place application", states: DATA },
@@ -59,6 +60,7 @@ export const SCREEN_CATALOG: readonly ScreenDefinition[] = [
   { route: "/organization/map", owner: "organization", access: "active-account", purpose: "Operational organization map", states: DATA },
   { route: "/organization/notifications", owner: "organization", access: "active-account", purpose: "Organization notifications", states: DATA },
   { route: "/organization/profile", owner: "organization", access: "active-account", purpose: "Organization profile and operations settings", states: DATA },
+  { route: "/organization/security", owner: "organization", access: "active-account", purpose: "Organization account security and privacy settings", states: ["content", "error", "success"] },
 
 
   { route: "/organizations", owner: "shared", access: "mixed", purpose: "Browse approved organizations", states: DATA },

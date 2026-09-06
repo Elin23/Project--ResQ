@@ -14,6 +14,8 @@ import {
 import { SafeAreaView } from "react-native-safe-area-context";
 
 import AppText from "@/src/components/ui/AppText";
+import { useSession } from "@/src/features/session/SessionContext";
+import { aboutRoute, privacyPolicyRoute, termsAndConditionsRoute } from "@/src/navigation/routes";
 import ScreenHeader from "@/src/components/ui/ScreenHeader";
 import ShellAwareScrollView from "@/src/components/ui/ShellAwareScrollView";
 import EmptyState from "@/src/components/ui/EmptyState";
@@ -25,6 +27,7 @@ import { ARTICLES, CATEGORIES, FAQS, normalizeText } from "../constants/helpCent
 
 export default function HelpCenterScreen() {
   const router = useRouter();
+  const { accountKind } = useSession();
   const { width } = useWindowDimensions();
 
   const [searchQuery, setSearchQuery] = useState("");
@@ -77,7 +80,9 @@ export default function HelpCenterScreen() {
     filteredArticles.length > 0;
 
   const openPublicRoute = (route: "/privacy-policy" | "/terms-and-conditions" | "/about") => {
-    router.push(route);
+    if (route === "/privacy-policy") return router.push(privacyPolicyRoute(accountKind));
+    if (route === "/terms-and-conditions") return router.push(termsAndConditionsRoute(accountKind));
+    return router.push(aboutRoute(accountKind));
   };
 
   const focusCategory = (title: string) => {
