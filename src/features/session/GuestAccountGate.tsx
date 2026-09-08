@@ -15,7 +15,7 @@ export default function GuestAccountGate() {
       <View style={styles.icon}><Ionicons name="person-outline" size={42} color={COLORS.primary} /></View>
       <AppText weight="bold" size={FONT_SIZES.headline}>هذه الصفحة للحسابات المسجلة</AppText>
       <AppText color={COLORS.textSecondary} style={styles.description}>
-        يمكنك كزائر تصفح التطبيق وإنشاء بلاغ. سجّل الدخول لعرض حسابك وبلاغاتك وطلباتك.
+        يمكنك كزائر تصفح التطبيق والمحتوى العام. سجّل الدخول لإنشاء البلاغات وإدارة حسابك وطلباتك.
       </AppText>
       <ActionStack>
         <Button title="تسجيل الدخول" onPress={() => router.push(ROUTES.login)} />

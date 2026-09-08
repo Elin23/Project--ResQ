@@ -14,7 +14,7 @@ const route = read("app/(user)/(tabs)/(adoption)/adoptions/[id].tsx");
 const login = read("src/features/auth/hooks/useLoginForm.ts");
 const org = read("src/features/organizations/screens/OrganizationDetailsScreen.tsx");
 
-if (!policy.includes('guest: new Set(["browse", "create-report", "view-adoption"])')) fail("Guest must have adoption discovery capability");
+if (!policy.includes('guest: new Set(["browse", "view-adoption"])')) fail("Guest must have adoption discovery but not report creation");
 if (!policy.includes('"apply-adoption"')) fail("Protected adoption action capability is missing");
 if (!tabs.includes('"(adoption)": USER_TABS["(adoption)"]')) fail("Explore tab is missing for guests");
 if (/name="\(adoption\)"[^\n]*isGuest\s*\?\s*null/.test(tabs)) fail("Explore tab is still hidden from guests");

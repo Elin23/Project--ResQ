@@ -1,7 +1,7 @@
 import type { ComponentProps } from "react";
 import type { Ionicons } from "@expo/vector-icons";
 
-export type NotificationCategory = "reports" | "volunteering" | "adoption";
+export type NotificationCategory = import("@/src/domain").AppNotificationCategory;
 
 export type NotificationItem = {
   id: string;
@@ -21,8 +21,10 @@ export type NotificationSection = {
 export const NOTIFICATION_FILTERS = [
   { id: "all", label: "الكل" },
   { id: "reports", label: "البلاغات" },
-  { id: "volunteering", label: "التطوع" },
   { id: "adoption", label: "التبني" },
+  { id: "donations", label: "التبرعات" },
+  { id: "feeding-points", label: "الإطعام" },
+  { id: "system", label: "النظام" },
 ] as const;
 
 export type NotificationFilter = (typeof NOTIFICATION_FILTERS)[number]["id"];

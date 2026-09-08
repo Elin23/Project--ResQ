@@ -27,7 +27,7 @@ export type AppCapability =
 export type AccessSubject = "guest" | AccountKind;
 
 const CAPABILITIES: Record<AccessSubject, ReadonlySet<AppCapability>> = {
-  guest: new Set(["browse", "create-report", "view-adoption"]),
+  guest: new Set(["browse", "view-adoption"]),
   user: new Set([
     "browse",
     "create-report",

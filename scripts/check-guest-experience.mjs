@@ -17,13 +17,13 @@ const authGate = read("src/features/session/AuthenticatedRouteGate.tsx");
 const adoptionDetailsRoute = read("app/(user)/(tabs)/(adoption)/adoptions/[id].tsx");
 
 const guestBlock = policy.match(/guest:\s*new Set\(\[([^\]]*)\]\)/s)?.[1] ?? "";
-for (const forbidden of ["view-notifications", "apply-adoption", "view-personal-account", "view-personal-reports"]) {
+for (const forbidden of ["create-report", "view-notifications", "apply-adoption", "view-personal-account", "view-personal-reports"]) {
   if (guestBlock.includes(forbidden)) fail(`Guest capability leak: ${forbidden}`);
 }
-for (const allowed of ['"browse"', '"create-report"', '"view-adoption"']) {
+for (const allowed of ['"browse"', '"view-adoption"']) {
   if (!guestBlock.includes(allowed)) fail(`Guest discovery capability missing: ${allowed}`);
 }
-if (!process.exitCode) pass("Guest can discover adoption without receiving protected account capabilities");
+if (!process.exitCode) pass("Guest can browse public content without report creation or protected account capabilities");
 
 if (!userLayout.includes('"(adoption)": USER_TABS["(adoption)"]')) fail("Guest tabs must expose Explore");
 if (!/can\("view-notifications"\)\s*\?/.test(userHomeLayout)) fail("User home stack missing notification capability guard");

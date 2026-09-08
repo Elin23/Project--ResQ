@@ -1,4 +1,4 @@
-export type { CreateReportInput, Report, ReportPriority, ReportStatus } from "./reports/report";
+export type { CreateReportInput, Report, ReportPriority, ReportStatus, ReportAnimalType } from "./reports/report";
 export type { ReportRepository } from "./reports/reportRepository";
 export type { RescueTask, RescueTaskStage, RescueChecklistKey } from "./rescue/rescueTask";
 export type { RescueRepository } from "./rescue/rescueRepository";
@@ -12,7 +12,7 @@ export type { ModerationStatus, ModerationDecision, ModerationMetadata, Moderati
 export { applyModerationDecision, isPubliclyVisible, submitForReview } from "./moderation/moderation";
 export type { ContentOwner, ContentOwnerKind } from "./shared/ownership";
 export { isOwnedBy } from "./shared/ownership";
-export type { FeedingPointSubmission, CreateFeedingPointSubmissionInput, FeedingPointFacility, FeedingPointInitialStatus } from "./feeding-points/feedingPointSubmission";
+export type { FeedingPointSubmission, CreateFeedingPointSubmissionInput, FeedingPointFacility, FeedingPointInitialStatus, FeedingPointFoodLevel, FeedingPointCondition } from "./feeding-points/feedingPointSubmission";
 export type { FeedingPointSubmissionRepository } from "./feeding-points/feedingPointSubmissionRepository";
 
 export type { AppNotification, AppNotificationCategory, AppNotificationTarget, CreateAppNotificationInput } from "./notifications/notification";
@@ -44,6 +44,7 @@ export type { ServicePlaceRepository, ServicePlaceQuery, UpdateOwnedServicePlace
 
 export type { PublicContent, PublicContentKind } from "./content/content";
 export type { PublicContentRepository } from "./content/contentRepository";
-export type { SponsoredAd } from "./advertising/sponsoredAd";
+export type { FaqItem, FaqRepository } from "./content/faq";
+export type { SponsoredAd, SponsoredAdPlacement } from "./advertising/sponsoredAd";
 export type { SponsoredAdRepository } from "./advertising/sponsoredAdRepository";
 export { assertOrganizationCampaignOwner, MOBILE_BUSINESS_RULES } from "./policies";

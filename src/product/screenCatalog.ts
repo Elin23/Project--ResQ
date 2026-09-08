@@ -32,7 +32,7 @@ export const SCREEN_CATALOG: readonly ScreenDefinition[] = [
   { route: "/registration-success", owner: "auth", access: "authenticated", purpose: "Confirm successful registration", states: ["success"] },
 
   { route: "/(user)/(tabs)", owner: "user", access: "mixed", purpose: "Personal/guest home workspace", states: DATA },
-  { route: "/reports", owner: "user", access: "mixed", purpose: "Personal reports or guest community reports", states: DATA },
+  { route: "/reports", owner: "user", access: "mixed", purpose: "Personal reports for authenticated accounts", states: DATA },
   { route: "/reports/create", owner: "shared", access: "mixed", purpose: "Create a rescue report", states: ["content", "error", "success"] },
   { route: "/reports/[id]", owner: "shared", access: "mixed", purpose: "View a rescue report", states: DATA },
   { route: "/reports/success", owner: "shared", access: "mixed", purpose: "Confirm report submission", states: ["success"] },

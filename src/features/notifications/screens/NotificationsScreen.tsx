@@ -1,7 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useMemo, useState } from "react";
 import { Pressable, StyleSheet, View } from "react-native";
-import { useRouter } from "expo-router";
+import { useRouter, type Href } from "expo-router";
 import AppText from "@/src/components/ui/AppText";
 import IconButton from "@/src/components/ui/IconButton";
 import LoadingState from "@/src/components/ui/LoadingState";
@@ -22,8 +22,21 @@ export default function NotificationsScreen() {
   const state = useAccountNotifications(account?.id);
   const [selectedFilter, setSelectedFilter] = useState<NotificationFilter>("all");
   const items = useMemo<NotificationItem[]>(() => state.notifications.map((n) => ({
-    id:n.id,title:n.title,time:new Intl.DateTimeFormat("ar",{day:"numeric",month:"short",hour:"numeric",minute:"2-digit"}).format(new Date(n.createdAt)),unread:!n.readAt,category:n.category,icon:n.category==="adoption"?"heart-outline":n.category==="reports"?"notifications-outline":"people-outline",target:n.target,
-  })),[state.notifications]);
+    id: n.id,
+    title: n.title,
+    time: new Intl.DateTimeFormat("ar", { day: "numeric", month: "short", hour: "numeric", minute: "2-digit" }).format(new Date(n.createdAt)),
+    unread: !n.readAt,
+    category: n.category,
+    icon: n.category === "adoption" ? "heart-outline"
+      : n.category === "reports" ? "notifications-outline"
+      : n.category === "donations" ? "hand-left-outline"
+      : n.category === "feeding-points" ? "restaurant-outline"
+      : n.category === "content" ? "newspaper-outline"
+      : n.category === "system" ? "information-circle-outline"
+      : n.category === "advertisements" ? "megaphone-outline"
+      : "people-outline",
+    target: n.target,
+  })), [state.notifications]);
   const visible=items.filter(i=>selectedFilter==="all"||i.category===selectedFilter);
   if(state.loading)return <Screen><LoadingState label="جاري تحميل الإشعارات..." /></Screen>;
   if(state.error)return <Screen><ErrorState description={state.error} onRetry={()=>void state.reload()} /></Screen>;
@@ -36,6 +49,10 @@ export default function NotificationsScreen() {
       router.push(adoptionListingApplicationsRoute(t.listingId,browseKind));
     }else if(t?.kind==="report"){
       router.push(reportDetailsRoute(t.reportId,browseKind));
+    }else if(t?.kind==="deep-link"){
+      router.push(t.href as Href);
+    }else if(t?.kind==="none"){
+      return;
     }else{
       router.push(adoptionRoute(browseKind));
     }

@@ -26,7 +26,9 @@ export type RegisterEntityValidationInput = {
   licenseNumber: string;
   issuingAuthority: string;
   description: string;
+  serviceGovernorateId: string;
   serviceGovernorate: string;
+  serviceRegionId: string;
   serviceDistrict: string;
   selectedLocation: EntityLocation | null;
   selectedActivities: string[];
@@ -77,12 +79,10 @@ export function getRegisterEntityErrors(
     errors.issuingAuthority = "يرجى كتابة اسم جهة الإصدار بشكل أوضح";
   if (input.description.trim().length < 20)
     errors.description = "يرجى إضافة نبذة لا تقل عن 20 حرفًا";
-  if (!input.serviceGovernorate)
+  if (!input.serviceGovernorateId || !input.serviceGovernorate)
     errors.serviceGovernorate = "يرجى اختيار محافظة موقع الجهة";
-  if (!input.serviceDistrict.trim())
-    errors.serviceDistrict = "المنطقة أو الحي مطلوب";
-  else if (input.serviceDistrict.trim().length < 2)
-    errors.serviceDistrict = "يرجى كتابة اسم المنطقة أو الحي بشكل صحيح";
+  if (!input.serviceRegionId || !input.serviceDistrict.trim())
+    errors.serviceDistrict = "يرجى اختيار المنطقة أو الحي من القائمة";
   if (!input.selectedLocation)
     errors.mapLocation = "يرجى تحديد الموقع بدقة على الخريطة";
   if (input.selectedActivities.length === 0)
@@ -140,6 +140,10 @@ export function buildRegisterEntityPayload(input: RegisterEntityPayloadInput) {
       licenseNumber: input.licenseNumber.trim(),
       issuingAuthority: input.issuingAuthority.trim(),
       description: input.description.trim(),
+      governorateId: input.serviceGovernorateId,
+      governorateName: input.serviceGovernorate,
+      regionId: input.serviceRegionId,
+      regionName: input.serviceDistrict.trim(),
       serviceGovernorate: input.serviceGovernorate,
       serviceDistrict: input.serviceDistrict.trim(),
       location: input.selectedLocation,

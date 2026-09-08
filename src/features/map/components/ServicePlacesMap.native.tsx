@@ -22,6 +22,8 @@ const TYPE_COLORS: Record<ServicePlaceType, string> = {
   pet_hotel: COLORS.info,
   cat_cafe: COLORS.secondary,
   grooming: COLORS.primary,
+  animal_pharmacy: COLORS.info,
+  feeding_point: COLORS.warning,
   other: COLORS.textSecondary,
 };
 
@@ -33,6 +35,8 @@ const TYPE_ICONS: Record<ServicePlaceType, keyof typeof Ionicons.glyphMap> = {
   pet_hotel: "bed",
   cat_cafe: "cafe",
   grooming: "cut",
+  animal_pharmacy: "medical",
+  feeding_point: "restaurant",
   other: "location",
 };
 

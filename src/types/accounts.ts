@@ -1,7 +1,25 @@
 /** Canonical account model used by authentication, authorization and navigation. */
 export type AccountType = "user" | "organization";
 export type AccountKind = AccountType;
-export type AccountStatus = "active" | "pending" | "rejected" | "suspended";
+
+/**
+ * UI/session compatibility status. Kept stable so existing screens do not break.
+ * Backend values are mapped into this compact navigation status.
+ */
+export type AccountStatus = "active" | "pending" | "rejected" | "suspended" | "blocked" | "deactivated" | "more_info_required";
+
+/** Backend-facing user lifecycle aligned with the administration dashboard. */
+export type UserAccountStatus = "ACTIVE" | "SUSPENDED" | "BLOCKED" | "DEACTIVATED";
+export type UserVerificationStatus = "UNVERIFIED" | "PHONE_VERIFIED" | "VERIFIED";
+
+/** Backend-facing organization lifecycle aligned with the administration dashboard. */
+export type OrganizationAccountStatus = "PENDING_VERIFICATION" | "ACTIVE" | "SUSPENDED" | "REJECTED";
+export type OrganizationVerificationStatus =
+  | "NOT_REVIEWED"
+  | "IN_REVIEW"
+  | "VERIFIED"
+  | "REJECTED"
+  | "MORE_INFO_REQUIRED";
 
 export type AuthenticatedAccount = {
   id: string;
@@ -9,6 +27,10 @@ export type AuthenticatedAccount = {
   status: AccountStatus;
   displayName?: string;
   email?: string;
+  userAccountStatus?: UserAccountStatus;
+  userVerificationStatus?: UserVerificationStatus;
+  organizationAccountStatus?: OrganizationAccountStatus;
+  organizationVerificationStatus?: OrganizationVerificationStatus;
 };
 
 export type SessionPrincipal =
@@ -22,6 +44,28 @@ export type SessionPrincipal =
  */
 export function initialAccountStatus(kind: AccountKind): AccountStatus {
   return kind === "organization" ? "pending" : "active";
+}
+
+export function mapUserAccountStatusToSession(status: UserAccountStatus): AccountStatus {
+  switch (status) {
+    case "ACTIVE": return "active";
+    case "SUSPENDED": return "suspended";
+    case "BLOCKED": return "blocked";
+    case "DEACTIVATED": return "deactivated";
+  }
+}
+
+export function mapOrganizationStatusToSession(
+  status: OrganizationAccountStatus,
+  verificationStatus?: OrganizationVerificationStatus,
+): AccountStatus {
+  if (verificationStatus === "MORE_INFO_REQUIRED") return "more_info_required";
+  switch (status) {
+    case "ACTIVE": return "active";
+    case "PENDING_VERIFICATION": return "pending";
+    case "REJECTED": return "rejected";
+    case "SUSPENDED": return "suspended";
+  }
 }
 
 /**

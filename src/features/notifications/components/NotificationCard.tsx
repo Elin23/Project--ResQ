@@ -11,6 +11,12 @@ const categoryStyle = {
   reports: { backgroundColor: COLORS.contactPhoneBg, color: COLORS.brown },
   volunteering: { backgroundColor: COLORS.orgStatBlueBg, color: COLORS.bgblue },
   adoption: { backgroundColor: COLORS.orgStatGreenBg, color: COLORS.successDark },
+  donations: { backgroundColor: COLORS.contactPhoneBg, color: COLORS.brown },
+  "feeding-points": { backgroundColor: COLORS.orgStatGreenBg, color: COLORS.successDark },
+  organization: { backgroundColor: COLORS.orgStatBlueBg, color: COLORS.bgblue },
+  content: { backgroundColor: COLORS.lightgray, color: COLORS.textSecondary },
+  system: { backgroundColor: COLORS.lightgray, color: COLORS.textSecondary },
+  advertisements: { backgroundColor: COLORS.contactPhoneBg, color: COLORS.brown },
 } as const;
 
 export default function NotificationCard({ item, onPress }: Props) {

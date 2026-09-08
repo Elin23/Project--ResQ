@@ -1,84 +1,76 @@
 import { Ionicons } from "@expo/vector-icons";
-import { Pressable, TextInput, View } from "react-native";
+import { Pressable, View } from "react-native";
 import MapView, { Marker } from "react-native-maps";
 import AppText from "@/src/components/ui/AppText";
-import { COLORS, PALETTE } from "@/src/theme";
+import LocationLookupSelect from "@/src/components/location/LocationLookupSelect";
+import { COLORS } from "@/src/theme";
 import { styles } from "../../screens/RegisterEntity.styles";
 import type { RegisterEntityForm } from "../../hooks/useRegisterEntityForm";
 
 export default function EntityLocationSection({ form }: { form: RegisterEntityForm }) {
-  const { entityTitle, serviceGovernorate, setServiceGovernorate, serviceDistrict, setServiceDistrict, showServiceGovernorates, setShowServiceGovernorates, mapRegion, selectedLocation, errors, setErrors, closeDropdowns, openMapPicker, renderError, renderSectionHeader, renderDropdown, GOVERNORATES } = form;
+  const {
+    entityTitle,
+    serviceGovernorateId,
+    serviceGovernorate,
+    serviceRegionId,
+    serviceDistrict,
+    showServiceGovernorates,
+    setShowServiceGovernorates,
+    showServiceRegions,
+    setShowServiceRegions,
+    selectServiceGovernorate,
+    selectServiceRegion,
+    selectedLocation,
+    mapRegion,
+    errors,
+    openMapPicker,
+    renderError,
+    renderSectionHeader,
+    locationLookups,
+  } = form;
   return (<>
 {renderSectionHeader("الموقع ونطاق الخدمة", true)}
 
-<View style={styles.fieldGroup}>
-  <Pressable
-    onPress={() => {
-      closeDropdowns();
-      setShowServiceGovernorates((current) => !current);
-    }}
-    style={[
-      styles.inputContainer,
-      errors.serviceGovernorate && styles.inputContainerError,
-    ]}
-  >
-    <Ionicons name="location-outline" size={22} color={PALETTE.neutral700} />
-    <AppText
-      style={[
-        styles.selectText,
-        !serviceGovernorate && styles.selectPlaceholder,
-      ]}
-    >
-      {serviceGovernorate || "المحافظة"}
-    </AppText>
-    <Ionicons
-      name={
-        showServiceGovernorates
-          ? "chevron-up-outline"
-          : "chevron-down-outline"
-      }
-      size={20}
-      color={PALETTE.neutral700}
-    />
-  </Pressable>
-  {showServiceGovernorates
-    ? renderDropdown(GOVERNORATES, serviceGovernorate, (item) => {
-        setServiceGovernorate(item);
-        setShowServiceGovernorates(false);
-        setErrors((current) => ({
-          ...current,
-          serviceGovernorate: undefined,
-        }));
-      })
-    : null}
-  {renderError(errors.serviceGovernorate)}
-</View>
+<LocationLookupSelect
+  label="المحافظة"
+  placeholder="اختر المحافظة"
+  required
+  value={serviceGovernorateId}
+  selectedLabel={serviceGovernorate}
+  options={locationLookups.governorateOptions}
+  visible={showServiceGovernorates}
+  loading={locationLookups.loadingGovernorates}
+  error={errors.serviceGovernorate}
+  onOpen={() => {
+    setShowServiceRegions(false);
+    setShowServiceGovernorates(true);
+  }}
+  onClose={() => setShowServiceGovernorates(false)}
+  onSelect={selectServiceGovernorate}
+/>
 
-<View style={styles.fieldGroup}>
-  <View
-    style={[
-      styles.inputContainer,
-      errors.serviceDistrict && styles.inputContainerError,
-    ]}
-  >
-    <Ionicons name="location-outline" size={22} color={PALETTE.neutral700} />
-    <TextInput
-      value={serviceDistrict}
-      onChangeText={(value) => {
-        setServiceDistrict(value);
-        setErrors((current) => ({
-          ...current,
-          serviceDistrict: undefined,
-        }));
-      }}
-      placeholder="المنطقة / الحي"
-      placeholderTextColor={PALETTE.neutral600}
-      textAlign="right"
-      style={styles.input}
-    />
-  </View>
-  {renderError(errors.serviceDistrict)}
-</View>
+<LocationLookupSelect
+  label="المنطقة / الحي"
+  placeholder={serviceGovernorateId ? "اختر المنطقة / الحي" : "اختر المحافظة أولًا"}
+  required
+  value={serviceRegionId}
+  selectedLabel={serviceDistrict}
+  options={locationLookups.regionOptions}
+  visible={showServiceRegions}
+  loading={locationLookups.loadingRegions}
+  disabled={!serviceGovernorateId}
+  error={errors.serviceDistrict}
+  onOpen={() => {
+    setShowServiceGovernorates(false);
+    setShowServiceRegions(true);
+  }}
+  onClose={() => setShowServiceRegions(false)}
+  onSelect={selectServiceRegion}
+/>
+
+{locationLookups.error ? (
+  <AppText style={styles.helperText}>{locationLookups.error}</AppText>
+) : null}
 
 <View
   style={[

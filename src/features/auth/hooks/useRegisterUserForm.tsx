@@ -6,6 +6,7 @@ import { Platform, useWindowDimensions } from "react-native";
 import AppText from "@/src/components/ui/AppText";
 import { COLORS } from "@/src/theme";
 import { styles } from "@/src/features/auth/screens/RegisterUser.styles";
+import { useLocationLookups } from "@/src/hooks/useLocationLookups";
 import { formatSyrianMobileInternational, getMaximumBirthDate, getMinimumBirthDate, getRegistrationPasswordRequirements, getRegistrationPasswordStrength, normalizeSyrianMobile, USER_MINIMUM_AGE, validateBirthDate, validateEmail, validateFullName, validatePasswordConfirmation, validateRegistrationPassword, validateSyrianMobile } from "@/src/features/auth/utils/registrationValidation";
 
 type FormErrors = {
@@ -35,6 +36,7 @@ export function useRegisterUserForm() {
     new Date(2000, 0, 1),
   );
   const [phone, setPhone] = useState("");
+  const [governorateId, setGovernorateId] = useState("");
   const [governorate, setGovernorate] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -49,6 +51,15 @@ export function useRegisterUserForm() {
 
   const [errors, setErrors] = useState<FormErrors>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const locationLookups = useLocationLookups();
+
+  const selectGovernorate = (id: string) => {
+    const selected = locationLookups.governorates.find((item) => item.id === id);
+    setGovernorateId(id);
+    setGovernorate(selected?.name ?? "");
+    setShowGovernorates(false);
+    setErrors((current) => ({ ...current, governorate: undefined }));
+  };
 
   const horizontalPadding = Math.max(20, Math.min(width * 0.055, 34));
   const contentWidth = Math.min(width - horizontalPadding * 2, 560);
@@ -102,7 +113,7 @@ export function useRegisterUserForm() {
     !validateEmail(email) &&
     !validateBirthDate(birthDate, USER_MINIMUM_AGE) &&
     !validateSyrianMobile(phone) &&
-    governorate.length > 0 &&
+    governorateId.length > 0 && governorate.length > 0 &&
     passwordStrength === 3 &&
     confirmPassword === password &&
     acceptedTerms &&
@@ -165,7 +176,7 @@ export function useRegisterUserForm() {
     nextErrors.birthDate = validateBirthDate(birthDate, USER_MINIMUM_AGE);
     nextErrors.phone = validateSyrianMobile(phone);
 
-    if (!governorate) {
+    if (!governorateId || !governorate) {
       nextErrors.governorate = "يرجى اختيار المحافظة";
     }
 
@@ -198,6 +209,7 @@ export function useRegisterUserForm() {
         email: email.trim(),
         birthDate: birthDate?.toISOString() ?? "",
         phone: formatSyrianMobileInternational(phone),
+        governorateId,
         governorate,
         password,
         acceptedUpdates,
@@ -229,7 +241,7 @@ export function useRegisterUserForm() {
 
   const form = {
     router, fullName, setFullName, email, setEmail, birthDate, formattedBirthDate, openBirthDatePicker,
-    phone, setPhone, normalizeSyrianMobile, governorate, setGovernorate, showGovernorates, setShowGovernorates, showBirthDatePicker,
+    phone, setPhone, normalizeSyrianMobile, governorateId, governorate, setGovernorate, selectGovernorate, locationLookups, showGovernorates, setShowGovernorates, showBirthDatePicker,
     password, setPassword, showPassword, setShowPassword, passwordRequirements, passwordStrength, passwordStrengthLabel,
     passwordStrengthColor, confirmPassword, setConfirmPassword, showConfirmPassword, setShowConfirmPassword,
     acceptedTerms, setAcceptedTerms, acceptedUpdates, setAcceptedUpdates, errors, setErrors, renderError,

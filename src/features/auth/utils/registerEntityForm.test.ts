@@ -5,7 +5,7 @@ const valid: RegisterEntityValidationInput = {
   entityType: "organization", entityTitle: "جمعية / منظمة", fullName: "أحمد محمد", email: "team@example.com",
   birthDate: new Date(1990, 0, 1), phone: "0999999999", entityName: "جمعية الرحمة", entityCategory: "rescue",
   licenseNumber: "LIC-123", issuingAuthority: "وزارة الشؤون", description: "جمعية مختصة بإنقاذ ورعاية الحيوانات المحتاجة.",
-  serviceGovernorate: "دمشق", serviceDistrict: "المزة", selectedLocation: { latitude: 33.5, longitude: 36.2 },
+  serviceGovernorateId: "gov-damascus", serviceGovernorate: "دمشق", serviceRegionId: "reg-mazzeh", serviceDistrict: "المزة", selectedLocation: { latitude: 33.5, longitude: 36.2 },
   selectedActivities: ["rescue"], selectedAnimals: ["cats"], open24Hours: false, workingHours: "", hasShelter: false,
   shelterCapacity: "", acceptsVolunteers: true, volunteerRequirements: "", licenseDocument: "file://license.jpg",
   password: "StrongPass1!", confirmPassword: "StrongPass1!", informationConfirmed: true, verificationConfirmed: true, termsAccepted: true,

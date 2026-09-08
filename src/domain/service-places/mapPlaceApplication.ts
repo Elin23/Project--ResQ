@@ -13,6 +13,10 @@ export type MapPlaceApplication = {
   requestedType: Exclude<ServicePlaceType, "organization">;
   name: string;
   description?: string;
+  governorateId?: string;
+  governorateName?: string;
+  regionId?: string;
+  regionName?: string;
   address: string;
   latitude: number;
   longitude: number;

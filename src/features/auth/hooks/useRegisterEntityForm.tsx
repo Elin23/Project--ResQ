@@ -11,11 +11,11 @@ import { usePermissionFeedback } from "@/src/hooks/usePermissionFeedback";
 import { useFeedback } from "@/src/components/ui/FeedbackProvider";
 import { getReliableCurrentLocation, LocationUnavailableError } from "@/src/services/location/reliableLocation";
 import { styles } from "@/src/features/auth/screens/RegisterEntity.styles";
-import { SYRIAN_GOVERNORATES } from "@/src/features/auth/constants/governorates";
 import { ENTITY_CLINIC_ANIMALS, ENTITY_CLINIC_SERVICES, ENTITY_CLINIC_TYPES, ENTITY_ORGANIZATION_ACTIVITIES, ENTITY_ORGANIZATION_ANIMALS, ENTITY_ORGANIZATION_TYPES } from "@/src/features/auth/constants/registerEntity";
 import type { RegisterEntityChipOption, RegisterEntityErrors, RegisterEntityType, RegisterEntityUploadKey } from "@/src/features/auth/types/registerEntity";
 import { buildRegisterEntityPayload, getRegisterEntityErrors } from "@/src/features/auth/utils/registerEntityForm";
 import { ENTITY_MANAGER_MINIMUM_AGE, getMaximumBirthDate, getMinimumBirthDate, getRegistrationPasswordRequirements, getRegistrationPasswordStrength, normalizeSyrianMobile } from "@/src/features/auth/utils/registrationValidation";
+import { useLocationLookups } from "@/src/hooks/useLocationLookups";
 
 export function useRegisterEntityForm() {
   const router = useRouter();
@@ -43,8 +43,11 @@ export function useRegisterEntityForm() {
   const [licenseNumber, setLicenseNumber] = useState("");
   const [issuingAuthority, setIssuingAuthority] = useState("");
   const [description, setDescription] = useState("");
+  const [serviceGovernorateId, setServiceGovernorateId] = useState("");
   const [serviceGovernorate, setServiceGovernorate] = useState("");
+  const [serviceRegionId, setServiceRegionId] = useState("");
   const [serviceDistrict, setServiceDistrict] = useState("");
+  const [showServiceRegions, setShowServiceRegions] = useState(false);
   const [selectedActivities, setSelectedActivities] = useState<string[]>([]);
   const [selectedAnimals, setSelectedAnimals] = useState<string[]>([]);
 
@@ -94,6 +97,27 @@ export function useRegisterEntityForm() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [submitAttempted, setSubmitAttempted] = useState(false);
   const scrollViewRef = useRef<ScrollView>(null);
+
+  const locationLookups = useLocationLookups(serviceGovernorateId);
+
+  const selectServiceGovernorate = (id: string) => {
+    const selected = locationLookups.governorates.find((item) => item.id === id);
+    setServiceGovernorateId(id);
+    setServiceGovernorate(selected?.name ?? "");
+    setServiceRegionId("");
+    setServiceDistrict("");
+    setShowServiceGovernorates(false);
+    setShowServiceRegions(false);
+    setErrors((current) => ({ ...current, serviceGovernorate: undefined, serviceDistrict: undefined }));
+  };
+
+  const selectServiceRegion = (id: string) => {
+    const selected = locationLookups.regions.find((item) => item.id === id);
+    setServiceRegionId(id);
+    setServiceDistrict(selected?.name ?? "");
+    setShowServiceRegions(false);
+    setErrors((current) => ({ ...current, serviceDistrict: undefined }));
+  };
 
   const maximumBirthDate = useMemo(
     () => getMaximumBirthDate(ENTITY_MANAGER_MINIMUM_AGE),
@@ -153,7 +177,9 @@ export function useRegisterEntityForm() {
     licenseNumber,
     issuingAuthority,
     description,
+    serviceGovernorateId,
     serviceGovernorate,
+    serviceRegionId,
     serviceDistrict,
     selectedLocation,
     selectedActivities,
@@ -181,6 +207,7 @@ export function useRegisterEntityForm() {
 
   const closeDropdowns = () => {
     setShowServiceGovernorates(false);
+    setShowServiceRegions(false);
     setShowCategories(false);
   };
 
@@ -509,10 +536,17 @@ export function useRegisterEntityForm() {
     setIssuingAuthority,
     description,
     setDescription,
+    serviceGovernorateId,
     serviceGovernorate,
     setServiceGovernorate,
+    serviceRegionId,
     serviceDistrict,
     setServiceDistrict,
+    showServiceRegions,
+    setShowServiceRegions,
+    selectServiceGovernorate,
+    selectServiceRegion,
+    locationLookups,
     selectedActivities,
     setSelectedActivities,
     selectedAnimals,
@@ -603,7 +637,6 @@ export function useRegisterEntityForm() {
     renderDropdown,
     renderChips,
     renderUploadCard,
-    GOVERNORATES: SYRIAN_GOVERNORATES,
   };
 
   return { ...form, scrollViewRef };

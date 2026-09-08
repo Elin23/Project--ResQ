@@ -30,7 +30,7 @@ requireText("src/data/repositories/inMemoryAdoptionRepository.ts", 'moderationSt
 requireText("src/data/repositories/inMemoryAdoptionRepository.ts", "isPubliclyVisible", "public moderation filter");
 requireText("src/features/adoption/screens/AdoptionScreen.tsx", 'can("create-adoption-listing")', "create CTA permission visibility");
 requireText("src/features/organization-dashboard/hooks/useOrganizationDashboard.ts", "openAdoptionListings", "organization access to adoption listing management and creation");
-requireText("src/features/session/accessPolicy.ts", 'guest: new Set(["browse", "create-report", "view-adoption"])', "guest exclusion");
+requireText("src/features/session/accessPolicy.ts", 'guest: new Set(["browse", "view-adoption"])', "guest exclusion");
 
 const model = read("src/domain/adoption/adoption.ts");
 for (const field of ["images", "animalName", "animalType", "age", "gender", "traits", "weight", "color", "size", "breed", "healthCondition", "healthChecklist", "location", "contact"]) {

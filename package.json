@@ -90,7 +90,9 @@
     "check:source-health-v19": "node scripts/check-source-health-v19.mjs",
     "check:shell-map-ux-v20": "node scripts/check-shell-map-ux-v20.mjs",
     "check:device-hardening-v21": "node scripts/check-device-hardening-v21.mjs",
-    "check:release-cleanup-v22": "node scripts/check-release-cleanup-v22.mjs"
+    "check:release-cleanup-v22": "node scripts/check-release-cleanup-v22.mjs",
+    "check:mobile-dashboard-contract-v23": "node scripts/check-mobile-dashboard-contract-v23.mjs",
+    "check:location-lookup-v24": "node scripts/check-location-lookup-alignment-v24.mjs"
   },
   "dependencies": {
     "@expo-google-fonts/ibm-plex-sans-arabic": "^0.4.2",

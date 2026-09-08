@@ -92,7 +92,7 @@ const SEVERITY_LEVELS = [
 export default function CreateReportForm() {
   const router = useRouter();
 
-  const { isGuest, account } = useSession();
+  const { account } = useSession();
   const { submit, submitting, error: submitError } = useSubmitReport();
   const { showFeedback } = useFeedback();
   const { handlePermission } = usePermissionFeedback();
@@ -102,8 +102,6 @@ export default function CreateReportForm() {
   const [animalTypeSheetVisible, setAnimalTypeSheetVisible] = useState(false);
   const [selectedSeverity, setSelectedSeverity] = useState("medium");
   const [description, setDescription] = useState("");
-  const [fullName, setFullName] = useState("");
-  const [phone, setPhone] = useState("");
   const [selectedImages, setSelectedImages] = useState<string[]>([]);
   const [locating, setLocating] = useState(false);
 
@@ -513,39 +511,6 @@ export default function CreateReportForm() {
             </View>
           </View>
 
-          {/* معلومات التواصل للزائر */}
-          {isGuest && (
-            <>
-              <AppText
-                variant="label"
-                weight="bold"
-                color={COLORS.text}
-                style={styles.fieldLabel}
-              >
-                معلومات التواصل
-              </AppText>
-              <View style={styles.inputBox}>
-                <TextInput
-                  placeholder="الاسم الكامل"
-                  placeholderTextColor={COLORS.placeholder}
-                  value={fullName}
-                  onChangeText={setFullName}
-                  style={styles.textInput}
-                />
-              </View>
-              <View style={[styles.inputBox, { marginTop: 10 }]}>
-                <TextInput
-                  placeholder="+963 --- --- ---"
-                  placeholderTextColor={COLORS.placeholder}
-                  keyboardType="phone-pad"
-                  value={phone}
-                  onChangeText={setPhone}
-                  style={styles.textInput}
-                />
-              </View>
-            </>
-          )}
-
           {/* تنبيه هام */}
           <View style={styles.warningBox}>
             <View style={styles.warningHeader}>
@@ -582,12 +547,13 @@ export default function CreateReportForm() {
                   title: `${statusLabel} • ${count > 1 ? `${count} حيوانات` : "حيوان واحد"}`,
                   description: description.trim() || statusLabel,
                   subtitle: description.trim() || `بلاغ ${statusLabel} • ${selectedAnimalType}`,
+                  animalType: selectedAnimalType === "قط" ? "cat" : selectedAnimalType === "طائر" ? "bird" : selectedAnimalType === "أخرى" ? "other" : "dog",
                   imageUrl: selectedImages[0],
                   locationName: "الموقع المحدد على الخريطة",
                   latitude: region.latitude,
                   longitude: region.longitude,
                   priority: selectedSeverity === "critical" || selectedSeverity === "high" ? "urgent" : "normal",
-                  userId: account?.kind === "user" ? account.id : `guest:${phone || fullName || "anonymous"}`,
+                  userId: account?.id ?? "",
                 });
                 router.push(ROUTES.reportSuccess);
               } catch {
@@ -622,6 +588,7 @@ export default function CreateReportForm() {
         options={[
           { value: "كلب", label: "كلب" },
           { value: "قط", label: "قط" },
+          { value: "طائر", label: "طائر" },
           { value: "أخرى", label: "أخرى" },
         ]}
         onSelect={setSelectedAnimalType}

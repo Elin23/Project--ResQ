@@ -23,10 +23,12 @@ export type FoodLevel = 'good' | 'medium' | 'empty';
  * أما هاد بيقول "في مشكلة بالنقطة نفسها" (وعاء، مي، حيوان...).
  */
 export type FeedingPointIssueReason =
-  | 'brokenContainer'
-  | 'contaminatedWater'
-  | 'injuredAnimal'
-  | 'pointMissing'
+  | 'empty'
+  | 'noWater'
+  | 'damaged'
+  | 'dirty'
+  | 'missing'
+  | 'unsafeLocation'
   | 'other';
 
 // ────────────── الكيانات ──────────────

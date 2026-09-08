@@ -4,11 +4,10 @@ import { Platform, Pressable, ScrollView, TextInput, View } from "react-native";
 import AppText from "@/src/components/ui/AppText";
 import { COLORS, PALETTE } from "@/src/theme";
 import { styles } from "../../screens/RegisterUser.styles";
-import { SYRIAN_GOVERNORATES as GOVERNORATES } from "../../constants/governorates";
 import type { RegisterUserForm } from "../../hooks/useRegisterUserForm";
 
 export default function UserPersonalInfoSection({ form }: { form: RegisterUserForm }) {
-  const { fullName,setFullName,email,setEmail,birthDate,formattedBirthDate,openBirthDatePicker,phone,setPhone,normalizeSyrianMobile,governorate,setGovernorate,showGovernorates,setShowGovernorates,showBirthDatePicker,temporaryBirthDate,minimumBirthDate,maximumBirthDate,handleBirthDateChange,errors,setErrors,renderError } = form;
+  const { fullName,setFullName,email,setEmail,birthDate,formattedBirthDate,openBirthDatePicker,phone,setPhone,normalizeSyrianMobile,governorateId,governorate,selectGovernorate,locationLookups,showGovernorates,setShowGovernorates,showBirthDatePicker,temporaryBirthDate,minimumBirthDate,maximumBirthDate,handleBirthDateChange,errors,setErrors,renderError } = form;
   return (<>
 <View style={styles.sectionHeader}>
   <View style={styles.sectionMarker} />
@@ -194,28 +193,23 @@ export default function UserPersonalInfoSection({ form }: { form: RegisterUserFo
         keyboardShouldPersistTaps="handled"
         contentContainerStyle={styles.dropdownContent}
       >
-        {GOVERNORATES.map((item) => (
+        {locationLookups.governorates.map((item) => (
           <Pressable
-            key={item}
+            key={item.id}
             onPress={() => {
-              setGovernorate(item);
-              setShowGovernorates(false);
-              setErrors((current) => ({
-                ...current,
-                governorate: undefined,
-              }));
+              selectGovernorate(item.id);
             }}
             style={({ pressed }) => [
               styles.dropdownItem,
-              governorate === item && styles.selectedDropdownItem,
+              governorateId === item.id && styles.selectedDropdownItem,
               pressed && styles.dropdownItemPressed,
             ]}
           >
             <AppText style={styles.dropdownItemText}>
-              {item}
+              {item.name}
             </AppText>
 
-            {governorate === item ? (
+            {governorateId === item.id ? (
               <Ionicons
                 name="checkmark-circle"
                 size={20}

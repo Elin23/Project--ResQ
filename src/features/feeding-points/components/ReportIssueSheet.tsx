@@ -21,10 +21,12 @@ type Props = {
 };
 
 const REASONS: FeedingPointIssueReason[] = [
-  "brokenContainer",
-  "contaminatedWater",
-  "injuredAnimal",
-  "pointMissing",
+  "empty",
+  "noWater",
+  "damaged",
+  "dirty",
+  "missing",
+  "unsafeLocation",
   "other",
 ];
 

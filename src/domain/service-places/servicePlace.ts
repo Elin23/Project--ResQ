@@ -6,6 +6,8 @@ export type ServicePlaceType =
   | "pet_hotel"
   | "cat_cafe"
   | "grooming"
+  | "animal_pharmacy"
+  | "feeding_point"
   | "other";
 
 export type ServicePlaceStatus = "active" | "temporarily_closed" | "suspended" | "archived";
@@ -35,6 +37,10 @@ export type ServicePlace = {
   acceptsFreeCases?: boolean;
   /** Account backing an organization-owned place, when applicable. */
   accountId?: string;
+  governorateId?: string;
+  governorateName?: string;
+  regionId?: string;
+  regionName?: string;
   /** Personal user who owns/manages an approved public map place. */
   ownerUserId?: string;
   status: ServicePlaceStatus;
@@ -63,6 +69,8 @@ export const SERVICE_PLACE_TYPE_META: Record<ServicePlaceType, { label: string; 
   pet_hotel: { label: "فندق حيوانات", icon: "bed" },
   cat_cafe: { label: "مقهى قطط", icon: "cafe" },
   grooming: { label: "عناية وتجميل", icon: "cut" },
+  animal_pharmacy: { label: "صيدلية بيطرية", icon: "medical" },
+  feeding_point: { label: "نقطة إطعام", icon: "restaurant" },
   other: { label: "خدمة أخرى", icon: "location" },
 };
 

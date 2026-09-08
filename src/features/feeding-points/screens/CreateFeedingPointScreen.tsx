@@ -1,5 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import * as ImagePicker from "expo-image-picker";
+import * as Location from "expo-location";
 import { useRouter } from "expo-router";
 import { useMemo, useState } from "react";
 import { Image, Pressable, StyleSheet, View } from "react-native";
@@ -16,10 +17,12 @@ import ScreenHeader from "@/src/components/ui/ScreenHeader";
 import StickyActionBar from "@/src/components/ui/StickyActionBar";
 import FormValidationSummary from "@/src/components/ui/FormValidationSummary";
 import FormSection from "@/src/components/ui/FormSection";
+import LocationLookupSelect from "@/src/components/location/LocationLookupSelect";
 import { useFeedback } from "@/src/components/ui/FeedbackProvider";
 import { useSession } from "@/src/features/session/SessionContext";
 import { useUnsavedChangesGuard } from "@/src/hooks/useUnsavedChangesGuard";
 import { usePermissionFeedback } from "@/src/hooks/usePermissionFeedback";
+import { useLocationLookups } from "@/src/hooks/useLocationLookups";
 import { feedingPointSubmissionDetailsRoute } from "@/src/navigation/routes";
 import { getReliableCurrentLocation, LocationUnavailableError } from "@/src/services/location/reliableLocation";
 import { COLORS, DENSITY, RADIUS, SPACING } from "@/src/theme";
@@ -38,6 +41,12 @@ export default function CreateFeedingPointScreen() {
   const fieldNavigation = useFormFieldNavigation(FIELD_KEYS);
 
   const [name, setName] = useState("");
+  const [governorateId, setGovernorateId] = useState("");
+  const [governorateName, setGovernorateName] = useState("");
+  const [regionId, setRegionId] = useState("");
+  const [regionName, setRegionName] = useState("");
+  const [showGovernorates, setShowGovernorates] = useState(false);
+  const [showRegions, setShowRegions] = useState(false);
   const [address, setAddress] = useState("");
   const [description, setDescription] = useState("");
   const [note, setNote] = useState("");
@@ -47,21 +56,41 @@ export default function CreateFeedingPointScreen() {
   const [facilities, setFacilities] = useState<("water" | "shade")[]>([]);
   const [initialStatus, setInitialStatus] = useState<"stocked" | "needsFood">("stocked");
   const [showValidation, setShowValidation] = useState(false);
+  const locationLookups = useLocationLookups(governorateId);
+
+  const selectGovernorate = (id: string) => {
+    const selected = locationLookups.governorates.find((item) => item.id === id);
+    setGovernorateId(id);
+    setGovernorateName(selected?.name ?? "");
+    setRegionId("");
+    setRegionName("");
+    setShowGovernorates(false);
+    setShowRegions(false);
+  };
+
+  const selectRegion = (id: string) => {
+    const selected = locationLookups.regions.find((item) => item.id === id);
+    setRegionId(id);
+    setRegionName(selected?.name ?? "");
+    setShowRegions(false);
+  };
 
   const validationErrors = useMemo(() => {
     const next: string[] = [];
     if (!photoUri) next.push("أضف صورة واضحة لنقطة الإطعام.");
     if (!name.trim()) next.push("اسم نقطة الإطعام مطلوب.");
-    if (!address.trim()) next.push("العنوان مطلوب.");
+    if (!governorateId) next.push("اختر المحافظة من القائمة.");
+    if (!regionId) next.push("اختر المنطقة أو الحي من القائمة.");
+    if (!address.trim()) next.push("الشارع أو أقرب معلم مطلوب.");
     return next;
-  }, [address, name, photoUri]);
+  }, [address, governorateId, name, photoUri, regionId]);
 
   const canSubmit = Boolean(account && !submitting);
 
   const hasUnsavedChanges = useMemo(() => Boolean(
-    name || address || description || note || photoUri || facilities.length || initialStatus !== "stocked"
+    name || governorateId || regionId || address || description || note || photoUri || facilities.length || initialStatus !== "stocked"
     || location.latitude !== DEFAULT_LOCATION.latitude || location.longitude !== DEFAULT_LOCATION.longitude
-  ), [address, description, facilities.length, initialStatus, location, name, note, photoUri]);
+  ), [address, description, facilities.length, governorateId, initialStatus, location, name, note, photoUri, regionId]);
   const { allowNextNavigation } = useUnsavedChangesGuard(hasUnsavedChanges && !submitting);
 
   const toggleFacility = (facility: "water" | "shade") => {
@@ -132,6 +161,10 @@ export default function CreateFeedingPointScreen() {
         ownerAccountKind: account.kind,
         name: name.trim(),
         address: address.trim(),
+        governorateId,
+        governorateName,
+        regionId,
+        regionName,
         latitude: location.latitude,
         longitude: location.longitude,
         description: description.trim() || undefined,
@@ -203,7 +236,37 @@ export default function CreateFeedingPointScreen() {
 
         <FormSection title="معلومات النقطة">
           <Input ref={fieldNavigation.ref("name")} label="اسم النقطة" required error={showValidation && !name.trim() ? "أدخل اسمًا واضحًا للنقطة." : undefined} value={name} onChangeText={setName} placeholder="مثال: نقطة إطعام حديقة تشرين" {...fieldNavigation.nextProps("name", "address")} />
-          <Input ref={fieldNavigation.ref("address")} label="العنوان" required error={showValidation && !address.trim() ? "أدخل العنوان أو أقرب معلم معروف." : undefined} value={address} onChangeText={setAddress} placeholder="المدينة - المنطقة - أقرب معلم" {...fieldNavigation.doneProps()} />
+          <LocationLookupSelect
+            label="المحافظة"
+            placeholder="اختر المحافظة"
+            required
+            value={governorateId}
+            selectedLabel={governorateName}
+            options={locationLookups.governorateOptions}
+            visible={showGovernorates}
+            loading={locationLookups.loadingGovernorates}
+            error={showValidation && !governorateId ? "المحافظة مطلوبة." : undefined}
+            onOpen={() => { setShowRegions(false); setShowGovernorates(true); }}
+            onClose={() => setShowGovernorates(false)}
+            onSelect={selectGovernorate}
+          />
+          <LocationLookupSelect
+            label="المنطقة / الحي"
+            placeholder={governorateId ? "اختر المنطقة / الحي" : "اختر المحافظة أولًا"}
+            required
+            value={regionId}
+            selectedLabel={regionName}
+            options={locationLookups.regionOptions}
+            visible={showRegions}
+            loading={locationLookups.loadingRegions}
+            disabled={!governorateId}
+            error={showValidation && !regionId ? "المنطقة أو الحي مطلوب." : undefined}
+            onOpen={() => { setShowGovernorates(false); setShowRegions(true); }}
+            onClose={() => setShowRegions(false)}
+            onSelect={selectRegion}
+          />
+          {locationLookups.error ? <AppText variant="caption" color={COLORS.danger}>{locationLookups.error}</AppText> : null}
+          <Input ref={fieldNavigation.ref("address")} label="الشارع / أقرب معلم" required error={showValidation && !address.trim() ? "أدخل الشارع أو أقرب معلم معروف." : undefined} value={address} onChangeText={setAddress} placeholder="مثال: شارع بغداد - قرب الحديقة" {...fieldNavigation.doneProps()} />
           <Input label="الوصف" value={description} onChangeText={setDescription} placeholder="صف مكان النقطة وكيفية الوصول إليها" multiline />
         </FormSection>
 

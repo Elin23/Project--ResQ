@@ -24,8 +24,11 @@ export function useHomeScreen() {
     iconBackgroundColor: COLORS.tan,
     onPress: () => router.push(donationsRoute(browseKind)),
   };
-  const quickActions: HomeQuickAction[] = isGuest || isPendingOrganization
-    ? [common[0], common[1], adoptionAction, ...common.slice(2), donationAction]
-    : [common[0], { key: "my-reports", label: "بلاغاتي", icon: "clipboard", color: COLORS.success, iconBackgroundColor: `${COLORS.success}2A`, onPress: () => router.push(ROUTES.reports) }, common[1], adoptionAction, ...common.slice(2), donationAction];
+  const guestCommon = common.filter((action) => action.key !== "create-report");
+  const quickActions: HomeQuickAction[] = isGuest
+    ? [guestCommon[0], adoptionAction, ...guestCommon.slice(1), donationAction]
+    : isPendingOrganization
+      ? [common[0], common[1], adoptionAction, ...common.slice(2), donationAction]
+      : [common[0], { key: "my-reports", label: "بلاغاتي", icon: "clipboard", color: COLORS.success, iconBackgroundColor: `${COLORS.success}2A`, onPress: () => router.push(ROUTES.reports) }, common[1], adoptionAction, ...common.slice(2), donationAction];
   return { router, quickActions, isGuest, isPendingOrganization };
 }

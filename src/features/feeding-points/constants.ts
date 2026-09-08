@@ -113,9 +113,11 @@ export const FOOD_LEVEL_META: Record<FoodLevel, FoodLevelMeta> = {
 
 /** أسباب البلاغ عن مشكلة بنقطة — منفصلة عن STATUS_META تماماً */
 export const ISSUE_REASON_META: Record<FeedingPointIssueReason, { label: string; icon: keyof typeof Ionicons.glyphMap }> = {
-  brokenContainer: { label: 'وعاء مكسور', icon: 'archive-outline' },
-  contaminatedWater: { label: 'مياه غير صالحة', icon: 'water-outline' },
-  injuredAnimal: { label: 'حيوان مصاب', icon: 'medkit-outline' },
-  pointMissing: { label: 'النقطة غير موجودة', icon: 'help-buoy-outline' },
+  empty: { label: 'النقطة فارغة', icon: 'restaurant-outline' },
+  noWater: { label: 'لا يوجد ماء', icon: 'water-outline' },
+  damaged: { label: 'النقطة متضررة', icon: 'construct-outline' },
+  dirty: { label: 'النقطة بحاجة لتنظيف', icon: 'sparkles-outline' },
+  missing: { label: 'النقطة غير موجودة', icon: 'help-buoy-outline' },
+  unsafeLocation: { label: 'الموقع غير آمن', icon: 'warning-outline' },
   other: { label: 'سبب آخر', icon: 'ellipsis-horizontal-circle-outline' },
 };

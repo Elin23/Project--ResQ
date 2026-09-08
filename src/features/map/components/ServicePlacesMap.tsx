@@ -21,6 +21,8 @@ const TYPE_COLORS: Record<ServicePlaceType, string> = {
   pet_hotel: COLORS.info,
   cat_cafe: COLORS.secondary,
   grooming: COLORS.primary,
+  animal_pharmacy: COLORS.info,
+  feeding_point: COLORS.warning,
   other: COLORS.textSecondary,
 };
 

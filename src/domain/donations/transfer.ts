@@ -9,11 +9,13 @@ export interface DonationTransfer {
   donorDisplayName?: string;
   senderFullName: string;
   senderMobile?: string;
+  senderGovernorateId?: string;
   senderGovernorate: string;
   transferProviderId: string;
   transferProviderName: string;
   transferNumber: string;
   amount: number;
+  amountMinor?: number;
   currency: "SYP";
   supportMessage?: string;
   notifyOnStatusChange: boolean;
@@ -32,11 +34,13 @@ export interface CreateDonationTransferInput {
   donorDisplayName?: string;
   senderFullName: string;
   senderMobile?: string;
+  senderGovernorateId?: string;
   senderGovernorate: string;
   transferProviderId: string;
   transferProviderName: string;
   transferNumber: string;
   amount: number;
+  amountMinor?: number;
   supportMessage?: string;
   notifyOnStatusChange?: boolean;
 }

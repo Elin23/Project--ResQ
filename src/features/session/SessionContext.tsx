@@ -64,7 +64,7 @@ function isValidStoredSession(value: unknown): value is StoredSession {
   if (principal.kind !== "authenticated" || !principal.account) return false;
 
   return ["user", "organization"].includes(principal.account.kind)
-    && ["active", "pending", "rejected", "suspended"].includes(principal.account.status);
+    && ["active", "pending", "rejected", "suspended", "blocked", "deactivated", "more_info_required"].includes(principal.account.status);
 }
 
 export function SessionProvider({ children }: PropsWithChildren) {

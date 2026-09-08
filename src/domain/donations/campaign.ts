@@ -32,7 +32,9 @@ export interface CampaignImpactItem {
 }
 
 export interface CampaignLocation {
+  governorateId?: string;
   governorate: string;
+  regionId?: string;
   city?: string;
   address?: string;
 }
@@ -40,6 +42,7 @@ export interface CampaignLocation {
 export interface CampaignPaymentRecipient {
   fullName: string;
   mobile?: string;
+  governorateId?: string;
   governorate: string;
   notes?: string;
 }
@@ -62,8 +65,11 @@ export interface DonationCampaign {
   location: CampaignLocation;
   impactItems: CampaignImpactItem[];
 
+  /** UI compatibility values in SYP. Backend transports integer minor units. */
   targetAmount: number;
   raisedAmount: number;
+  targetAmountMinor?: number;
+  raisedAmountMinor?: number;
   donorCount: number;
   currency: "SYP";
   startsAt?: string;

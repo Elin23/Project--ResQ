@@ -13,6 +13,10 @@ export interface AdoptionHealthItem {
 }
 
 export interface AdoptionLocation {
+  governorateId?: string;
+  governorateName?: string;
+  regionId?: string;
+  regionName?: string;
   latitude: number;
   longitude: number;
   address: string;

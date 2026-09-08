@@ -9,7 +9,7 @@ const pendingOrganization: SessionPrincipal = { kind: "authenticated", account: 
 describe("access policy", () => {
   it("keeps guest access intentionally limited", () => {
     expect(can({ kind: "guest" }, "browse")).toBe(true);
-    expect(can({ kind: "guest" }, "create-report")).toBe(true);
+    expect(can({ kind: "guest" }, "create-report")).toBe(false);
     expect(can({ kind: "guest" }, "view-personal-account")).toBe(false);
     expect(can({ kind: "guest" }, "apply-adoption")).toBe(false);
   });

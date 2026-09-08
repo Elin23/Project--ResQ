@@ -9,11 +9,12 @@ function clone(item: SponsoredAd): SponsoredAd {
 export class InMemorySponsoredAdRepository implements SponsoredAdRepository {
   private readonly items = SPONSORED_ADS_SEED.map(clone);
 
-  async listActive(now = new Date().toISOString()): Promise<SponsoredAd[]> {
+  async listActive(now = new Date().toISOString(), placement?: SponsoredAd["placement"]): Promise<SponsoredAd[]> {
     const current = Date.parse(now);
     return this.items
       .filter((item) => {
         if (!item.active) return false;
+        if (placement && item.placement !== placement) return false;
         if (Date.parse(item.startsAt) > current) return false;
         if (item.endsAt && Date.parse(item.endsAt) < current) return false;
         return true;

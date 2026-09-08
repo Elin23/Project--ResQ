@@ -1,7 +1,7 @@
 import { COLORS, PALETTE } from "@/src/theme";
 import { Ionicons } from "@expo/vector-icons";
 import { useRouter } from "expo-router";
-import { useMemo, useState } from "react";
+import { useCallback, useMemo, useState } from "react";
 import {
     Image,
     Linking,
@@ -24,7 +24,9 @@ import IconButton from "@/src/components/ui/IconButton";
 import { IMAGES } from "@/src/assets/images";
 import { styles } from "./HelpCenter.styles";
 
-import { ARTICLES, CATEGORIES, FAQS, normalizeText } from "../constants/helpCenter";
+import { ARTICLES, CATEGORIES, normalizeText } from "../constants/helpCenter";
+import { repositories } from "@/src/services/domain/repositories";
+import { useAsyncResource } from "@/src/hooks/useAsyncResource";
 
 export default function HelpCenterScreen() {
   const router = useRouter();
@@ -34,6 +36,9 @@ export default function HelpCenterScreen() {
   const [searchQuery, setSearchQuery] = useState("");
   const [expandedFaqId, setExpandedFaqId] = useState<string | null>(null);
   const [headerElevated, setHeaderElevated] = useState(false);
+
+  const faqLoader = useCallback(() => repositories.faq.list(), []);
+  const faqResource = useAsyncResource(faqLoader, [], "تعذر تحميل الأسئلة الشائعة.");
 
   const horizontalPadding = width >= 700 ? Math.min(width * 0.15, 120) : 18;
   const contentWidth = Math.min(width - horizontalPadding * 2, 620);
@@ -53,15 +58,13 @@ export default function HelpCenterScreen() {
 
   const filteredFaqs = useMemo(() => {
     if (!normalizedQuery) {
-      return FAQS;
+      return faqResource.data;
     }
 
-    return FAQS.filter((item) =>
-      normalizeText(
-        [item.question, item.answer, ...item.keywords].join(" "),
-      ).includes(normalizedQuery),
+    return faqResource.data.filter((item) =>
+      normalizeText([item.question, item.answer, item.category].join(" ")).includes(normalizedQuery),
     );
-  }, [normalizedQuery]);
+  }, [faqResource.data, normalizedQuery]);
 
   const filteredArticles = useMemo(() => {
     if (!normalizedQuery) {

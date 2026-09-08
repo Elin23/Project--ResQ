@@ -11,6 +11,8 @@ import { InMemoryDonationCampaignRepository } from "@/src/data/repositories/inMe
 import { InMemoryDonationTransferRepository } from "@/src/data/repositories/inMemoryDonationTransferRepository";
 import { InMemoryPublicContentRepository } from "@/src/data/repositories/inMemoryPublicContentRepository";
 import { InMemorySponsoredAdRepository } from "@/src/data/repositories/inMemorySponsoredAdRepository";
+import { InMemoryLocationLookupRepository } from "@/src/data/repositories/inMemoryLocationLookupRepository";
+import { InMemoryFaqRepository } from "@/src/data/repositories/inMemoryFaqRepository";
 
 const reportRepository = new InMemoryReportRepository();
 const adoptionRepository = new InMemoryAdoptionRepository();
@@ -34,4 +36,6 @@ export const repositories = {
   donationTransfers: new InMemoryDonationTransferRepository(donationCampaignRepository),
   publicContent: new InMemoryPublicContentRepository(),
   sponsoredAds: new InMemorySponsoredAdRepository(),
+  locationLookups: new InMemoryLocationLookupRepository(),
+  faq: new InMemoryFaqRepository(),
 } as const;
