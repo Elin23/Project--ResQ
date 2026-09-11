@@ -38,9 +38,10 @@ for (const token of ["avatarUri", "onAvatarPress", 'accessibilityLabel={avatarLa
 const userLayout = read("app/(user)/(tabs)/_layout.tsx");
 const userHomeLayout = read("app/(user)/(tabs)/(home)/_layout.tsx");
 if (!userLayout.includes("FloatingGlassTabBar")) failures.push("User shell missing FloatingGlassTabBar");
-for (const token of ["DEFAULT_PROFILE.avatarUri", "router.push(ROUTES.profile)"]) {
+for (const token of ["router.push(ROUTES.profile)", 'avatarLabel="فتح حسابي"']) {
   if (!userHomeLayout.includes(token)) failures.push(`User home stack missing ${token}`);
 }
+if (userHomeLayout.includes("DEFAULT_PROFILE")) failures.push("User home stack must not use mock/default profile identity data");
 
 for (const file of ["app/organization/(tabs)/_layout.tsx"]) {
   const source = read(file);

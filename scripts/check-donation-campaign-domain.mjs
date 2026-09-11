@@ -15,10 +15,10 @@ const requireText = (file, token, label = token) => {
   "src/domain/donations/campaignRepository.ts",
   "src/domain/donations/transfer.ts",
   "src/domain/donations/transferRepository.ts",
-  "src/data/donationCampaigns.seed.ts",
-  "src/data/repositories/inMemoryDonationCampaignRepository.ts",
-  "src/data/repositories/inMemoryDonationTransferRepository.ts",
-  "src/data/repositories/inMemoryDonationRepositories.test.ts",
+  "test-fixtures/donationCampaigns.seed.ts",
+  "test-fixtures/repositories/inMemoryDonationCampaignRepository.ts",
+  "test-fixtures/repositories/inMemoryDonationTransferRepository.ts",
+  "test-fixtures/repositories/inMemoryDonationRepositories.test.ts",
 ].forEach(requireFile);
 
 for (const status of ["draft", "pending_review", "active", "paused", "completed", "closed", "rejected"]) {
@@ -28,11 +28,11 @@ for (const status of ["submitted", "verifying", "approved", "rejected"]) {
   requireText("src/domain/donations/transfer.ts", `\"${status}\"`, `transfer status ${status}`);
 }
 requireText("src/domain/donations/campaign.ts", 'Extract<ContentOwnerKind, "organization">', "organization-only campaign ownership");
-requireText("src/data/repositories/inMemoryDonationCampaignRepository.ts", "recordVerifiedDonation", "verified donation accounting");
-requireText("src/data/repositories/inMemoryDonationCampaignRepository.ts", "input.targetAmount < current.raisedAmount", "target cannot drop below raised amount");
-requireText("src/data/repositories/inMemoryDonationTransferRepository.ts", "duplicate", "duplicate transfer protection");
-requireText("src/data/repositories/inMemoryDonationTransferRepository.ts", "markVerifying", "transfer verification stage");
-requireText("src/data/repositories/inMemoryDonationTransferRepository.ts", "recordVerifiedDonation", "approval updates campaign accounting");
+requireText("test-fixtures/repositories/inMemoryDonationCampaignRepository.ts", "recordVerifiedDonation", "verified donation accounting");
+requireText("test-fixtures/repositories/inMemoryDonationCampaignRepository.ts", "input.targetAmount < current.raisedAmount", "target cannot drop below raised amount");
+requireText("test-fixtures/repositories/inMemoryDonationTransferRepository.ts", "duplicate", "duplicate transfer protection");
+requireText("test-fixtures/repositories/inMemoryDonationTransferRepository.ts", "markVerifying", "transfer verification stage");
+requireText("test-fixtures/repositories/inMemoryDonationTransferRepository.ts", "recordVerifiedDonation", "approval updates campaign accounting");
 requireText("src/services/domain/repositories.ts", "donationCampaigns", "campaign repository composition");
 requireText("src/services/domain/repositories.ts", "donationTransfers", "transfer repository composition");
 

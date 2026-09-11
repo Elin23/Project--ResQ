@@ -1,7 +1,7 @@
 export type ReportStatus = "pending" | "approved" | "assigned" | "closed";
 
 export type ReportPriority = "normal" | "urgent";
-export type ReportAnimalType = "dog" | "cat" | "bird" | "other";
+export type ReportAnimalType = "dog" | "cat" | "bird" | "rabbit" | "other";
 
 export interface Report {
   id: string;
@@ -38,6 +38,8 @@ export interface CreateReportInput {
   subtitle: string;
   animalType?: ReportAnimalType;
   imageUrl?: string;
+  /** Local device URIs selected for this report; uploaded by the API repository. */
+  mediaLocalUris?: string[];
   mediaUploadIds?: string[];
   locationName: string;
   governorateId?: string;

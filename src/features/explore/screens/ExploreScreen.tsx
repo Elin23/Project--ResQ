@@ -6,9 +6,11 @@ import Screen from "@/src/components/ui/Screen";
 import SearchResultCard from "@/src/features/search/components/SearchResultCard";
 import HomeContentSection from "@/src/features/content/components/HomeContentSection";
 import SharedSectionHeader from "@/src/components/ui/SectionHeader";
-import { ORGANIZATIONS } from "@/src/features/organizations/constants/organizations";
 import OrganizationCard from "@/src/features/organizations/components/OrganizationCard";
 import { useAdoptionListings } from "@/src/features/adoption/hooks/useAdoptionListings";
+import { useOrganizations } from "@/src/features/organizations/hooks/useOrganizations";
+import ErrorState from "@/src/components/ui/ErrorState";
+import { SkeletonList } from "@/src/components/ui/Skeleton";
 import {
   ROUTES,
   adoptionDetailsRoute,
@@ -27,6 +29,7 @@ export default function ExploreScreen() {
   const { account, accountKind } = useSession();
   const browseKind = account?.kind === "organization" && account.status === "pending" ? "user" : accountKind;
   const adoption = useAdoptionListings();
+  const organizations = useOrganizations();
   return (
     <Screen scroll surface="app" safeAreaEdges={["top", "left", "right"]} contentContainerStyle={styles.content}>
         <View style={styles.hero}>
@@ -43,15 +46,21 @@ export default function ExploreScreen() {
         </View>
 
         <SharedSectionHeader title="جمعيات موصى بها" actionLabel="عرض الكل" onActionPress={() => router.push(ROUTES.organizations)} />
-        {ORGANIZATIONS.slice(0, 2).map((organization) => (
-          <OrganizationCard key={organization.id} organization={organization} onOpen={() => router.push(organizationDetailsRoute(organization.id))} onContact={() => router.push(ROUTES.contactUs)} />
-        ))}
+        {organizations.loading ? (
+          <SkeletonList count={2} />
+        ) : organizations.error ? (
+          <ErrorState description={organizations.error} onRetry={() => void organizations.reload()} />
+        ) : (
+          organizations.organizations.slice(0, 2).map((organization) => (
+            <OrganizationCard key={organization.id} organization={organization} onOpen={() => router.push(organizationDetailsRoute(organization.id))} onContact={() => router.push(ROUTES.contactUs)} />
+          ))
+        )}
 
         <SharedSectionHeader title="حيوانات متاحة للتبني" actionLabel="عرض الكل" onActionPress={() => router.push(adoptionRoute(browseKind))} />
         {adoption.listings.slice(0, 2).map((listing) => (
           <SearchResultCard
             key={listing.id}
-            result={{ id: listing.id, type: "animal", category: "adoption", title: `${listing.animalName} • ${listing.animalType}`, subtitle: listing.locationName, distance: "متاح للتبني", image: { uri: listing.imageUrl }, badge: { label: "متاح للتبني", backgroundColor: COLORS.successSoft, textColor: COLORS.successDark } }}
+            result={{ id: `adoption-${listing.id}`, entityId: listing.id, type: "adoption", title: `${listing.animalName} • ${listing.animalType}`, subtitle: listing.locationName, meta: "متاح للتبني", image: { uri: listing.imageUrl }, badge: { label: "متاح للتبني", backgroundColor: COLORS.successSoft, textColor: COLORS.successDark } }}
             onPress={() => router.push(adoptionDetailsRoute(listing.id, browseKind))}
           />
         ))}

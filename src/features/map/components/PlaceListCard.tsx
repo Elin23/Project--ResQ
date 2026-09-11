@@ -20,7 +20,7 @@ export default function PlaceListCard({ place, onPress }: { place: ServicePlace;
       <View style={styles.content}>
         <View style={[styles.titleRow, isNarrow && styles.titleRowNarrow]}>
           <AppText variant="body" weight="bold" style={styles.title} numberOfLines={2}>{place.name}</AppText>
-          <StatusBadge label={status.label} color={status.isOpen ? COLORS.success : COLORS.danger} dot style={styles.badge} />
+          <StatusBadge label={status.label} color={!status.isKnown ? COLORS.textMuted : status.isOpen ? COLORS.success : COLORS.danger} dot style={styles.badge} />
         </View>
         <AppText variant="bodySmall" color={COLORS.textSecondary} numberOfLines={2}>{place.address}</AppText>
         <AppText variant="caption" color={COLORS.textMuted} numberOfLines={2}>{meta.label}{status.nextChangeLabel ? ` • ${status.nextChangeLabel}` : ""}</AppText>

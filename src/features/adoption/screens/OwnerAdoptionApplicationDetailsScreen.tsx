@@ -20,6 +20,7 @@ import { COLORS, SPACING } from "@/src/theme";
 import { useOwnerAdoptionApplication } from "../hooks/useOwnerAdoptionApplication";
 
 const HOUSING_LABEL = { apartment: "شقة", house: "منزل", farm: "مزرعة", other: "أخرى" } as const;
+const EXPERIENCE_LABEL = { none: "لا خبرة سابقة", beginner: "مبتدئ", intermediate: "خبرة متوسطة", experienced: "خبير" } as const;
 const STATUS_META = {
   pending: { label: "قيد المراجعة", color: COLORS.warning },
   accepted: { label: "تم القبول", color: COLORS.success },
@@ -98,11 +99,12 @@ export default function OwnerAdoptionApplicationDetailsScreen() {
           <Row label="رقم الهاتف" value={application.phone} />
           <Row label="نوع السكن" value={HOUSING_LABEL[application.housing]} />
           <Row label="لديه حيوانات أخرى" value={application.hasOtherPets ? "نعم" : "لا"} />
+          <Row label="مساحة خارجية آمنة" value={application.hasOutdoorSpace ? "نعم" : "لا"} />
         </Card>
 
         <SectionHeader title="الخبرة والدافع" />
         <Card disabled style={styles.card}>
-          <Field title="الخبرة في رعاية الحيوانات" value={application.experience} />
+          <Field title="الخبرة في رعاية الحيوانات" value={EXPERIENCE_LABEL[application.experience]} />
           <Field title="سبب الرغبة في التبني" value={application.reason} />
           {application.notes ? <Field title="ملاحظات إضافية" value={application.notes} /> : null}
         </Card>

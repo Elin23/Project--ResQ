@@ -1,5 +1,5 @@
 import { DateTimePickerEvent } from "@react-native-community/datetimepicker";
-import { useLocalSearchParams, useRouter } from "expo-router";
+import { useRouter } from "expo-router";
 import { useMemo, useState } from "react";
 import { Platform, useWindowDimensions } from "react-native";
 
@@ -7,6 +7,9 @@ import AppText from "@/src/components/ui/AppText";
 import { COLORS } from "@/src/theme";
 import { styles } from "@/src/features/auth/screens/RegisterUser.styles";
 import { useLocationLookups } from "@/src/hooks/useLocationLookups";
+import { authApi } from "@/src/services/api/authApi";
+import { saveAuthTokens } from "@/src/services/api/authTokens";
+import { ApiError } from "@/src/services/api/client";
 import { formatSyrianMobileInternational, getMaximumBirthDate, getMinimumBirthDate, getRegistrationPasswordRequirements, getRegistrationPasswordStrength, normalizeSyrianMobile, USER_MINIMUM_AGE, validateBirthDate, validateEmail, validateFullName, validatePasswordConfirmation, validateRegistrationPassword, validateSyrianMobile } from "@/src/features/auth/utils/registrationValidation";
 
 type FormErrors = {
@@ -15,6 +18,8 @@ type FormErrors = {
   birthDate?: string;
   phone?: string;
   governorate?: string;
+  region?: string;
+  general?: string;
   password?: string;
   confirmPassword?: string;
   terms?: string;
@@ -23,10 +28,6 @@ type FormErrors = {
 
 export function useRegisterUserForm() {
   const router = useRouter();
-  const params = useLocalSearchParams<{
-    accountType?: "user";
-  }>();
-
   const { width } = useWindowDimensions();
 
   const [fullName, setFullName] = useState("");
@@ -38,6 +39,9 @@ export function useRegisterUserForm() {
   const [phone, setPhone] = useState("");
   const [governorateId, setGovernorateId] = useState("");
   const [governorate, setGovernorate] = useState("");
+  const [regionId, setRegionId] = useState("");
+  const [region, setRegion] = useState("");
+  const [showRegions, setShowRegions] = useState(false);
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
@@ -51,14 +55,25 @@ export function useRegisterUserForm() {
 
   const [errors, setErrors] = useState<FormErrors>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const locationLookups = useLocationLookups();
+  const locationLookups = useLocationLookups(governorateId);
 
   const selectGovernorate = (id: string) => {
     const selected = locationLookups.governorates.find((item) => item.id === id);
     setGovernorateId(id);
     setGovernorate(selected?.name ?? "");
+    setRegionId("");
+    setRegion("");
+    setShowRegions(false);
     setShowGovernorates(false);
-    setErrors((current) => ({ ...current, governorate: undefined }));
+    setErrors((current) => ({ ...current, governorate: undefined, region: undefined, general: undefined }));
+  };
+
+  const selectRegion = (id: string) => {
+    const selected = locationLookups.regions.find((item) => item.id === id);
+    setRegionId(id);
+    setRegion(selected?.name ?? "");
+    setShowRegions(false);
+    setErrors((current) => ({ ...current, region: undefined, general: undefined }));
   };
 
   const horizontalPadding = Math.max(20, Math.min(width * 0.055, 34));
@@ -95,16 +110,16 @@ export function useRegisterUserForm() {
   );
 
   const passwordStrengthLabel =
-    passwordStrength === 3
+    passwordStrength === 4
       ? "قوية"
-      : passwordStrength === 2
+      : passwordStrength >= 2
         ? "متوسطة"
         : "ضعيفة";
 
   const passwordStrengthColor =
-    passwordStrength === 3
+    passwordStrength === 4
       ? COLORS.strengthStrong
-      : passwordStrength === 2
+      : passwordStrength >= 2
         ? COLORS.strengthMedium
         : COLORS.strengthWeak;
 
@@ -114,7 +129,8 @@ export function useRegisterUserForm() {
     !validateBirthDate(birthDate, USER_MINIMUM_AGE) &&
     !validateSyrianMobile(phone) &&
     governorateId.length > 0 && governorate.length > 0 &&
-    passwordStrength === 3 &&
+    regionId.length > 0 && region.length > 0 &&
+    passwordStrength === 4 &&
     confirmPassword === password &&
     acceptedTerms &&
     !isSubmitting;
@@ -179,6 +195,9 @@ export function useRegisterUserForm() {
     if (!governorateId || !governorate) {
       nextErrors.governorate = "يرجى اختيار المحافظة";
     }
+    if (!regionId || !region) {
+      nextErrors.region = "يرجى اختيار المنطقة";
+    }
 
     nextErrors.password = validateRegistrationPassword(password);
     nextErrors.confirmPassword = validatePasswordConfirmation(
@@ -203,29 +222,37 @@ export function useRegisterUserForm() {
     try {
       setIsSubmitting(true);
 
-      const payload = {
-        accountType: params.accountType ?? "user",
+      const response = await authApi.registerUser({
         fullName: fullName.trim(),
         email: email.trim(),
-        birthDate: birthDate?.toISOString() ?? "",
         phone: formatSyrianMobileInternational(phone),
-        governorateId,
-        governorate,
         password,
-        acceptedUpdates,
-      };
-
-      await new Promise((resolve) => setTimeout(resolve, 900));
-
-      void payload;
-
-      router.push({
+        birthDate: birthDate ? birthDate.toISOString().slice(0, 10) : undefined,
+        governorateId: governorateId ? Number(governorateId) : undefined,
+        regionId: regionId ? Number(regionId) : undefined,
+      });
+      if (!response.accessToken || !response.refreshToken || !response.account?.id) {
+        throw new ApiError("استجابة إنشاء الحساب غير مكتملة. يرجى المحاولة مرة أخرى.");
+      }
+      await saveAuthTokens({
+        accessToken: response.accessToken,
+        accessTokenExpiresAt: response.accessTokenExpiresAt,
+        refreshToken: response.refreshToken,
+        refreshTokenExpiresAt: response.refreshTokenExpiresAt,
+      });
+      router.replace({
         pathname: "/verify-registration-phone",
         params: {
-          phone: formatSyrianMobileInternational(phone),
           accountType: "user",
+          flow: "registration",
+          phone: response.account.phone ?? formatSyrianMobileInternational(phone),
+          name: response.account.displayName ?? fullName.trim(),
+          email: response.account.email ?? email.trim(),
         },
       });
+    } catch (error) {
+      const message = error instanceof ApiError ? error.message : "تعذر إنشاء الحساب. تحقق من اتصالك ثم حاول مرة أخرى.";
+      setErrors((current) => ({ ...current, general: message }));
     } finally {
       setIsSubmitting(false);
     }
@@ -241,7 +268,7 @@ export function useRegisterUserForm() {
 
   const form = {
     router, fullName, setFullName, email, setEmail, birthDate, formattedBirthDate, openBirthDatePicker,
-    phone, setPhone, normalizeSyrianMobile, governorateId, governorate, setGovernorate, selectGovernorate, locationLookups, showGovernorates, setShowGovernorates, showBirthDatePicker,
+    phone, setPhone, normalizeSyrianMobile, governorateId, governorate, setGovernorate, selectGovernorate, regionId, region, selectRegion, showRegions, setShowRegions, locationLookups, showGovernorates, setShowGovernorates, showBirthDatePicker,
     password, setPassword, showPassword, setShowPassword, passwordRequirements, passwordStrength, passwordStrengthLabel,
     passwordStrengthColor, confirmPassword, setConfirmPassword, showConfirmPassword, setShowConfirmPassword,
     acceptedTerms, setAcceptedTerms, acceptedUpdates, setAcceptedUpdates, errors, setErrors, renderError,

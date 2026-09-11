@@ -1,6 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { Image, Pressable, Share, StyleSheet, View } from "react-native";
+import { Pressable, Share, StyleSheet, View } from "react-native";
 import RemoteImage from "@/src/components/ui/RemoteImage";
 import RemoteImageBackground from "@/src/components/ui/RemoteImageBackground";
 import { useMemo, useState } from "react";
@@ -153,9 +153,11 @@ export default function DonationCampaignDetailsScreen() {
               <AppText variant="label" weight="bold">{campaign.ownerDisplayName}</AppText>
               {campaign.ownerVerified ? <Ionicons name="shield-checkmark" size={17} color={COLORS.success} /> : null}
             </View>
-            <AppText variant="caption" color={COLORS.textSecondary}>
-              {campaign.location.city ?? campaign.location.governorate} • سوريا
-            </AppText>
+            {campaign.location && (campaign.location.city || campaign.location.governorate) ? (
+              <AppText variant="caption" color={COLORS.textSecondary}>
+                {[campaign.location.city ?? campaign.location.governorate, "سوريا"].filter(Boolean).join(" • ")}
+              </AppText>
+            ) : null}
           </View>
         </View>
 
@@ -176,25 +178,27 @@ export default function DonationCampaignDetailsScreen() {
           <AppText variant="bodyLarge" color={COLORS.textSecondary}>{campaign.description}</AppText>
         </ReadingSection>
 
-        <ReadingSection title="ماذا سيحقق تبرعك؟" subtitle="أثر المساهمة كما حددته الجهة صاحبة الحملة">
-          <View style={styles.impactGrid}>
-            {campaign.impactItems.map((item) => (
-              <Card key={item.id} disabled style={styles.impactCard}>
-                <View style={styles.impactIcon}>
-                  <Ionicons
-                    name={(item.icon as keyof typeof Ionicons.glyphMap) ?? "heart-outline"}
-                    size={22}
-                    color={COLORS.primaryStrong}
-                  />
-                </View>
-                <AppText variant="label" weight="medium" align="center">{item.title}</AppText>
-                {item.description ? (
-                  <AppText variant="caption" color={COLORS.textSecondary} align="center">{item.description}</AppText>
-                ) : null}
-              </Card>
-            ))}
-          </View>
-        </ReadingSection>
+        {campaign.impactItems?.length ? (
+          <ReadingSection title="ماذا سيحقق تبرعك؟" subtitle="أثر المساهمة كما حددته الجهة صاحبة الحملة">
+            <View style={styles.impactGrid}>
+              {(campaign.impactItems ?? []).map((item) => (
+                <Card key={item.id} disabled style={styles.impactCard}>
+                  <View style={styles.impactIcon}>
+                    <Ionicons
+                      name={(item.icon as keyof typeof Ionicons.glyphMap) ?? "heart-outline"}
+                      size={22}
+                      color={COLORS.primaryStrong}
+                    />
+                  </View>
+                  <AppText variant="label" weight="medium" align="center">{item.title}</AppText>
+                  {item.description ? (
+                    <AppText variant="caption" color={COLORS.textSecondary} align="center">{item.description}</AppText>
+                  ) : null}
+                </Card>
+              ))}
+            </View>
+          </ReadingSection>
+        ) : null}
 
         <Card disabled style={styles.ownerCard}>
           <View style={styles.ownerProfileRow}>
@@ -208,7 +212,7 @@ export default function DonationCampaignDetailsScreen() {
             <View style={styles.flex}>
               <AppText variant="h3" weight="bold">{campaign.ownerDisplayName}</AppText>
               <AppText variant="caption" color={COLORS.textSecondary}>
-                جهة موثقة تعمل في رعاية وإنقاذ الحيوانات
+                الجهة المسؤولة عن إدارة هذه الحملة
               </AppText>
             </View>
           </View>

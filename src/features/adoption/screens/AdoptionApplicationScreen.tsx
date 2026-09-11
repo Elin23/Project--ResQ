@@ -14,7 +14,7 @@ import LoadingState from "@/src/components/ui/LoadingState";
 import { useFeedback } from "@/src/components/ui/FeedbackProvider";
 import Screen from "@/src/components/ui/Screen";
 import ScreenHeader from "@/src/components/ui/ScreenHeader";
-import type { ApplicantHousing } from "@/src/domain";
+import type { ApplicantHousing, PetExperienceLevel } from "@/src/domain";
 import { useSession } from "@/src/features/session/SessionContext";
 import { adoptionApplicationDetailsRoute } from "@/src/navigation/routes";
 import { repositories } from "@/src/services/domain/repositories";
@@ -28,25 +28,30 @@ const HOUSING_OPTIONS: { value: ApplicantHousing; label: string }[] = [
   { value: "other", label: "أخرى" },
 ];
 
+const EXPERIENCE_OPTIONS: { value: PetExperienceLevel; label: string }[] = [
+  { value: "none", label: "لا خبرة سابقة" },
+  { value: "beginner", label: "مبتدئ" },
+  { value: "intermediate", label: "خبرة متوسطة" },
+  { value: "experienced", label: "خبير" },
+];
+
 export default function AdoptionApplicationScreen() {
   const router = useRouter();
   const { id } = useLocalSearchParams<{ id?: string }>();
   const { account, accountKind } = useSession();
   const { showFeedback } = useFeedback();
   const details = useAdoptionDetails();
-  const [applicantName, setApplicantName] = useState(account?.displayName ?? "");
-  const [phone, setPhone] = useState("");
-  const [city, setCity] = useState("");
   const [housing, setHousing] = useState<ApplicantHousing>("apartment");
   const [hasOtherPets, setHasOtherPets] = useState(false);
-  const [experience, setExperience] = useState("");
+  const [hasOutdoorSpace, setHasOutdoorSpace] = useState(false);
+  const [experience, setExperience] = useState<PetExperienceLevel>("none");
   const [reason, setReason] = useState("");
   const [notes, setNotes] = useState("");
   const [submitting, setSubmitting] = useState(false);
 
   const valid = useMemo(
-    () => applicantName.trim().length >= 2 && phone.trim().length >= 7 && city.trim().length >= 2 && experience.trim().length >= 10 && reason.trim().length >= 10,
-    [applicantName, phone, city, experience, reason],
+    () => reason.trim().length >= 5,
+    [reason],
   );
 
   if (details.loading) return <Screen><LoadingState label="جاري تجهيز طلب التبني..." /></Screen>;
@@ -62,11 +67,12 @@ export default function AdoptionApplicationScreen() {
       const application = await repositories.adoptionApplications.submit({
         listingId: listing.id,
         applicantAccountId: account.id,
-        applicantName,
-        phone,
-        city,
+        applicantName: account.displayName ?? "",
+        phone: account.phone ?? "",
+        city: "",
         housing,
         hasOtherPets,
+        hasOutdoorSpace,
         experience,
         reason,
         notes,
@@ -88,9 +94,12 @@ export default function AdoptionApplicationScreen() {
           <AppText color={COLORS.textSecondary}>لن تظهر معلومات التواصل الخاصة بين الطرفين قبل قبول الطلب. راجع بياناتك قبل الإرسال.</AppText>
         </Card>
 
-        <Input label="الاسم" value={applicantName} onChangeText={setApplicantName} required />
-        <Input label="رقم الهاتف" value={phone} onChangeText={setPhone} keyboardType="phone-pad" contentDirection="ltr" required />
-        <Input label="المدينة" value={city} onChangeText={setCity} required />
+        <Card disabled style={styles.profileCard}>
+          <AppText variant="label" weight="bold">بيانات مقدم الطلب من الملف الشخصي</AppText>
+          <AppText variant="bodySmall" color={COLORS.textSecondary}>
+            {account.displayName || "الحساب"}{account.phone ? ` • ${account.phone}` : ""}. لن نرسل بيانات اتصال يدوية مختلفة عن حسابك الموثق.
+          </AppText>
+        </Card>
 
         <View style={styles.section}>
           <AppText variant="label" weight="medium">نوع السكن</AppText>
@@ -107,8 +116,21 @@ export default function AdoptionApplicationScreen() {
           </View>
         </View>
 
-        <Input label="خبرتك في رعاية الحيوانات" value={experience} onChangeText={setExperience} multiline required helperText="اذكر تجربتك السابقة وكيف ستعتني بالحيوان." />
-        <Input label="لماذا ترغب في التبني؟" value={reason} onChangeText={setReason} multiline required />
+        <View style={styles.section}>
+          <AppText variant="label" weight="medium">هل تتوفر مساحة خارجية آمنة؟</AppText>
+          <View style={styles.chips}>
+            <Chip label="نعم" selected={hasOutdoorSpace} onPress={() => setHasOutdoorSpace(true)} />
+            <Chip label="لا" selected={!hasOutdoorSpace} onPress={() => setHasOutdoorSpace(false)} />
+          </View>
+        </View>
+
+        <View style={styles.section}>
+          <AppText variant="label" weight="medium">مستوى الخبرة في رعاية الحيوانات</AppText>
+          <View style={styles.chips}>
+            {EXPERIENCE_OPTIONS.map((option) => <Chip key={option.value} label={option.label} selected={experience === option.value} onPress={() => setExperience(option.value)} />)}
+          </View>
+        </View>
+        <Input label="لماذا ترغب في التبني؟" value={reason} onChangeText={setReason} multiline required helperText="خمسة أحرف على الأقل." />
         <Input label="ملاحظات إضافية" value={notes} onChangeText={setNotes} multiline />
 
         <ActionStack>
@@ -124,6 +146,7 @@ const styles = StyleSheet.create({
   content: { paddingTop: 0 },
   body: { padding: SPACING.lg, gap: SPACING.md },
   notice: { gap: SPACING.xs },
+  profileCard: { gap: SPACING.xs },
   section: { width: "100%", gap: SPACING.sm },
   chips: { flexDirection: "row", direction: "rtl", flexWrap: "wrap", gap: SPACING.sm },
 });

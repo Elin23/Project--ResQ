@@ -15,7 +15,7 @@ function directionsUrl(place: ServicePlace) {
 export default function PlacePreviewCard({ place, onDetails }: { place: ServicePlace; onDetails: () => void }) {
   const openState = getPlaceOpenState(place);
   const meta = SERVICE_PLACE_TYPE_META[place.type];
-  const callNow = () => void Linking.openURL(`tel:${place.phone.replace(/\s/g, "")}`);
+  const callNow = () => { if (place.phone.trim()) void Linking.openURL(`tel:${place.phone.replace(/\s/g, "")}`); };
   const openDirections = () => void Linking.openURL(directionsUrl(place));
 
   return (
@@ -28,7 +28,7 @@ export default function PlacePreviewCard({ place, onDetails }: { place: ServiceP
         <Chip label={meta.label} soft color={COLORS.secondaryStrong} />
       </View>
       <View style={styles.quickInfo}>
-        <AppText variant="bodySmall" color={COLORS.textSecondary}>الهاتف: {place.phone}</AppText>
+        {place.phone.trim() ? <AppText variant="bodySmall" color={COLORS.textSecondary}>الهاتف: {place.phone}</AppText> : null}
         {typeof place.acceptsFreeCases === "boolean" ? (
           <AppText variant="bodySmall" color={place.acceptsFreeCases ? COLORS.successDark : COLORS.textMuted}>
             {place.acceptsFreeCases ? "تستقبل بعض الحالات مجانًا" : "لا يوجد استقبال مجاني معلن"}
@@ -36,12 +36,12 @@ export default function PlacePreviewCard({ place, onDetails }: { place: ServiceP
         ) : null}
       </View>
       <View style={styles.statusRow}>
-        <View style={[styles.statusDot, { backgroundColor: openState.isOpen ? COLORS.success : COLORS.danger }]} />
-        <AppText variant="label" color={openState.isOpen ? COLORS.success : COLORS.danger}>{openState.label}</AppText>
+        <View style={[styles.statusDot, { backgroundColor: !openState.isKnown ? COLORS.textMuted : openState.isOpen ? COLORS.success : COLORS.danger }]} />
+        <AppText variant="label" color={!openState.isKnown ? COLORS.textSecondary : openState.isOpen ? COLORS.success : COLORS.danger}>{openState.label}</AppText>
         {openState.nextChangeLabel ? <AppText variant="caption" color={COLORS.textMuted}>• {openState.nextChangeLabel}</AppText> : null}
       </View>
       <ActionRow style={styles.actions}>
-        <Button title="اتصل الآن" icon="call-outline" size="small" fullWidth={false} onPress={callNow} />
+        {place.phone.trim() ? <Button title="اتصل الآن" icon="call-outline" size="small" fullWidth={false} onPress={callNow} /> : null}
         <Button title="الاتجاهات" icon="navigate-outline" variant="outline" size="small" fullWidth={false} onPress={openDirections} />
         <Button title="التفاصيل" variant="text" size="small" fullWidth={false} onPress={onDetails} />
       </ActionRow>

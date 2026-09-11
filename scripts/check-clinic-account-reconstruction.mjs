@@ -14,7 +14,7 @@ must("src/features/clinic-dashboard/hooks/useClinicDashboard.ts",'label:"بلا�
 must("src/features/clinic-dashboard/hooks/useClinicDashboard.ts",'label:"التبني"',"adoption");
 must("src/domain/service-places/servicePlaceRepository.ts","getClinicByAccountId","account/place relation");
 must("src/domain/service-places/servicePlaceRepository.ts","updateClinicByAccountId","clinic profile update contract");
-must("src/data/repositories/inMemoryServicePlaceRepository.ts","updateClinicByAccountId","clinic profile persistence");
+must("test-fixtures/repositories/inMemoryServicePlaceRepository.ts","updateClinicByAccountId","clinic profile persistence");
 must("src/features/clinic-dashboard/screens/ClinicProfileScreen.tsx","تعديل بيانات العيادة","clinic profile edit entry");
 if(failures.length){console.error("Clinic reconstruction check failed:\n"+failures.map(x=>`- ${x}`).join("\n"));process.exit(1)}
 console.log("Clinic reconstruction check passed: clinic inherits normal-user product capabilities plus clinic identity/profile and campaign management; obsolete medical-operation routes are removed.");

@@ -44,7 +44,7 @@ export default function ServicePlaceDetailsScreen() {
 
   const meta = SERVICE_PLACE_TYPE_META[place.type];
   const openState = getPlaceOpenState(place);
-  const callNow = () => void Linking.openURL(`tel:${place.phone.replace(/\s/g, "")}`);
+  const callNow = () => { if (place.phone.trim()) void Linking.openURL(`tel:${place.phone.replace(/\s/g, "")}`); };
   const directions = () => void Linking.openURL(`https://www.google.com/maps/dir/?api=1&destination=${place.latitude},${place.longitude}`);
 
   return (
@@ -67,15 +67,15 @@ export default function ServicePlaceDetailsScreen() {
       </View>
 
       <Card disabled style={styles.statusCard}>
-        <View style={[styles.statusDot, { backgroundColor: openState.isOpen ? COLORS.success : COLORS.danger }]} />
+        <View style={[styles.statusDot, { backgroundColor: !openState.isKnown ? COLORS.textMuted : openState.isOpen ? COLORS.success : COLORS.danger }]} />
         <View style={styles.statusText}>
-          <AppText variant="body" weight="bold" color={openState.isOpen ? COLORS.success : COLORS.danger}>{openState.label}</AppText>
+          <AppText variant="body" weight="bold" color={!openState.isKnown ? COLORS.textSecondary : openState.isOpen ? COLORS.success : COLORS.danger}>{openState.label}</AppText>
           {openState.nextChangeLabel ? <AppText variant="bodySmall" color={COLORS.textSecondary}>{openState.nextChangeLabel}</AppText> : null}
         </View>
       </Card>
 
       <ActionRow>
-        <Button title="اتصل الآن" icon="call-outline" fullWidth={false} onPress={callNow} />
+        {place.phone.trim() ? <Button title="اتصل الآن" icon="call-outline" fullWidth={false} onPress={callNow} /> : null}
         <Button title="الاتجاهات" icon="navigate-outline" variant="outline" fullWidth={false} onPress={directions} />
       </ActionRow>
 
@@ -88,10 +88,12 @@ export default function ServicePlaceDetailsScreen() {
 
       <Card disabled style={styles.sectionCard}>
         <AppText variant="h3" weight="bold">معلومات التواصل</AppText>
-        <View style={styles.infoRow}>
-          <Ionicons name="call-outline" size={ICON_SIZES.md} color={COLORS.textSecondary} />
-          <AppText variant="body" direction="ltr" align="left">{place.phone}</AppText>
-        </View>
+        {place.phone.trim() ? (
+          <View style={styles.infoRow}>
+            <Ionicons name="call-outline" size={ICON_SIZES.md} color={COLORS.textSecondary} />
+            <AppText variant="body" direction="ltr" align="left">{place.phone}</AppText>
+          </View>
+        ) : null}
         <View style={styles.infoRow}>
           <Ionicons name="location-outline" size={ICON_SIZES.md} color={COLORS.textSecondary} />
           <AppText variant="body">{place.address}</AppText>
@@ -109,9 +111,9 @@ export default function ServicePlaceDetailsScreen() {
       <Card disabled style={styles.sectionCard}>
         <AppText variant="h3" weight="bold">ساعات العمل</AppText>
         <View style={styles.hours}>
-          {place.openingHours.map((item) => (
+          {place.openingHours.length ? place.openingHours.map((item) => (
             <AppText key={item.day} variant="bodySmall" color={COLORS.textSecondary}>{formatOpeningHours(item)}</AppText>
-          ))}
+          )) : <AppText variant="bodySmall" color={COLORS.textSecondary}>لم تُعلن الجهة ساعات العمل.</AppText>}
         </View>
       </Card>
 

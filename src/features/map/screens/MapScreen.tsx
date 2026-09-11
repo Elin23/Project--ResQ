@@ -157,7 +157,7 @@ export default function MapScreen() {
             style={styles.nearbySection}
           >
             <View style={styles.cards}>
-              {places.slice(0, 6).map((place) => (
+              {places.map((place) => (
                 <PlaceListCard key={place.id} place={place} onPress={() => openDetails(place.id)} />
               ))}
             </View>

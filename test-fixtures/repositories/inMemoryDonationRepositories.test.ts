@@ -127,6 +127,7 @@ describe("Donation campaign owner management", () => {
       campaignId: "campaign-injured-animals",
       donorAccountId: "user-donor",
       senderFullName: "متبرع تجريبي",
+      senderMobile: "+963900123456",
       senderGovernorate: "دمشق",
       transferProviderId: "al-haram",
       transferProviderName: "الهرم للحوالات المالية",
@@ -159,6 +160,7 @@ describe("Donation transfer lifecycle", () => {
       donorAccountId: "user-1",
       donorDisplayName: "محمد علي",
       senderFullName: "محمد علي",
+      senderMobile: "+963900123456",
       senderGovernorate: "دمشق",
       transferProviderId: "al-haram",
       transferProviderName: "الهرم للحوالات المالية",
@@ -183,6 +185,7 @@ describe("Donation transfer lifecycle", () => {
     const input = {
       campaignId: "campaign-injured-animals",
       senderFullName: "محمد علي",
+      senderMobile: "+963900123456",
       senderGovernorate: "دمشق",
       transferProviderId: "al-haram",
       transferProviderName: "الهرم للحوالات المالية",

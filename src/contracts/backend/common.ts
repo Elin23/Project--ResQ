@@ -1,38 +1,27 @@
 export type BackendId = string;
+export type NumericBackendId = number;
 
 export type MediaType = "IMAGE" | "VIDEO";
 
 export interface MediaDto {
-  id: BackendId;
-  type: MediaType;
-  url: string;
-  thumbnailUrl?: string;
-  altText?: string;
-  caption?: string;
-  createdAt?: string;
+  id: number;
+  type?: string | null;
+  url?: string | null;
+  thumbnailUrl?: string | null;
+  altText?: string | null;
+  caption?: string | null;
 }
 
-export type CurrencyCode = "SYP";
-
-export interface MoneyDto {
-  amountMinor: number;
-  currency: CurrencyCode;
-}
-
-export interface GeoLocationDto {
-  governorateId: BackendId;
-  governorateName: string;
-  regionId?: BackendId;
-  regionName?: string;
-  address: string;
-  latitude: number;
-  longitude: number;
-}
+export type CurrencyCode = "SYP" | string;
 
 export interface PagedResultDto<T> {
   items: T[];
-  total: number;
   page: number;
   pageSize: number;
+  total: number;
   pageCount: number;
+}
+
+export function toBackendId(value: string | number | null | undefined): string {
+  return value == null ? "" : String(value);
 }

@@ -4,7 +4,7 @@ import RemoteImage from "@/src/components/ui/RemoteImage";
 import AppText from "@/src/components/ui/AppText";
 import Card from "@/src/components/ui/Card";
 import type { PublicContent } from "@/src/domain/content/content";
-import { COLORS, RADIUS, SPACING } from "@/src/theme";
+import { COLORS, SPACING } from "@/src/theme";
 
 type Props = { item: PublicContent; onPress: () => void; compact?: boolean };
 

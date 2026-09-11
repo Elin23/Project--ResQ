@@ -1,7 +1,8 @@
 import { Ionicons } from "@expo/vector-icons";
-import { Image, Pressable, StyleSheet, View } from "react-native";
+import { Pressable, StyleSheet, View } from "react-native";
 
 import AppText from "@/src/components/ui/AppText";
+import RemoteImage from "@/src/components/ui/RemoteImage";
 import { COLORS, FONT_SIZES, RADIUS, SPACING } from "@/src/theme";
 
 type Props = { images: string[]; onCamera: () => void; onGallery: () => void };
@@ -16,7 +17,7 @@ function Action({ icon, label, onPress }: { icon: keyof typeof Ionicons.glyphMap
 export default function TaskEvidenceSection({ images, onCamera, onGallery }: Props) {
   return <>
     <View style={styles.actions}><Action icon="camera-outline" label="الكاميرا" onPress={onCamera} /><Action icon="images-outline" label="المعرض" onPress={onGallery} /></View>
-    {images.length ? <View style={styles.previewRow}>{images.slice(0, 4).map((uri, index) => <Image key={`${uri}-${index}`} source={{ uri }} style={styles.preview} />)}</View> : null}
+    {images.length ? <View style={styles.previewRow}>{images.slice(0, 4).map((uri, index) => <RemoteImage key={`${uri}-${index}`} uri={uri} style={styles.preview} accessibilityLabel={`صورة توثيق ${index + 1}`} />)}</View> : null}
   </>;
 }
 

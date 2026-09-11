@@ -1,15 +1,15 @@
-import { ActivityIndicator, StyleSheet, View } from "react-native";
+import { StyleSheet, View } from "react-native";
 import { useRouter } from "expo-router";
-import AppText from "@/src/components/ui/AppText";
 import Button from "@/src/components/ui/Button";
 import EmptyState from "@/src/components/ui/EmptyState";
+import LoadingState from "@/src/components/ui/LoadingState";
 import Screen from "@/src/components/ui/Screen";
 import ScreenHeader from "@/src/components/ui/ScreenHeader";
 import type { PublicContentKind } from "@/src/domain/content/content";
 import { useSession } from "@/src/features/session/SessionContext";
 import { goBackOrReplace } from "@/src/navigation/helpers";
 import { articleDetailsRoute, articlesRoute, ROUTES, successStoriesRoute, successStoryDetailsRoute } from "@/src/navigation/routes";
-import { COLORS, SPACING } from "@/src/theme";
+import { SPACING } from "@/src/theme";
 import ContentCard from "../components/ContentCard";
 import { usePublicContentList } from "../hooks/usePublicContent";
 
@@ -33,7 +33,7 @@ export default function PublicContentListScreen({ kind }: Props) {
           <Button title="قصص النجاح" size="small" fullWidth={false} variant={!isArticle ? "primary" : "outline"} onPress={() => router.replace(successStoriesRoute(accountKind))} />
         </View>
 
-        {loading ? <ActivityIndicator color={COLORS.primary} size="large" style={styles.loader} /> : null}
+        {loading ? <LoadingState label="جاري تحميل المحتوى..." /> : null}
         {!loading && error ? <EmptyState title="تعذر تحميل المحتوى" description={error} icon="cloud-offline-outline" actionTitle="إعادة المحاولة" onActionPress={() => void reload()} /> : null}
         {!loading && !error && items.length === 0 ? <EmptyState title="لا يوجد محتوى حاليًا" description="سيظهر المحتوى المنشور هنا عند توفره." icon="document-text-outline" /> : null}
         {!loading && !error ? items.map((item) => (
@@ -47,5 +47,4 @@ export default function PublicContentListScreen({ kind }: Props) {
 const styles = StyleSheet.create({
   content: { gap: SPACING.md, paddingBottom: SPACING.xl },
   switchRow: { flexDirection: "row", direction: "rtl", gap: SPACING.sm, alignItems: "center" },
-  loader: { marginVertical: SPACING.xxl },
 });

@@ -11,7 +11,7 @@ function taskView(task: RescueTask): OrganizationRescueTask {
 
 export function useOrganizationTasks() {
   const { account } = useSession();
-  const organizationId = account?.kind === "organization" ? account.id : "local-organization";
+  const organizationId = account?.kind === "organization" ? String(account.organizationId ?? account.id) : "local-organization";
   const loader = useCallback(() => repositories.rescue.listByOrganization(organizationId), [organizationId]);
   const resource = useAsyncResource<RescueTask[]>(loader, [], "تعذر تحميل مهام الإنقاذ.");
   const tasks = useMemo(() => resource.data.map(taskView), [resource.data]);

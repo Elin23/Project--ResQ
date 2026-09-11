@@ -1,6 +1,6 @@
 import type { SponsoredAd } from "@/src/domain/advertising/sponsoredAd";
 import type { SponsoredAdRepository } from "@/src/domain/advertising/sponsoredAdRepository";
-import { SPONSORED_ADS_SEED } from "@/src/data/sponsoredAds.seed";
+import { SPONSORED_ADS_SEED } from "@/test-fixtures/sponsoredAds.seed";
 
 function clone(item: SponsoredAd): SponsoredAd {
   return { ...item };

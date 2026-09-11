@@ -107,7 +107,7 @@ export default function MyAdoptionListingsScreen() {
                   }
                   style={styles.listingCard}
                 >
-                  <RemoteImage uri={item.imageUrl} style={styles.thumbnail} accessibilityLabel={item.name} />
+                  <RemoteImage uri={item.imageUrl} style={styles.thumbnail} accessibilityLabel={item.animalName} />
                   <View style={styles.copy}>
                     <View style={styles.headerRow}>
                       <AppText variant="h3" weight="bold" numberOfLines={2} style={styles.title}>

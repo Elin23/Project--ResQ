@@ -28,8 +28,9 @@ if (!failures.length) {
   expect(feeding.includes("FormValidationSummary"), "Feeding point form must render validation summary");
   expect(feeding.includes('error={showValidation && !name.trim()'), "Feeding point form must expose field-level errors");
   expect(place.includes("FormValidationSummary"), "Map place form must render validation summary");
-  expect(place.includes('validationIntent'), "Map place validation must distinguish draft from submission requirements");
-  expect(place.includes('صورة إثبات الترخيص مطلوبة قبل الإرسال'), "Clinic proof must expose inline submission error");
+  expect(place.includes('governorateId') && place.includes('regionId'), "Map place validation must require the backend location contract");
+  expect(place.includes('!location'), "Map place validation must require an explicitly selected map location");
+  expect(place.includes('supportingDocumentUri') && place.includes('licenseNumber'), "Veterinary clinic map requests must collect verification evidence supported by the backend contract");
   expect(donation.includes("FormValidationSummary"), "Donation checkout must render inline validation summary");
   expect(donation.includes('error={showValidation && !transferNumber.trim()'), "Donation checkout must expose transfer-number error inline");
   expect(!donation.includes('Alert.alert("رقم الحوالة مطلوب"'), "Donation checkout must not use alerts for required field validation");
@@ -40,4 +41,4 @@ if (failures.length) {
   for (const failure of failures) console.error(`- ${failure}`);
   process.exit(1);
 }
-console.log("Inline validation V10 check passed: summaries, field errors, media/proof feedback, and draft-aware validation are enforced.");
+console.log("Inline validation V10 check passed: summaries, field errors, backend location requirements, and supported-field validation and clinic verification evidence are enforced.");

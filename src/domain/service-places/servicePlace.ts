@@ -55,6 +55,7 @@ export type ServicePlace = {
 
 export type PlaceOpenState = {
   isOpen: boolean;
+  isKnown: boolean;
   label: string;
   nextChangeLabel?: string;
 };
@@ -131,18 +132,22 @@ export function allDayOpeningHours(): DailyOpeningHours[] {
 
 export function getPlaceOpenState(place: ServicePlace, now = new Date()): PlaceOpenState {
   if (place.status === "suspended") {
-    return { isOpen: false, label: "موقوف عن الظهور" };
+    return { isOpen: false, isKnown: true, label: "موقوف عن الظهور" };
   }
   if (place.status === "archived") {
-    return { isOpen: false, label: "مؤرشف" };
+    return { isOpen: false, isKnown: true, label: "مؤرشف" };
   }
   if (place.status === "temporarily_closed") {
-    return { isOpen: false, label: "مغلق مؤقتًا" };
+    return { isOpen: false, isKnown: true, label: "مغلق مؤقتًا" };
+  }
+
+  if (place.openingHours.length === 0) {
+    return { isOpen: false, isKnown: false, label: "ساعات العمل غير معلنة" };
   }
 
   const today = openingHoursForDay(place, now.getDay());
   if (!today?.open || !today.close) {
-    return { isOpen: false, label: "مغلق اليوم" };
+    return { isOpen: false, isKnown: true, label: "مغلق اليوم" };
   }
 
   const currentMinutes = now.getHours() * 60 + now.getMinutes();
@@ -156,10 +161,11 @@ export function getPlaceOpenState(place: ServicePlace, now = new Date()): PlaceO
   return isOpen
     ? {
         isOpen: true,
+        isKnown: true,
         label: "مفتوح الآن",
         nextChangeLabel: place.emergency24h ? "طوارئ على مدار الساعة" : `يغلق ${formatClock(today.close)}`,
       }
-    : { isOpen: false, label: "مغلق الآن", nextChangeLabel: `يفتح ${formatClock(today.open)}` };
+    : { isOpen: false, isKnown: true, label: "مغلق الآن", nextChangeLabel: `يفتح ${formatClock(today.open)}` };
 }
 
 export function formatOpeningHours(item: DailyOpeningHours) {

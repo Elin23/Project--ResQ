@@ -5,6 +5,7 @@ export type AdoptionListingStatus = "available" | "reserved" | "adopted" | "clos
 export type AdoptionGender = "male" | "female" | "unknown";
 export type AdoptionSize = "small" | "medium" | "large";
 export type AdoptionAgeUnit = "months" | "years";
+export type AdoptionHealthStatus = "unknown" | "good" | "needs_care" | "under_treatment" | "special_needs";
 
 export interface AdoptionHealthItem {
   id: string;
@@ -43,9 +44,12 @@ export interface AdoptionListing extends ContentOwner, ModerationMetadata {
   color: string;
   size: AdoptionSize;
   breed?: string;
+  healthStatus: AdoptionHealthStatus;
   healthCondition: string;
   healthChecklist: AdoptionHealthItem[];
   images: string[];
+  /** Backend media ids retained across edits. */
+  mediaIds?: string[];
   location: AdoptionLocation;
   contact: AdoptionContact;
 
@@ -74,9 +78,12 @@ export interface CreateAdoptionListingInput {
   color: string;
   size: AdoptionSize;
   breed?: string;
+  healthStatus: AdoptionHealthStatus;
   healthCondition: string;
   healthChecklist: AdoptionHealthItem[];
   images: string[];
+  /** Backend media ids retained across edits. */
+  mediaIds?: string[];
   location: AdoptionLocation;
   contact: AdoptionContact;
   organizationId?: string;

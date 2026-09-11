@@ -2,9 +2,9 @@ export type { CreateReportInput, Report, ReportPriority, ReportStatus, ReportAni
 export type { ReportRepository } from "./reports/reportRepository";
 export type { RescueTask, RescueTaskStage, RescueChecklistKey } from "./rescue/rescueTask";
 export type { RescueRepository } from "./rescue/rescueRepository";
-export type { AdoptionListing, AdoptionListingStatus, CreateAdoptionListingInput, UpdateAdoptionListingInput, AdoptionGender, AdoptionSize, AdoptionAgeUnit, AdoptionHealthItem, AdoptionLocation, AdoptionContact } from "./adoption/adoption";
+export type { AdoptionListing, AdoptionListingStatus, CreateAdoptionListingInput, UpdateAdoptionListingInput, AdoptionGender, AdoptionSize, AdoptionAgeUnit, AdoptionHealthStatus, AdoptionHealthItem, AdoptionLocation, AdoptionContact } from "./adoption/adoption";
 export type { AdoptionRepository } from "./adoption/adoptionRepository";
-export type { AdoptionApplication, AdoptionApplicationStatus, ApplicantHousing, CreateAdoptionApplicationInput } from "./adoption/adoptionApplication";
+export type { AdoptionApplication, AdoptionApplicationStatus, ApplicantHousing, PetExperienceLevel, CreateAdoptionApplicationInput } from "./adoption/adoptionApplication";
 export type { AdoptionApplicationRepository } from "./adoption/adoptionApplicationRepository";
 export type { AdoptionContactAccess } from "./adoption/adoptionContact";
 

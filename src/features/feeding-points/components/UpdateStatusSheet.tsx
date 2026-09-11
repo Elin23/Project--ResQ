@@ -73,6 +73,8 @@ export default function UpdateStatusSheet({
     try {
       await onSubmit({ reportedStatus: status, photoUri, note: note.trim() || undefined });
       reset();
+    } catch {
+      // Parent callback owns user-facing error feedback; never leak a rejected promise to RN.
     } finally {
       setSubmitting(false);
     }

@@ -28,22 +28,22 @@ const requireText = (file, text, label = text) => {
 ].forEach(requireFile);
 
 requireText(
-  "src/data/repositories/inMemoryAdoptionRepository.ts",
+  "test-fixtures/repositories/inMemoryAdoptionRepository.ts",
   "updateAndResubmit",
   "owner resubmit repository operation",
 );
 requireText(
-  "src/data/repositories/inMemoryAdoptionRepository.ts",
+  "test-fixtures/repositories/inMemoryAdoptionRepository.ts",
   '["rejected", "draft"]',
   "edit eligibility guard",
 );
 requireText(
-  "src/data/repositories/inMemoryAdoptionRepository.ts",
+  "test-fixtures/repositories/inMemoryAdoptionRepository.ts",
   "submitForReview",
   "resubmission moderation reset",
 );
 requireText(
-  "src/data/repositories/inMemoryAdoptionRepository.ts",
+  "test-fixtures/repositories/inMemoryAdoptionRepository.ts",
   "closeOwned",
   "owner close operation",
 );

@@ -28,7 +28,7 @@ requireText("src/features/feeding-points/screens/FeedingPointsScreen.tsx", 'can(
 requireText("src/features/feeding-points/hooks/useCreateFeedingPointSubmission.ts", "repositories.feedingPointSubmissions.submit", "repository-backed submission");
 requireText("src/features/feeding-points/screens/CreateFeedingPointScreen.tsx", "سيتم نشرها بعد مراجعة الإدارة", "moderation copy/contract");
 requireText("src/features/feeding-points/screens/FeedingPointSubmissionDetailsScreen.tsx", "rejectionReason", "rejection reason display");
-requireText("src/data/repositories/inMemoryFeedingPointSubmissionRepository.ts", 'moderationStatus: "pending_review"', "pending review default");
+requireText("test-fixtures/repositories/inMemoryFeedingPointSubmissionRepository.ts", 'moderationStatus: "pending_review"', "pending review default");
 requireText("src/features/session/accessPolicy.ts", 'guest: new Set(["browse", "view-adoption"])', "guest remains unable to create feeding points");
 requireText("src/features/home/hooks/useHomeScreen.ts", "feedingPointsRoute(browseKind)", "home action opens feeding-points feature");
 

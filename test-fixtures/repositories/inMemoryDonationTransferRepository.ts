@@ -45,7 +45,7 @@ export class InMemoryDonationTransferRepository implements DonationTransferRepos
       donorAccountId: input.donorAccountId,
       donorDisplayName: input.donorDisplayName?.trim() || undefined,
       senderFullName: input.senderFullName.trim(),
-      senderMobile: input.senderMobile?.trim() || undefined,
+      senderMobile: input.senderMobile.trim(),
       senderGovernorate: input.senderGovernorate.trim(),
       transferProviderId: input.transferProviderId,
       transferProviderName: input.transferProviderName.trim(),

@@ -32,6 +32,7 @@ import FeedingPointsMap from "../components/FeedingPointsMap";
 import ReportIssueSheet from "../components/ReportIssueSheet";
 import UpdateStatusSheet from "../components/UpdateStatusSheet";
 import { createFeedingPointIssue, createStatusUpdate } from "../api/feedingPoints.api";
+import { ApiError } from "@/src/services/api/client";
 import { FACILITY_META, STATUS_META } from "../constants";
 import { useFeedingPointDetails } from "../hooks/useFeedingPointDetails";
 import type { FeedingPointIssueReason, ReportedStatus } from "../types";
@@ -101,19 +102,27 @@ export default function FeedingPointDetailsScreen() {
     photoUri: string;
     note?: string;
   }) => {
-    await createStatusUpdate({ feedingPointId: point.id, ...input });
-    setStatusSheetVisible(false);
-    await refetch();
-    showFeedback({ title: "تم إرسال التحديث", message: "تحديثك بانتظار مراجعة الإدارة وسيظهر في سجل النشاط بعد اعتماده.", tone: "success" });
+    try {
+      await createStatusUpdate({ feedingPointId: point.id, ...input });
+      setStatusSheetVisible(false);
+      await refetch();
+      showFeedback({ title: "تم إرسال التحديث", message: "تحديثك بانتظار مراجعة الإدارة وسيظهر في سجل النشاط بعد اعتماده.", tone: "success" });
+    } catch (cause) {
+      showFeedback({ title: "تعذر إرسال التحديث", message: cause instanceof ApiError ? cause.message : "حاول مرة أخرى.", tone: "error" });
+    }
   };
 
   const handleSubmitIssue = async (input: {
     reason: FeedingPointIssueReason;
     note?: string;
   }) => {
-    await createFeedingPointIssue({ feedingPointId: point.id, ...input });
-    setIssueSheetVisible(false);
-    showFeedback({ title: "تم إرسال البلاغ", message: "ستراجع الإدارة البلاغ قريبًا.", tone: "success" });
+    try {
+      await createFeedingPointIssue({ feedingPointId: point.id, ...input });
+      setIssueSheetVisible(false);
+      showFeedback({ title: "تم إرسال البلاغ", message: "ستراجع الإدارة البلاغ قريبًا.", tone: "success" });
+    } catch (cause) {
+      showFeedback({ title: "تعذر إرسال البلاغ", message: cause instanceof ApiError ? cause.message : "حاول مرة أخرى.", tone: "error" });
+    }
   };
 
   const infoActions: QuickAction[] = [

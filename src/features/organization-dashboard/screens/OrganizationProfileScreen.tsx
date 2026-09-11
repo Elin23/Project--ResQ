@@ -7,7 +7,6 @@ import Button from "@/src/components/ui/Button";
 import ConfirmDialog from "@/src/components/ui/ConfirmDialog";
 import Screen from "@/src/components/ui/Screen";
 import ScreenHeader from "@/src/components/ui/ScreenHeader";
-import WorkspaceMetricGrid from "@/src/components/ui/WorkspaceMetricGrid";
 import ProfileMenuSection from "@/src/features/profile/components/ProfileMenuSection";
 import { useDecisionDialog } from "@/src/hooks/useDecisionDialog";
 import { COLORS, ICON_SIZES, LAYOUT, RADIUS, SPACING } from "@/src/theme";
@@ -15,7 +14,7 @@ import OrganizationIdentityCard from "../components/OrganizationIdentityCard";
 import { useOrganizationProfile } from "../hooks/useOrganizationProfile";
 
 export default function OrganizationProfileScreen() {
-  const { name, stats, sections, handleItemPress, openPublicProfile, logout } = useOrganizationProfile();
+  const { name, logoUrl, locationLabel, verified, verifiedAt, sections, handleItemPress, openPublicProfile, logout } = useOrganizationProfile();
   const decision = useDecisionDialog();
 
   return (
@@ -36,10 +35,9 @@ export default function OrganizationProfileScreen() {
         }
       />
 
-      <OrganizationIdentityCard name={name} />
+      <OrganizationIdentityCard name={name} logoUrl={logoUrl} locationLabel={locationLabel} verified={verified} verifiedAt={verifiedAt} />
 
       <View style={styles.content}>
-        <WorkspaceMetricGrid metrics={stats} />
         {sections.map((section) => (
           <ProfileMenuSection key={section.title} section={section} onPress={handleItemPress} />
         ))}

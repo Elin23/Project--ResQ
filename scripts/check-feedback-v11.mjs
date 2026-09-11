@@ -28,7 +28,6 @@ const migrated = [
   "src/features/profile/hooks/useEditProfileForm.ts",
   "src/features/public/hooks/useContactUsForm.ts",
   "src/features/map-places/screens/EditOwnedMapPlaceScreen.tsx",
-  "src/features/map-places/screens/MapPlaceChangeRequestScreen.tsx",
   "src/features/organizations/screens/OrganizationDetailsScreen.tsx",
   "src/features/organization-dashboard/screens/OrganizationTaskDetailsScreen.tsx",
   "src/features/organization-dashboard/screens/OrganizationTaskCompletedScreen.tsx",
@@ -38,6 +37,10 @@ for (const path of migrated) {
   assert(source.includes("useFeedback"), `${path} must use shared feedback`);
   assert(!source.includes("Alert.alert"), `${path} must not use native alerts for routine feedback`);
 }
+
+const unavailableChangeRequest = read("src/features/map-places/screens/MapPlaceChangeRequestScreen.tsx");
+assert(unavailableChangeRequest.includes("غير متاحة من التطبيق"), "unsupported map-place change flow must explain availability inline");
+assert(!unavailableChangeRequest.includes("repositories.mapPlaceChangeRequests.create"), "unsupported map-place change flow must not fake persistence");
 
 const applicationDetails = read("src/features/map-places/screens/MapPlaceApplicationDetailsScreen.tsx");
 assert(applicationDetails.includes("useFeedback"), "map application details must use shared feedback for routine failures");

@@ -1,41 +1,49 @@
-import { InMemoryAdoptionRepository } from "@/src/data/repositories/inMemoryAdoptionRepository";
-import { InMemoryNotificationRepository } from "@/src/data/repositories/inMemoryNotificationRepository";
-import { InMemoryAdoptionApplicationRepository } from "@/src/data/repositories/inMemoryAdoptionApplicationRepository";
-import { InMemoryFeedingPointSubmissionRepository } from "@/src/data/repositories/inMemoryFeedingPointSubmissionRepository";
-import { InMemoryReportRepository } from "@/src/data/repositories/inMemoryReportRepository";
-import { InMemoryRescueRepository } from "@/src/data/repositories/inMemoryRescueRepository";
-import { InMemoryServicePlaceRepository } from "@/src/data/repositories/inMemoryServicePlaceRepository";
-import { InMemoryMapPlaceApplicationRepository } from "@/src/data/repositories/inMemoryMapPlaceApplicationRepository";
-import { InMemoryMapPlaceChangeRequestRepository } from "@/src/data/repositories/inMemoryMapPlaceChangeRequestRepository";
-import { InMemoryDonationCampaignRepository } from "@/src/data/repositories/inMemoryDonationCampaignRepository";
-import { InMemoryDonationTransferRepository } from "@/src/data/repositories/inMemoryDonationTransferRepository";
-import { InMemoryPublicContentRepository } from "@/src/data/repositories/inMemoryPublicContentRepository";
-import { InMemorySponsoredAdRepository } from "@/src/data/repositories/inMemorySponsoredAdRepository";
-import { InMemoryLocationLookupRepository } from "@/src/data/repositories/inMemoryLocationLookupRepository";
-import { InMemoryFaqRepository } from "@/src/data/repositories/inMemoryFaqRepository";
+import { ApiRescueRepository } from "@/src/services/api/rescueMissionRepository";
+import { ApiNotificationRepository } from "@/src/services/api/notificationApiRepository";
+import { ApiLocationLookupRepository } from "@/src/services/api/locationLookupRepository";
+import {
+  ApiFaqRepository,
+  ApiPublicContentRepository,
+  ApiReportRepository,
+  ApiServicePlaceRepository,
+  ApiSponsoredAdRepository,
+} from "@/src/services/api/apiRepositories";
+import {
+  ApiAdoptionApplicationRepository,
+  ApiAdoptionWriteRepository,
+  ApiDonationCampaignWriteRepository,
+  ApiDonationTransferWriteRepository,
+  ApiFeedingPointSubmissionRepository,
+  ApiMapPlaceApplicationRepository,
+} from "@/src/services/api/apiWriteRepositories";
 
-const reportRepository = new InMemoryReportRepository();
-const adoptionRepository = new InMemoryAdoptionRepository();
-const notificationRepository = new InMemoryNotificationRepository();
-const donationCampaignRepository = new InMemoryDonationCampaignRepository();
-const servicePlaceRepository = new InMemoryServicePlaceRepository();
-const mapPlaceApplicationRepository = new InMemoryMapPlaceApplicationRepository();
-const mapPlaceChangeRequestRepository = new InMemoryMapPlaceChangeRequestRepository();
+/**
+ * Runtime repository graph.
+ *
+ * Production code is intentionally API-only. Test fixtures/in-memory repositories
+ * live under test-fixtures but are never imported into the application runtime, which
+ * prevents mock cards, mock ids and local mutations from conflicting with the
+ * persisted backend state.
+ */
+const reportRepository = new ApiReportRepository();
+const adoptionRepository = new ApiAdoptionWriteRepository();
+const notificationRepository = new ApiNotificationRepository();
+const servicePlaceRepository = new ApiServicePlaceRepository();
+const donationCampaignRepository = new ApiDonationCampaignWriteRepository();
 
 export const repositories = {
   reports: reportRepository,
-  rescue: new InMemoryRescueRepository(reportRepository),
+  rescue: new ApiRescueRepository(),
   adoption: adoptionRepository,
-  adoptionApplications: new InMemoryAdoptionApplicationRepository(adoptionRepository, notificationRepository),
+  adoptionApplications: new ApiAdoptionApplicationRepository(),
   notifications: notificationRepository,
-  feedingPointSubmissions: new InMemoryFeedingPointSubmissionRepository(),
+  feedingPointSubmissions: new ApiFeedingPointSubmissionRepository(),
   servicePlaces: servicePlaceRepository,
-  mapPlaceApplications: mapPlaceApplicationRepository,
-  mapPlaceChangeRequests: mapPlaceChangeRequestRepository,
+  mapPlaceApplications: new ApiMapPlaceApplicationRepository(),
   donationCampaigns: donationCampaignRepository,
-  donationTransfers: new InMemoryDonationTransferRepository(donationCampaignRepository),
-  publicContent: new InMemoryPublicContentRepository(),
-  sponsoredAds: new InMemorySponsoredAdRepository(),
-  locationLookups: new InMemoryLocationLookupRepository(),
-  faq: new InMemoryFaqRepository(),
+  donationTransfers: new ApiDonationTransferWriteRepository(),
+  publicContent: new ApiPublicContentRepository(),
+  sponsoredAds: new ApiSponsoredAdRepository(),
+  locationLookups: new ApiLocationLookupRepository(),
+  faq: new ApiFaqRepository(),
 } as const;

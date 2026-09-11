@@ -24,10 +24,11 @@ function expectCapability(subject, capability, expected = true) {
   }
 }
 
-// Guest: browse/report only; no adoption action, notifications, account or creation flows.
-for (const capability of ["browse", "create-report", "view-adoption"]) {
+// Guest: public browsing only; report creation requires authentication.
+for (const capability of ["browse", "view-adoption"]) {
   expectCapability("guest", capability, true);
 }
+expectCapability("guest", "create-report", false);
 for (const capability of [
   "apply-adoption",
   "create-adoption-listing",
@@ -120,7 +121,7 @@ must("src/features/explore/screens/ExploreScreen.tsx", "adoptionDetailsRoute(lis
 must("src/features/adoption/screens/AdoptionScreen.tsx", "adoptionMyApplicationsRoute(accountKind)", "adoption applicant history workspace routing");
 must("src/features/adoption/screens/MyAdoptionApplicationsScreen.tsx", "adoptionApplicationDetailsRoute(application.id, accountKind)", "application detail workspace routing");
 must("src/features/reports/screens/ReportsScreen.tsx", "reportDetailsRoute(report.id, accountKind)", "reports workspace routing");
-must("src/features/reports/components/ReportSuccessView.tsx", 'reportDetailsRoute("1", accountKind)', "post-report workspace routing");
+must("src/features/reports/components/ReportSuccessView.tsx", 'reportDetailsRoute(reportId, accountKind)', "post-report workspace routing");
 must("src/features/notifications/screens/NotificationsScreen.tsx", "adoptionApplicationDetailsRoute(t.applicationId,browseKind)", "notification adoption routing");
 must("src/features/notifications/screens/NotificationsScreen.tsx", "reportDetailsRoute(t.reportId,browseKind)", "notification report routing");
 

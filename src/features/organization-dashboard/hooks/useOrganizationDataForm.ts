@@ -1,127 +1,239 @@
+import * as ImagePicker from "expo-image-picker";
 import { useRouter } from "expo-router";
-import { useMemo, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
-import { useFormFieldNavigation } from "@/src/components/forms/useFormFieldNavigation";
 import { useFeedback } from "@/src/components/ui/FeedbackProvider";
-import { useSession } from "@/src/features/session/SessionContext";
+import { validateOpeningHours, type DailyOpeningHours } from "@/src/domain/service-places";
+import { ApiError } from "@/src/services/api/client";
+import { fetchMyOrganization, updateMyOrganization } from "@/src/services/api/organizationsApi";
+import { uploadLocalMediaUris } from "@/src/services/api/uploadsApi";
 import { useUnsavedChangesGuard } from "@/src/hooks/useUnsavedChangesGuard";
 
-import {
-  DEFAULT_ORGANIZATION_DATA,
-  ORGANIZATION_DESCRIPTION_MAX_LENGTH,
-  ORGANIZATION_DESCRIPTION_MIN_LENGTH,
-} from "../constants/organizationData";
-import type { EditableOrganizationData, OrganizationDataErrors } from "../types/organizationData";
+import { ORGANIZATION_DESCRIPTION_MAX_LENGTH } from "../constants/organizationData";
+import type { EditableOrganizationData, OrganizationDataErrors, OrganizationIdentityData } from "../types/organizationData";
 
-const FIELD_KEYS = [
-  "name",
-  "licenseNumber",
-  "issuingAuthority",
-  "description",
-  "email",
-  "phone",
-  "website",
-  "district",
-  "address",
-  "workingHours",
-  "shelterCapacity",
-] as const;
+const DAY_INDEX: Record<string, DailyOpeningHours["day"]> = {
+  SUNDAY: 0, MONDAY: 1, TUESDAY: 2, WEDNESDAY: 3, THURSDAY: 4, FRIDAY: 5, SATURDAY: 6,
+};
+const DAY_KEY = ["SUNDAY", "MONDAY", "TUESDAY", "WEDNESDAY", "THURSDAY", "FRIDAY", "SATURDAY"] as const;
 
-/**
- * حالة شاشة بيانات الجمعية.
- * التعديلات محفوظة محلياً فقط إلى حين ربط الحساب بالخلفية،
- * تماماً كما في useEditProfileForm و useSecurityPrivacy.
- */
+const emptyForm: EditableOrganizationData = {
+  description: "",
+  phone: "",
+  website: "",
+  activities: [],
+  openingHours: [],
+  logoUri: "",
+};
+
+const emptyIdentity: OrganizationIdentityData = {
+  name: "",
+  licenseNumber: "",
+  registrationNumber: "",
+  email: "",
+  governorateName: "",
+  regionName: "",
+  address: "",
+  verificationStatus: "",
+};
+
+function toOpeningHours(input: Awaited<ReturnType<typeof fetchMyOrganization>>["operatingHours"]): DailyOpeningHours[] {
+  const byDay = new Map<number, DailyOpeningHours>();
+  for (const item of input ?? []) {
+    const day = DAY_INDEX[(item.dayOfWeek ?? "").toUpperCase()];
+    if (day == null) continue;
+    byDay.set(day, {
+      day,
+      open: item.isClosed ? null : item.isOpen24Hours ? "00:00" : item.opensAt ?? null,
+      close: item.isClosed ? null : item.isOpen24Hours ? "23:59" : item.closesAt ?? null,
+    });
+  }
+  return Array.from({ length: 7 }, (_, day) => byDay.get(day) ?? ({ day: day as DailyOpeningHours["day"], open: null, close: null }));
+}
+
+function cleanPhone(value: string) {
+  return value.trim().replace(/[\u200e\u200f]/g, "");
+}
+
 export function useOrganizationDataForm() {
   const router = useRouter();
   const { showFeedback } = useFeedback();
-  const { account } = useSession();
-  const fieldNavigation = useFormFieldNavigation(FIELD_KEYS);
-
-  const [form, setForm] = useState<EditableOrganizationData>(() => ({
-    ...DEFAULT_ORGANIZATION_DATA,
-    name: account?.displayName ?? DEFAULT_ORGANIZATION_DATA.name,
-    email: account?.email ?? DEFAULT_ORGANIZATION_DATA.email,
-  }));
+  const [form, setForm] = useState<EditableOrganizationData>(emptyForm);
+  const [original, setOriginal] = useState<EditableOrganizationData>(emptyForm);
+  const [identity, setIdentity] = useState<OrganizationIdentityData>(emptyIdentity);
+  const [location, setLocation] = useState<{ governorateId: number; regionId: number; address: string; latitude: number; longitude: number } | null>(null);
+  const [errors, setErrors] = useState<OrganizationDataErrors>({});
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
   const [dirty, setDirty] = useState(false);
-  const [showValidation, setShowValidation] = useState(false);
-  const [entityTypePickerVisible, setEntityTypePickerVisible] = useState(false);
-  const [governoratePickerVisible, setGovernoratePickerVisible] = useState(false);
-
   const { allowNextNavigation } = useUnsavedChangesGuard(dirty);
 
-  const update = <Key extends keyof EditableOrganizationData>(
-    key: Key,
-    value: EditableOrganizationData[Key],
-  ) => {
+  const load = useCallback(async () => {
+    try {
+      setLoading(true);
+      setErrors({});
+      const dto = await fetchMyOrganization();
+      const next: EditableOrganizationData = {
+        description: dto.description ?? "",
+        phone: dto.phone ?? "",
+        website: dto.website ?? "",
+        activities: (dto.services ?? []).map((value) => value.toLowerCase()),
+        openingHours: toOpeningHours(dto.operatingHours),
+        logoUri: dto.logoUrl ?? "",
+      };
+      setForm(next);
+      setOriginal(next);
+      setIdentity({
+        name: dto.name ?? "",
+        licenseNumber: dto.licenseNumber ?? "",
+        registrationNumber: dto.registrationNumber ?? "",
+        email: dto.email ?? "",
+        governorateName: dto.place?.governorateName ?? "",
+        regionName: dto.place?.regionName ?? "",
+        address: dto.place?.address ?? "",
+        verificationStatus: dto.verificationStatus ?? "",
+      });
+      if (!dto.place) {
+        setLocation(null);
+        setErrors({ general: "لا يوجد موقع مرتبط بحساب الجمعية بعد. أكمل اعتماد الموقع من لوحة الإدارة قبل تعديل البيانات التشغيلية." });
+      } else {
+        setLocation({
+          governorateId: dto.place.governorateId,
+          regionId: dto.place.regionId,
+          address: dto.place.address ?? "",
+          latitude: dto.place.latitude,
+          longitude: dto.place.longitude,
+        });
+      }
+      setDirty(false);
+    } catch (cause) {
+      setErrors({ general: cause instanceof ApiError ? cause.message : "تعذر تحميل بيانات الجمعية." });
+    } finally {
+      setLoading(false);
+    }
+  }, []);
+
+  useEffect(() => { void load(); }, [load]);
+
+  const update = <Key extends keyof EditableOrganizationData>(key: Key, value: EditableOrganizationData[Key]) => {
     setDirty(true);
     setForm((current) => ({ ...current, [key]: value }));
+    setErrors((current) => ({ ...current, [key]: undefined, general: undefined }));
   };
 
-  const toggleFromList = (key: "activities" | "animals", id: string) => {
-    const current = form[key];
-    update(key, current.includes(id) ? current.filter((item) => item !== id) : [...current, id]);
+  const toggleActivity = (id: string) => {
+    const activities = form.activities.includes(id)
+      ? form.activities.filter((item) => item !== id)
+      : [...form.activities, id];
+    update("activities", activities);
+  };
+
+  const pickLogo = async () => {
+    try {
+      const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (!permission.granted) {
+        showFeedback({ title: "صلاحية الصور مطلوبة", message: "اسمح للتطبيق بالوصول إلى الصور لتغيير شعار الجمعية.", tone: "warning" });
+        return;
+      }
+      const result = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ["images"], allowsEditing: true, quality: 0.85 });
+      if (!result.canceled && result.assets[0]?.uri) update("logoUri", result.assets[0].uri);
+    } catch {
+      setErrors((current) => ({ ...current, general: "تعذر فتح معرض الصور." }));
+    }
   };
 
   const fieldErrors = useMemo<OrganizationDataErrors>(() => {
     const next: OrganizationDataErrors = {};
-    if (!form.name.trim()) next.name = "اسم الجمعية مطلوب";
-    if (!form.licenseNumber.trim()) next.licenseNumber = "رقم الترخيص مطلوب";
-    if (!form.issuingAuthority.trim()) next.issuingAuthority = "الجهة المانحة للترخيص مطلوبة";
-    if (form.description.trim().length < ORGANIZATION_DESCRIPTION_MIN_LENGTH) {
-      next.description = `النبذة التعريفية يجب ألا تقل عن ${ORGANIZATION_DESCRIPTION_MIN_LENGTH} حرفاً`;
-    }
-    if (!form.email.includes("@")) next.email = "البريد الإلكتروني غير صالح";
-    if (form.phone.trim().length < 9) next.phone = "رقم الهاتف غير صالح";
-    if (!form.district.trim()) next.district = "المنطقة مطلوبة";
-    if (!form.activities.length) next.activities = "اختر نشاطاً واحداً على الأقل";
-    if (!form.animals.length) next.animals = "اختر نوع حيوان واحد على الأقل";
-    if (!form.workingHours.trim()) next.workingHours = "ساعات العمل مطلوبة";
-    if (form.hasShelter && !form.shelterCapacity.trim()) next.shelterCapacity = "أدخل سعة المأوى";
+    const description = form.description.trim();
+    if (!description) next.description = "النبذة التعريفية مطلوبة";
+    else if (description.length > ORGANIZATION_DESCRIPTION_MAX_LENGTH) next.description = `النبذة لا يمكن أن تتجاوز ${ORGANIZATION_DESCRIPTION_MAX_LENGTH} حرف`;
+    if (form.phone && cleanPhone(form.phone).length < 8) next.phone = "رقم الهاتف غير صالح";
+    if (form.website && !/^(https?:\/\/)?[\w.-]+\.[a-z]{2,}(?:[/:?#].*)?$/i.test(form.website.trim())) next.website = "أدخل رابط موقع إلكتروني صالح";
+    if (!form.activities.length) next.activities = "اختر خدمة واحدة على الأقل";
+    const hoursError = validateOpeningHours(form.openingHours);
+    if (hoursError) next.openingHours = hoursError;
     return next;
   }, [form]);
 
-  const validationErrors = useMemo(
-    () => Object.values(fieldErrors).filter((message): message is string => Boolean(message)),
-    [fieldErrors],
-  );
+  const validationErrors = useMemo(() => Object.values(fieldErrors).filter((value): value is string => Boolean(value)), [fieldErrors]);
 
-  const errors = showValidation ? fieldErrors : {};
-  const descriptionCharCount = form.description.length;
-
-  const save = () => {
-    setShowValidation(true);
+  const save = async () => {
+    if (saving) return;
     if (validationErrors.length) {
-      const firstInvalid = FIELD_KEYS.find((key) => key in fieldErrors);
-      if (firstInvalid) fieldNavigation.focus(firstInvalid);
+      setErrors((current) => ({ ...current, ...fieldErrors }));
+      return;
+    }
+    if (!location) {
+      setErrors((current) => ({ ...current, general: "لا يمكن حفظ البيانات قبل توفر موقع معتمد للجمعية." }));
       return;
     }
 
-    setDirty(false);
-    allowNextNavigation();
-    showFeedback({
-      title: "تم حفظ بيانات الجمعية",
-      message: "ستظهر البيانات المحدّثة في الملف العام للجمعية بعد اعتمادها.",
-      tone: "success",
-    });
-    requestAnimationFrame(() => router.back());
+    try {
+      setSaving(true);
+      setErrors({});
+      let logoMediaId: number | null = null;
+      if (form.logoUri && form.logoUri !== original.logoUri && !/^https?:\/\//i.test(form.logoUri)) {
+        logoMediaId = (await uploadLocalMediaUris([form.logoUri]))[0]?.id ?? null;
+      }
+      const updated = await updateMyOrganization({
+        description: form.description.trim(),
+        phone: cleanPhone(form.phone) || null,
+        website: form.website.trim() || null,
+        governorateId: location.governorateId,
+        regionId: location.regionId,
+        address: location.address,
+        latitude: location.latitude,
+        longitude: location.longitude,
+        logoMediaId,
+        coverMediaId: null,
+        services: form.activities.map((value) => value.toUpperCase()),
+        operatingHours: form.openingHours.map((item) => {
+          const closed = item.open == null && item.close == null;
+          const open24 = item.open === "00:00" && item.close === "23:59";
+          return {
+            dayOfWeek: DAY_KEY[item.day],
+            isClosed: closed,
+            isOpen24Hours: open24,
+            opensAt: closed || open24 ? null : item.open,
+            closesAt: closed || open24 ? null : item.close,
+          };
+        }),
+      });
+      const next: EditableOrganizationData = {
+        description: updated.description ?? "",
+        phone: updated.phone ?? "",
+        website: updated.website ?? "",
+        activities: (updated.services ?? []).map((value) => value.toLowerCase()),
+        openingHours: toOpeningHours(updated.operatingHours),
+        logoUri: updated.logoUrl ?? form.logoUri,
+      };
+      setForm(next);
+      setOriginal(next);
+      setDirty(false);
+      allowNextNavigation();
+      showFeedback({ title: "تم حفظ بيانات الجمعية", message: "تم تحديث البيانات التشغيلية المتاحة بنجاح.", tone: "success" });
+      requestAnimationFrame(() => router.back());
+    } catch (cause) {
+      setErrors({ general: cause instanceof ApiError ? cause.message : "تعذر حفظ بيانات الجمعية. حاول مرة أخرى." });
+    } finally {
+      setSaving(false);
+    }
   };
 
   return {
     form,
+    identity,
     errors,
-    validationErrors: showValidation ? validationErrors : [],
-    descriptionCharCount,
+    validationErrors: Object.values(errors).filter((value): value is string => Boolean(value)),
+    loading,
+    saving,
+    dirty,
+    descriptionCharCount: form.description.length,
     descriptionMaxLength: ORGANIZATION_DESCRIPTION_MAX_LENGTH,
-    fieldNavigation,
-    entityTypePickerVisible,
-    openEntityTypePicker: () => setEntityTypePickerVisible(true),
-    closeEntityTypePicker: () => setEntityTypePickerVisible(false),
-    governoratePickerVisible,
-    openGovernoratePicker: () => setGovernoratePickerVisible(true),
-    closeGovernoratePicker: () => setGovernoratePickerVisible(false),
     update,
-    toggleFromList,
+    toggleActivity,
+    pickLogo,
+    load,
     save,
     cancel: () => router.back(),
   };

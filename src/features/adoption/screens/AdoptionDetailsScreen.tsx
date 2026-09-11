@@ -30,7 +30,7 @@ export default function AdoptionDetailsScreen() {
   const listing = details.listing;
   return <Screen scroll padded={false} contentContainerStyle={styles.content}>
     <ScreenHeader title="تفاصيل التبني" onBack={() => router.back()} />
-    <RemoteImage uri={listing.imageUrl} style={styles.image} accessibilityLabel={listing.name} />
+    <RemoteImage uri={listing.imageUrl} style={styles.image} accessibilityLabel={listing.animalName} />
     <View style={styles.body}>
       <View style={styles.titleBlock}>
         <View style={styles.titleRow}>

@@ -25,8 +25,8 @@ const FILTERS: FilterItem[] = [
     label: "الحيوانات للتبني",
   },
   {
-    key: "lost",
-    label: "الحيوانات المفقودة",
+    key: "reports",
+    label: "البلاغات",
   },
   {
     key: "all",

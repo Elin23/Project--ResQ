@@ -53,6 +53,8 @@ export default function ReportIssueSheet({ visible, onClose, onSubmit }: Props) 
     try {
       await onSubmit({ reason, note: note.trim() || undefined });
       reset();
+    } catch {
+      // Parent callback owns user-facing error feedback; never leak a rejected promise to RN.
     } finally {
       setSubmitting(false);
     }

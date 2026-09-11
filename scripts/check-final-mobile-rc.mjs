@@ -53,11 +53,13 @@ for (const obsolete of [
 must("src/features/donations/screens/DonationCampaignDetailsScreen.tsx", "export default function DonationCampaignDetailsScreen", "canonical campaign details screen");
 must("src/features/donations/screens/DonationTransferDetailsScreen.tsx", "export default function DonationTransferDetailsScreen", "canonical donation transfer details screen");
 
-// Mock mode must be centralized, not feature-hardcoded.
-must("src/constants/config.ts", "useMockApi:", "central API mode");
-must("src/features/feeding-points/api/feedingPoints.api.ts", "APP_CONFIG.useMockApi", "central mock-mode usage");
-if (/const\s+USE_MOCKS\s*=/.test(read("src/features/feeding-points/api/feedingPoints.api.ts"))) {
-  failures.push("feedingPoints.api.ts: feature-local USE_MOCKS flag");
+// Production runtime is API-only: mocks may exist as isolated test fixtures but must not be selectable at runtime.
+must("src/constants/config.ts", 'runtimeMode: "api-only"', "explicit API-only runtime mode");
+for (const file of codeFiles) {
+  if (file.includes("/__tests__/") || /\.test\.[jt]sx?$/.test(file) || file.startsWith("test-fixtures/")) continue;
+  const source = read(file);
+  if (/\buseMockApi\b|\bUSE_MOCKS\b/.test(source)) failures.push(`${file}: runtime mock-mode switch is forbidden`);
+  if (/inMemory[A-Z]|InMemory[A-Z]/.test(source)) failures.push(`${file}: production source references an in-memory repository`);
 }
 
 // No obvious embedded credentials.
@@ -81,7 +83,8 @@ for (const script of [
 }
 
 // Source RC must document that mock mode is not equivalent to backend-connected production.
-must("README.md", "useMockApi: true", "mock integration disclosure");
+must("README.md", "API-only", "API-only integration disclosure");
+must("README.md", "resqmob.runasp.net", "hosted API disclosure");
 must("PRODUCTION-READINESS.md", "V1 Mobile RC integration boundary", "production integration boundary");
 
 if (failures.length) {
@@ -90,5 +93,5 @@ if (failures.length) {
 }
 
 console.log(
-  `Final Mobile RC check passed: ${sourceFiles.length} app/src files; no temp artifacts, TS suppressions, console.log, stale TODO/FIXME, embedded credentials, or obsolete donation preview shims; API mock mode is centralized and production integration boundary is documented.`,
+  `Final Mobile RC check passed: ${sourceFiles.length} app/src files; no temp artifacts, TS suppressions, console.log, stale TODO/FIXME, embedded credentials, or obsolete donation preview shims; runtime is API-only and the hosted integration boundary is documented.`,
 );

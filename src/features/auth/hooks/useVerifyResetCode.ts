@@ -1,6 +1,9 @@
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Animated, Easing, Keyboard, TextInput, useWindowDimensions } from "react-native";
+
+import { authApi } from "@/src/services/api/authApi";
+import { ApiError } from "@/src/services/api/client";
 
 import { useCountdown } from "./useCountdown";
 import { normalizeResetCode, validateResetCode } from "../utils/passwordResetValidation";
@@ -82,20 +85,26 @@ export function useVerifyResetCode() {
     return `${countryCode} ${firstPart} XXX XX${lastPart}`;
   }, [normalizedPhone]);
 
+  const clearPendingTimers = useCallback(() => {
+    const pendingNavigationTimer = navigationTimer.current;
+    if (pendingNavigationTimer) {
+      clearTimeout(pendingNavigationTimer);
+      navigationTimer.current = null;
+    }
+
+    const pendingVerificationTimer = verificationTimer.current;
+    if (pendingVerificationTimer) {
+      clearTimeout(pendingVerificationTimer);
+      verificationTimer.current = null;
+    }
+  }, []);
+
   useEffect(() => {
     return () => {
-      if (navigationTimer.current) {
-        clearTimeout(navigationTimer.current);
-      }
-
-      if (verificationTimer.current) {
-        clearTimeout(verificationTimer.current);
-      }
-
+      clearPendingTimers();
       screenOpacity.stopAnimation();
-
     };
-  }, [screenOpacity]);
+  }, [clearPendingTimers, screenOpacity]);
 
   const resetCodeBoxAnimations = () => undefined;
 
@@ -162,32 +171,26 @@ export function useVerifyResetCode() {
 
     try {
       setErrors({});
+      await authApi.sendPasswordResetCode(normalizedPhone);
       resetCountdown();
-
-      await new Promise((resolve) => setTimeout(resolve, 500));
-    } catch {
+    } catch (cause) {
       setErrors({
-        general:
-          "تعذر إعادة إرسال الرمز. تحقق من اتصالك بالإنترنت ثم حاول مجددًا.",
+        general: cause instanceof ApiError
+          ? cause.message
+          : "تعذر إعادة إرسال الرمز. تحقق من اتصالك بالإنترنت ثم حاول مجددًا.",
       });
       resetCountdown(0);
     }
   };
 
   const handleVerifyCode = async () => {
-    if (isSubmitting || isNavigating) {
-      return;
-    }
-
+    if (isSubmitting || isNavigating) return;
     Keyboard.dismiss();
 
     const codeError = validateResetCode(code);
-
     if (codeError) {
       setVerificationStatus("error");
-      setErrors({
-        code: codeError,
-      });
+      setErrors({ code: codeError });
       await animateVerificationResult("error");
       return;
     }
@@ -196,35 +199,21 @@ export function useVerifyResetCode() {
       setIsSubmitting(true);
       setVerificationStatus("verifying");
       setErrors({});
-
-      await new Promise((resolve) => setTimeout(resolve, 700));
-
-      const isCodeCorrect = true;
-
-      if (!isCodeCorrect) {
-        setErrors({
-          code: "رمز التحقق غير صحيح. تحقق من الرمز وحاول مجددًا.",
-        });
-        await animateVerificationResult("error");
-        return;
+      const response = await authApi.verifyPasswordResetCode(normalizedPhone, code);
+      if (!response.resetToken) {
+        throw new ApiError("استجابة التحقق غير مكتملة. اطلب رمزًا جديدًا ثم حاول مرة أخرى.");
       }
-
       await animateVerificationResult("success");
-
-      verificationTimer.current = setTimeout(() => {
-        setIsNavigating(true);
-        router.push({
-          pathname: "/create-new-password",
-          params: {
-            phone: normalizedPhone,
-            code,
-          },
-        });
-      }, 850);
-    } catch {
+      setIsNavigating(true);
+      router.replace({
+        pathname: "/create-new-password",
+        params: { phone: normalizedPhone, resetToken: response.resetToken },
+      });
+    } catch (cause) {
       setErrors({
-        general:
-          "تعذر التحقق من الرمز. تأكد من الرمز واتصالك بالإنترنت ثم حاول مجددًا.",
+        general: cause instanceof ApiError
+          ? cause.message
+          : "تعذر التحقق من الرمز. تأكد من الرمز واتصالك بالإنترنت ثم حاول مجددًا.",
       });
       await animateVerificationResult("error");
     } finally {

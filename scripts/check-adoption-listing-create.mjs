@@ -26,8 +26,8 @@ requireText("src/features/adoption/screens/CreateAdoptionListingScreen.tsx", "he
 requireText("src/features/adoption/screens/CreateAdoptionListingScreen.tsx", "AdoptionLocationPicker", "precise map location picker");
 requireText("src/features/adoption/screens/CreateAdoptionListingScreen.tsx", "معلومات التواصل", "contact section");
 requireText("src/features/adoption/hooks/useCreateAdoptionListing.ts", "repositories.adoption.submit", "repository-backed submission");
-requireText("src/data/repositories/inMemoryAdoptionRepository.ts", 'moderationStatus: "pending_review"', "pending moderation default");
-requireText("src/data/repositories/inMemoryAdoptionRepository.ts", "isPubliclyVisible", "public moderation filter");
+requireText("test-fixtures/repositories/inMemoryAdoptionRepository.ts", 'moderationStatus: "pending_review"', "pending moderation default");
+requireText("test-fixtures/repositories/inMemoryAdoptionRepository.ts", "isPubliclyVisible", "public moderation filter");
 requireText("src/features/adoption/screens/AdoptionScreen.tsx", 'can("create-adoption-listing")', "create CTA permission visibility");
 requireText("src/features/organization-dashboard/hooks/useOrganizationDashboard.ts", "openAdoptionListings", "organization access to adoption listing management and creation");
 requireText("src/features/session/accessPolicy.ts", 'guest: new Set(["browse", "view-adoption"])', "guest exclusion");

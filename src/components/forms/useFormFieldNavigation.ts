@@ -15,7 +15,6 @@ type FieldNavigation = {
  * Keeps Next/Done semantics out of feature-specific margin/keyboard code.
  */
 export function useFormFieldNavigation(keys: readonly FormFieldKey[]): FieldNavigation {
-  const keysSignature = keys.join("|");
   const refs = useMemo(() => {
     const entries = keys.map((key) => [key, createRef<TextInput>()] as const);
     return new Map(entries);

@@ -37,6 +37,12 @@ export const FAVORITE_KIND_META: Record<FavoriteKind, FavoriteKindMeta> = {
     icon: "paw-outline",
     color: COLORS.successDark,
   },
+  report: {
+    label: "البلاغات",
+    singular: "بلاغ",
+    icon: "alert-circle-outline",
+    color: COLORS.warning,
+  },
 };
 
 export const FAVORITE_KIND_ORDER: FavoriteKind[] = [
@@ -44,4 +50,5 @@ export const FAVORITE_KIND_ORDER: FavoriteKind[] = [
   "campaign",
   "organization",
   "adoption",
+  "report",
 ];

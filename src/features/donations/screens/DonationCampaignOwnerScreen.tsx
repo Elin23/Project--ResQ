@@ -30,7 +30,7 @@ export default function DonationCampaignOwnerScreen() {
       <View style={styles.content}>
         <Card disabled style={styles.identityCard}>
           {campaign.ownerLogoUrl ? (
-            <RemoteImage uri={campaign.ownerLogoUrl} style={styles.logo} accessibilityLabel={campaign.ownerName} />
+            <RemoteImage uri={campaign.ownerLogoUrl} style={styles.logo} accessibilityLabel={campaign.ownerDisplayName} />
           ) : (
             <View style={styles.logoFallback}>
               <Ionicons name={"people-outline"} size={30} color={COLORS.primaryStrong} />
@@ -38,18 +38,13 @@ export default function DonationCampaignOwnerScreen() {
           )}
           <View style={styles.flex}>
             <AppText variant="h2" weight="bold">{campaign.ownerDisplayName}</AppText>
-            <AppText color={COLORS.textSecondary}>
-              {campaign.location.city ?? campaign.location.governorate} • سوريا
-            </AppText>
+            {campaign.location && (campaign.location.city || campaign.location.governorate) ? (
+              <AppText color={COLORS.textSecondary}>
+                {[campaign.location.city ?? campaign.location.governorate, "سوريا"].filter(Boolean).join(" • ")}
+              </AppText>
+            ) : null}
           </View>
           {campaign.ownerVerified ? <StatusBadge label="جهة موثقة" color={COLORS.success} /> : null}
-        </Card>
-
-        <Card disabled style={styles.card}>
-          <AppText variant="h3" weight="bold">عن الجهة</AppText>
-          <AppText color={COLORS.textSecondary}>
-            جهة موثقة تعمل في رعاية وإنقاذ الحيوانات وتدير حملات دعم عبر ResQ.
-          </AppText>
         </Card>
 
         <Card disabled style={styles.card}>

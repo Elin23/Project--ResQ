@@ -68,6 +68,25 @@ export default function ServicePlacesMap({
     }, 350);
   }, [userCoordinate]);
 
+  useEffect(() => {
+    if (userCoordinate || places.length === 0) return;
+    const coordinates = places
+      .filter((place) => Number.isFinite(place.latitude) && Number.isFinite(place.longitude))
+      .map((place) => ({ latitude: place.latitude, longitude: place.longitude }));
+    if (!coordinates.length) return;
+    const timer = setTimeout(() => {
+      if (coordinates.length === 1) {
+        mapRef.current?.animateToRegion({ ...coordinates[0], latitudeDelta: 0.05, longitudeDelta: 0.05 }, 250);
+      } else {
+        mapRef.current?.fitToCoordinates(coordinates, {
+          edgePadding: { top: 60, right: 45, bottom: 60, left: 45 },
+          animated: true,
+        });
+      }
+    }, 250);
+    return () => clearTimeout(timer);
+  }, [places, userCoordinate]);
+
   return (
     <MapView
       ref={mapRef}

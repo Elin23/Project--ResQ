@@ -8,7 +8,7 @@ export interface DonationTransfer {
   donorAccountId?: string;
   donorDisplayName?: string;
   senderFullName: string;
-  senderMobile?: string;
+  senderMobile: string;
   senderGovernorateId?: string;
   senderGovernorate: string;
   transferProviderId: string;
@@ -33,7 +33,7 @@ export interface CreateDonationTransferInput {
   donorAccountId?: string;
   donorDisplayName?: string;
   senderFullName: string;
-  senderMobile?: string;
+  senderMobile: string;
   senderGovernorateId?: string;
   senderGovernorate: string;
   transferProviderId: string;

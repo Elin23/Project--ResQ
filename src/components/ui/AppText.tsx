@@ -71,7 +71,7 @@ export default function AppText({
 
 const styles = StyleSheet.create({
   base: {
-    includeFontPadding: false,
+    includeFontPadding: true,
     flexShrink: 1,
     textAlignVertical: "center",
   },

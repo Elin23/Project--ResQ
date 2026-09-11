@@ -42,14 +42,24 @@ export default function MapPlaceApplicationDetailsScreen() {
     try {
       await repositories.mapPlaceApplications.submit(resource.data.id, account.id);
       await resource.reload();
-    } catch { showFeedback({ title: "تعذر الإرسال", message: "لا يمكن إرسال الطلب من حالته الحالية.", tone: "error" }); }
+    } catch (error) {
+      showFeedback({ title: "تعذر الإرسال", message: error instanceof Error ? error.message : "لا يمكن إرسال الطلب من حالته الحالية.", tone: "error" });
+    }
   };
 
   const cancel = () => {
     if (!resource.data || !account || account.kind !== "user" || !owned) return;
     decision.request(
       { title: "إلغاء الطلب", message: "هل تريد إلغاء هذا الطلب؟", confirmLabel: "إلغاء الطلب", cancelLabel: "تراجع", destructive: true, icon: "close-circle-outline" },
-      async () => { await repositories.mapPlaceApplications.cancel(resource.data!.id, account.id); await resource.reload(); },
+      async () => {
+        try {
+          await repositories.mapPlaceApplications.cancel(resource.data!.id, account.id);
+          await resource.reload();
+          showFeedback({ title: "تم إلغاء الطلب", message: "لم يعد الطلب قيد المراجعة.", tone: "success" });
+        } catch (error) {
+          showFeedback({ title: "تعذر إلغاء الطلب", message: error instanceof Error ? error.message : "حدث خطأ أثناء إلغاء الطلب.", tone: "error" });
+        }
+      },
     );
   };
 

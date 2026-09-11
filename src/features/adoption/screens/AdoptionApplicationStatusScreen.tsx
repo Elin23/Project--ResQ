@@ -18,6 +18,7 @@ import { useAdoptionApplicationDetails } from "../hooks/useAdoptionApplicationDe
 import { useAcceptedAdoptionContact } from "../hooks/useAcceptedAdoptionContact";
 
 const HOUSING_LABEL = { apartment: "شقة", house: "منزل", farm: "مزرعة", other: "أخرى" } as const;
+const EXPERIENCE_LABEL = { none: "لا خبرة سابقة", beginner: "مبتدئ", intermediate: "خبرة متوسطة", experienced: "خبير" } as const;
 
 const STATUS_COPY = {
   pending: { label: "قيد المراجعة", color: COLORS.warning, title: "تم إرسال طلبك", description: "صاحب الحيوان يراجع طلبات التبني. ستصلك نتيجة الطلب عند اتخاذ القرار." },
@@ -57,6 +58,8 @@ export default function AdoptionApplicationStatusScreen() {
           <AppText color={COLORS.textSecondary}>المدينة: {application.city}</AppText>
           <AppText color={COLORS.textSecondary}>السكن: {HOUSING_LABEL[application.housing]}</AppText>
           <AppText color={COLORS.textSecondary}>حيوانات أخرى: {application.hasOtherPets ? "نعم" : "لا"}</AppText>
+          <AppText color={COLORS.textSecondary}>مساحة خارجية آمنة: {application.hasOutdoorSpace ? "نعم" : "لا"}</AppText>
+          <AppText color={COLORS.textSecondary}>الخبرة: {EXPERIENCE_LABEL[application.experience]}</AppText>
           <AppText color={COLORS.textSecondary}>سبب التبني: {application.reason}</AppText>
         </Card>
 

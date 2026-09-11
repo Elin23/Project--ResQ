@@ -1,117 +1,126 @@
-import { APP_CONFIG } from "@/src/constants/config";
+import type { PagedResultDto } from "@/src/contracts/backend/common";
+import type { FeedingPointDto } from "@/src/contracts/backend/feedingPoints";
+import { apiRequest } from "@/src/services/api/client";
+import { API_ENDPOINTS } from "@/src/services/api/endpoints";
+import { feedingPointDtoToDetails, feedingPointDtoToSummary, ISSUE_REASON_TO_BACKEND } from "@/src/services/api/mappers/feedingPointMapper";
+import { resolveMediaUrl } from "@/src/services/api/mediaUrl";
+import { pageItems, withQuery } from "@/src/services/api/query";
+import { uploadLocalMediaUris } from "@/src/services/api/uploadsApi";
 
-import {
-  MOCK_CURRENT_USER,
-  MOCK_DETAILS,
-  MOCK_POINTS,
-  MOCK_UPDATES,
-} from '@/src/data/feedingPoints.mock';
 import type {
   CreateFeedingPointIssueInput,
   CreateStatusUpdateInput,
   FeedingPointDetails,
   FeedingPointIssue,
+  FeedingPointIssueReason,
   FeedingPointSummary,
   FeedingPointsQuery,
   StatusUpdate,
-} from '../types';
+} from "../types";
 
-const delay = (ms = 600) => new Promise((r) => setTimeout(r, ms));
+type RefillDto = {
+  id: number;
+  feedingPointId: number;
+  submittedByAccountId: string;
+  foodLevelAfter?: string | null;
+  waterAvailableAfter: boolean;
+  note?: string | null;
+  occurredAt: string;
+  reviewStatus?: string | null;
+  rejectionReason?: string | null;
+  createdAt: string;
+  reviewedAt?: string | null;
+  photoUrl?: string | null;
+};
 
-/** بلاغات المشاكل المخزّنة أثناء الجلسة — مش جزء من MOCK_DETAILS لأنها كيان منفصل تماماً */
-const MOCK_ISSUES: Record<string, FeedingPointIssue[]> = {};
+type IssueDto = {
+  id: number;
+  feedingPointId: number;
+  submittedByAccountId: string;
+  type?: string | null;
+  description?: string | null;
+  status?: string | null;
+  createdAt: string;
+};
 
-export async function fetchFeedingPoints(
-  query: FeedingPointsQuery = {},
-): Promise<FeedingPointSummary[]> {
-  if (APP_CONFIG.useMockApi) {
-    await delay();
-    let items = [...MOCK_POINTS];
-    if (query.status) items = items.filter((p) => p.status === query.status);
-    if (query.search) {
-      const q = query.search.trim();
-      items = items.filter((p) => p.name.includes(q) || p.address.includes(q));
-    }
-    return items;
-  }
+const ISSUE_DEFAULT_DESCRIPTION: Record<FeedingPointIssueReason, string> = {
+  empty: "النقطة فارغة",
+  noWater: "لا يوجد ماء في النقطة",
+  damaged: "النقطة متضررة",
+  dirty: "النقطة بحاجة إلى تنظيف",
+  missing: "النقطة غير موجودة",
+  unsafeLocation: "موقع النقطة غير آمن",
+  other: "تم الإبلاغ عن مشكلة في نقطة الإطعام",
+};
 
-  // Backend integration boundary: implement the deployed endpoint before disabling mock mode.
-  throw new Error('API not implemented yet');
+const refillToStatusUpdate = (dto: RefillDto): StatusUpdate => ({
+  id: String(dto.id),
+  feedingPointId: String(dto.feedingPointId),
+  userId: dto.submittedByAccountId,
+  userName: "مستخدم ResQ",
+  userAvatarUrl: null,
+  reportedStatus: dto.foodLevelAfter === "EMPTY" || dto.foodLevelAfter === "LOW" ? "needsFood" : "stocked",
+  photoUrl: resolveMediaUrl(dto.photoUrl) ?? "",
+  note: dto.note ?? null,
+  createdAt: dto.occurredAt || dto.createdAt,
+  reviewState: dto.reviewStatus === "VERIFIED" ? "verified" : dto.reviewStatus === "REJECTED" ? "rejected" : "pending",
+});
+
+export async function fetchFeedingPoints(query: FeedingPointsQuery = {}): Promise<FeedingPointSummary[]> {
+  const status = query.status === "needsFood" ? "ACTIVE" : undefined;
+  const payload = await apiRequest<PagedResultDto<FeedingPointDto> | FeedingPointDto[]>(
+    withQuery(API_ENDPOINTS.feedingPoints.list, { Search: query.search, Status: status, Page: 1, PageSize: 100 }),
+  );
+  let items = pageItems(payload).map(feedingPointDtoToSummary);
+  if (query.status) items = items.filter((item) => item.status === query.status);
+  return items;
 }
 
 export async function fetchFeedingPointDetails(id: string): Promise<FeedingPointDetails> {
-  if (APP_CONFIG.useMockApi) {
-    await delay();
-    const found = MOCK_DETAILS[id];
-    if (!found) throw new Error('النقطة غير موجودة');
-    return found;
-  }
-  throw new Error('API not implemented yet');
+  return feedingPointDtoToDetails(await apiRequest<FeedingPointDto>(API_ENDPOINTS.feedingPoints.byId(id)));
 }
 
 export async function fetchStatusUpdates(pointId: string): Promise<StatusUpdate[]> {
-  if (APP_CONFIG.useMockApi) {
-    await delay(400);
-    return MOCK_UPDATES[pointId] ?? [];
-  }
-  throw new Error('API not implemented yet');
+  const items = await apiRequest<RefillDto[]>(API_ENDPOINTS.feedingPoints.refills(pointId));
+  return items.map(refillToStatusUpdate);
 }
 
-/**
- * تحديث حالة جديد بيتطلب صورة إجبارية، وبيضل "بانتظار المراجعة"
- * لحد ما الإدارة تراجعه — ما بيغيّر حالة النقطة المعروضة فوراً.
- */
-export async function createStatusUpdate(
-  input: CreateStatusUpdateInput,
-): Promise<StatusUpdate> {
-  if (APP_CONFIG.useMockApi) {
-    await delay(500);
-    const update: StatusUpdate = {
-      id: `su-${Date.now()}`,
-      feedingPointId: input.feedingPointId,
-      userId: MOCK_CURRENT_USER.id,
-      userName: MOCK_CURRENT_USER.name,
-      userAvatarUrl: null,
-      reportedStatus: input.reportedStatus,
-      photoUrl: input.photoUri,
-      note: input.note ?? null,
-      createdAt: new Date().toISOString(),
-      reviewState: 'pending',
-    };
-
-    MOCK_UPDATES[input.feedingPointId] = [
-      update,
-      ...(MOCK_UPDATES[input.feedingPointId] ?? []),
-    ];
-
-    return update;
-  }
-  throw new Error('API not implemented yet');
+export async function createStatusUpdate(input: CreateStatusUpdateInput): Promise<StatusUpdate> {
+  const uploads = await uploadLocalMediaUris([input.photoUri]);
+  const dto = await apiRequest<RefillDto>(API_ENDPOINTS.feedingPoints.refills(input.feedingPointId), {
+    method: "POST",
+    body: JSON.stringify({
+      foodLevelAfter: input.reportedStatus === "needsFood" ? "LOW" : "FULL",
+      waterAvailableAfter: true,
+      note: input.note?.trim() || null,
+      occurredAt: new Date().toISOString(),
+      mediaUploadIds: uploads.map((item) => item.id),
+    }),
+  });
+  const mapped = refillToStatusUpdate(dto);
+  return { ...mapped, userName: "أنت", photoUrl: mapped.photoUrl || input.photoUri };
 }
 
-/** بلاغ مشكلة بنقطة — كيان منفصل عن تحديث الحالة (لا علاقة له بـ ReportedStatus) */
-export async function createFeedingPointIssue(
-  input: CreateFeedingPointIssueInput,
-): Promise<FeedingPointIssue> {
-  if (APP_CONFIG.useMockApi) {
-    await delay(500);
-    const issue: FeedingPointIssue = {
-      id: `fpi-${Date.now()}`,
-      feedingPointId: input.feedingPointId,
-      userId: MOCK_CURRENT_USER.id,
-      userName: MOCK_CURRENT_USER.name,
-      reason: input.reason,
-      note: input.note ?? null,
-      createdAt: new Date().toISOString(),
-      reviewState: 'pending',
-    };
-
-    MOCK_ISSUES[input.feedingPointId] = [
-      issue,
-      ...(MOCK_ISSUES[input.feedingPointId] ?? []),
-    ];
-
-    return issue;
-  }
-  throw new Error('API not implemented yet');
+export async function createFeedingPointIssue(input: CreateFeedingPointIssueInput): Promise<FeedingPointIssue> {
+  // UI intentionally makes the free-text note optional. Always send a valid
+  // backend description so selecting a reason alone cannot produce a 422.
+  const description = input.note?.trim() || ISSUE_DEFAULT_DESCRIPTION[input.reason];
+  const dto = await apiRequest<IssueDto>(API_ENDPOINTS.feedingPoints.issues(input.feedingPointId), {
+    method: "POST",
+    body: JSON.stringify({
+      type: ISSUE_REASON_TO_BACKEND[input.reason],
+      description,
+      mediaUploadIds: [],
+    }),
+  });
+  return {
+    id: String(dto.id),
+    feedingPointId: String(dto.feedingPointId),
+    userId: dto.submittedByAccountId,
+    userName: "أنت",
+    reason: input.reason,
+    note: dto.description ?? description,
+    createdAt: dto.createdAt,
+    reviewState: dto.status === "RESOLVED" ? "verified" : dto.status === "REJECTED" ? "rejected" : "pending",
+  };
 }

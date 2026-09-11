@@ -14,10 +14,10 @@ requireText("src/domain/adoption/adoptionApplication.ts", '"completed"', "comple
 requireText("src/domain/adoption/adoptionApplication.ts", "applicantHandoverConfirmedAt", "applicant handover confirmation timestamp");
 requireText("src/domain/adoption/adoptionApplication.ts", "ownerHandoverConfirmedAt", "owner handover confirmation timestamp");
 requireText("src/domain/adoption/adoptionRepository.ts", "markAdoptedOwned", "listing completion operation");
-requireText("src/data/repositories/inMemoryAdoptionApplicationRepository.ts", "confirmHandoverForApplicant", "applicant confirmation operation");
-requireText("src/data/repositories/inMemoryAdoptionApplicationRepository.ts", "confirmHandoverForListingOwner", "owner confirmation operation");
-requireText("src/data/repositories/inMemoryAdoptionApplicationRepository.ts", "completeHandoverIfReady", "two-party completion coordinator");
-requireText("src/data/repositories/inMemoryAdoptionRepository.ts", 'status: "adopted"', "adopted listing transition");
+requireText("test-fixtures/repositories/inMemoryAdoptionApplicationRepository.ts", "confirmHandoverForApplicant", "applicant confirmation operation");
+requireText("test-fixtures/repositories/inMemoryAdoptionApplicationRepository.ts", "confirmHandoverForListingOwner", "owner confirmation operation");
+requireText("test-fixtures/repositories/inMemoryAdoptionApplicationRepository.ts", "completeHandoverIfReady", "two-party completion coordinator");
+requireText("test-fixtures/repositories/inMemoryAdoptionRepository.ts", 'status: "adopted"', "adopted listing transition");
 requireText("src/features/adoption/screens/AdoptionApplicationStatusScreen.tsx", "تأكيد استلام الحيوان", "applicant handover UI");
 requireText("src/features/adoption/screens/OwnerAdoptionApplicationDetailsScreen.tsx", "تأكيد تسليم الحيوان", "owner handover UI");
 

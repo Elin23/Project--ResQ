@@ -5,16 +5,13 @@ import Card from "@/src/components/ui/Card";
 import GuestPromoCard from "@/src/components/ui/GuestPromoCard";
 import QuickActionGrid from "@/src/components/ui/QuickActionGrid";
 import Screen from "@/src/components/ui/Screen";
-import SectionHeader from "@/src/components/ui/SectionHeader";
 import WorkspaceMetricGrid from "@/src/components/ui/WorkspaceMetricGrid";
-import CommunityStatsCard from "../components/CommunityStatsCard";
+import SectionHeader from "@/src/components/ui/SectionHeader";
 import ContributionHeroCard from "../components/ContributionHeroCard";
 import GuestHomeIntro from "../components/GuestHomeIntro";
-import { COMMUNITY_STATS, USER_HOME_METRICS } from "../constants/home";
 import { adoptionDetailsRoute, articleDetailsRoute, articlesRoute, successStoriesRoute, successStoryDetailsRoute } from "@/src/navigation/routes";
 import { useHomeScreen } from "../hooks/useHomeScreen";
 import HomeAdoptionSection from "../sections/HomeAdoptionSection";
-import HomeReportsSection from "../sections/HomeReportsSection";
 import HomeSuggestionsSection from "../sections/HomeSuggestionsSection";
 import HomeContentSection from "@/src/features/content/components/HomeContentSection";
 import HomeSponsoredAdSection from "@/src/features/advertising/components/HomeSponsoredAdSection";
@@ -23,7 +20,8 @@ import { COLORS, SPACING } from "@/src/theme";
 import { styles } from "./Home.styles";
 
 export default function HomeScreen() {
-  const { router, quickActions, isGuest, isPendingOrganization } = useHomeScreen();
+  const { router, quickActions, isGuest, isPendingOrganization, memberMetrics } = useHomeScreen();
+  const USER_HOME_METRICS = memberMetrics;
   const { accountKind } = useSession();
 
   return (
@@ -46,11 +44,7 @@ export default function HomeScreen() {
           <>
             <ContributionHeroCard />
             <View style={styles.section}>
-              <SectionHeader
-                title="ملخص نشاطك"
-                actionLabel="عرض بلاغاتي"
-                onActionPress={() => router.push("/reports")}
-              />
+              <SectionHeader title="ملخص نشاطك" actionLabel="عرض بلاغاتي" onActionPress={() => router.push("/reports")} />
               <WorkspaceMetricGrid metrics={USER_HOME_METRICS} />
             </View>
           </>
@@ -61,7 +55,6 @@ export default function HomeScreen() {
           <QuickActionGrid actions={quickActions} columns={3} />
         </View>
 
-        {!isGuest && !isPendingOrganization ? <HomeReportsSection onOpenReports={() => router.push("/reports")} /> : null}
         <HomeAdoptionSection onOpenAdoption={() => router.push("/adoptions")} onOpenAnimal={(id) => router.push(adoptionDetailsRoute(id))} />
 
         <HomeContentSection
@@ -77,7 +70,6 @@ export default function HomeScreen() {
 
         <HomeSponsoredAdSection />
 
-        <CommunityStatsCard stats={[...COMMUNITY_STATS]} />
         <HomeSuggestionsSection
           onOpenMap={() => router.push("/map")}
           onOpenOrganizations={() => router.push("/organizations")}

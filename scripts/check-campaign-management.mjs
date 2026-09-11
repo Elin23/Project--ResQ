@@ -50,7 +50,7 @@ must("src/features/donations/hooks/useManageDonationCampaign.ts", "pauseOwned", 
 must("src/features/donations/hooks/useManageDonationCampaign.ts", "resumeOwned", "owner resume operation");
 must("src/features/donations/hooks/useManageDonationCampaign.ts", "closeOwned", "owner close operation");
 must("src/features/donations/hooks/useOwnedCampaignTransfers.ts", "listByCampaignOwner", "owner-scoped campaign transfer stats");
-must("src/data/repositories/inMemoryDonationTransferRepository.ts", "getOwnedById(campaignId, ownerAccountId)", "campaign transfer ownership check");
+must("test-fixtures/repositories/inMemoryDonationTransferRepository.ts", "getOwnedById(campaignId, ownerAccountId)", "campaign transfer ownership check");
 must("src/features/donations/screens/CreateDonationCampaignScreen.tsx", "updateAndSubmit", "rejected/draft resubmission edit flow");
 must("src/features/donations/screens/CreateDonationCampaignScreen.tsx", "حفظ التعديلات", "active/paused edit save");
 must("src/navigation/routes.ts", "myCampaignsRoute", "my campaigns route helper");

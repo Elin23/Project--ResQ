@@ -3,7 +3,8 @@ export type FavoriteKind =
   | "feeding-point"
   | "campaign"
   | "organization"
-  | "adoption";
+  | "adoption"
+  | "report";
 
 export interface FavoriteItem {
   kind: FavoriteKind;

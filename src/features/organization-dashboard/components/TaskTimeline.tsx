@@ -5,7 +5,7 @@ import AppText from "@/src/components/ui/AppText";
 import { COLORS, FONT_SIZES, RADIUS, SPACING } from "@/src/theme";
 import type { OrganizationTaskStage, OrganizationTaskTimelineItem } from "../types/organizationTask";
 
-const ORDER: OrganizationTaskStage[] = ["accepted", "on-route", "arrived", "rescued"];
+const ORDER: OrganizationTaskStage[] = ["assigned", "accepted", "on-route", "arrived", "rescued"];
 
 type Props = { items: OrganizationTaskTimelineItem[]; stage: OrganizationTaskStage };
 

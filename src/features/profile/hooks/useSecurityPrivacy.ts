@@ -8,32 +8,24 @@ import {
   validatePasswordConfirmation,
 } from "@/src/features/auth/utils/passwordResetValidation";
 import { useSession } from "@/src/features/session/SessionContext";
+import { profileApi } from "@/src/services/api/profileApi";
+import { ApiError } from "@/src/services/api/client";
 import { goBackOrReplace } from "@/src/navigation/helpers";
 import { privacyPolicyRoute, ROUTES } from "@/src/navigation/routes";
 
-import {
-  DEFAULT_SECURITY_SETTINGS,
-  SECURITY_PRIVACY_CONTENT,
-} from "../constants/securityPrivacy";
+import { SECURITY_PRIVACY_CONTENT } from "../constants/securityPrivacy";
 import type {
   PasswordFormErrors,
   SecurityPrivacyVariant,
-  SecurityToggleId,
 } from "../types/securityPrivacy";
 
-/**
- * حالة شاشة الأمان والخصوصية للنسختين.
- * التفضيلات وكلمة المرور محفوظة محلياً فقط إلى حين ربط الحساب بالخلفية،
- * تماماً كما في useEditProfileForm.
- */
 export function useSecurityPrivacy(variant: SecurityPrivacyVariant) {
   const router = useRouter();
   const { showFeedback } = useFeedback();
-  const { signOut } = useSession();
+  const { signOut, signOutAll } = useSession();
 
   const content = SECURITY_PRIVACY_CONTENT[variant];
 
-  const [settings, setSettings] = useState(DEFAULT_SECURITY_SETTINGS);
   const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -44,9 +36,6 @@ export function useSecurityPrivacy(variant: SecurityPrivacyVariant) {
   const passwordsMatch =
     newPassword.length > 0 && confirmPassword.length > 0 && newPassword === confirmPassword;
 
-  const toggle = (id: SecurityToggleId, value: boolean) => {
-    setSettings((previous) => ({ ...previous, [id]: value }));
-  };
 
   const resetPasswordForm = () => {
     setCurrentPassword("");
@@ -71,34 +60,32 @@ export function useSecurityPrivacy(variant: SecurityPrivacyVariant) {
 
     try {
       setSavingPassword(true);
-      resetPasswordForm();
+      await profileApi.changePassword(currentPassword, newPassword);
       showFeedback({
-        title: "تم تحديث كلمة المرور",
-        message: "استخدم كلمة المرور الجديدة في تسجيل الدخول القادم.",
+        title: "تم تغيير كلمة المرور",
+        message: "تم تغيير كلمة المرور بنجاح. سجّل الدخول مجددًا بكلمة المرور الجديدة.",
         tone: "success",
       });
+      resetPasswordForm();
+      await signOut();
+      router.replace(ROUTES.login);
+    } catch (cause) {
+      setErrors((current) => ({
+        ...current,
+        general: cause instanceof ApiError ? cause.message : "تعذر تغيير كلمة المرور. حاول مرة أخرى.",
+      }));
     } finally {
       setSavingPassword(false);
     }
   };
 
-  const savePreferences = () => {
-    showFeedback({
-      title: "تم حفظ التفضيلات",
-      message: "تم تحديث إعدادات الأمان والخصوصية.",
-      tone: "success",
-    });
-  };
-
   const signOutEverywhere = async () => {
-    await signOut();
+    await signOutAll();
     router.replace(variant === "organization" ? ROUTES.login : ROUTES.welcome);
   };
 
   return {
     content,
-    settings,
-    toggle,
     currentPassword,
     setCurrentPassword,
     newPassword,
@@ -110,7 +97,6 @@ export function useSecurityPrivacy(variant: SecurityPrivacyVariant) {
     passwordsMatch,
     savingPassword,
     changePassword,
-    savePreferences,
     signOutEverywhere,
     openPrivacyPolicy: () => router.push(privacyPolicyRoute(variant === "organization" ? "organization" : "user")),
     goBack: () => goBackOrReplace(router, variant === "organization" ? ROUTES.organizationProfile : ROUTES.profile),

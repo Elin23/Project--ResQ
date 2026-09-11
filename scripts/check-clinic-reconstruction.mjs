@@ -15,8 +15,8 @@ for(const c of ["browse","create-report","create-feeding-point","create-adoption
 for(const c of ["view-clinic-dashboard","manage-clinic-profile","manage-campaigns"])if(!cb.includes(`"${c}"`))errors.push(`missing clinic capability ${c}`);
 if(policy.includes("manage-clinic-services"))errors.push("obsolete clinic services capability");
 for(const t of ["اسم الشخص المسؤول","رقم الهاتف","واتساب","العنوان","الموقع الدقيق","طوارئ 24 ساعة","ساعات العمل","حفظ التعديلات"])must("src/features/clinic-dashboard/screens/EditClinicProfileScreen.tsx",t);
-must("src/data/repositories/inMemoryServicePlaceRepository.ts","getClinicByAccountId");
-must("src/data/repositories/inMemoryServicePlaceRepository.ts","updateClinicByAccountId");
+must("test-fixtures/repositories/inMemoryServicePlaceRepository.ts","getClinicByAccountId");
+must("test-fixtures/repositories/inMemoryServicePlaceRepository.ts","updateClinicByAccountId");
 for(const f of ["app/clinic/cases.tsx","app/clinic/services.tsx","src/features/clinic-dashboard/screens/ClinicCasesScreen.tsx","src/features/clinic-dashboard/screens/ClinicServicesScreen.tsx"])if(fs.existsSync(path.join(root,f)))errors.push(`obsolete ${f}`);
 if(errors.length){console.error(errors.join("\n"));process.exit(1)}
 console.log("Clinic reconstruction check passed: user-equivalent permissions + clinic identity/campaign management; medical ERP removed.");

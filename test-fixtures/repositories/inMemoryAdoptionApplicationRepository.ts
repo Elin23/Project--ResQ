@@ -44,7 +44,7 @@ export class InMemoryAdoptionApplicationRepository implements AdoptionApplicatio
       applicantName: input.applicantName.trim(),
       phone: input.phone.trim(),
       city: input.city.trim(),
-      experience: input.experience.trim(),
+      experience: input.experience,
       reason: input.reason.trim(),
       notes: input.notes?.trim() || undefined,
       status: "pending",

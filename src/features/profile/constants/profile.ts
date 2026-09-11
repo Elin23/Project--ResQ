@@ -1,30 +1,9 @@
 import { ROUTES } from "@/src/navigation/routes";
 import { COLORS } from "@/src/theme";
-import type { EditableProfile, ProfileMenuSection, ProfileStat } from "../types/profile";
-
-export const DEFAULT_PROFILE: EditableProfile = {
-  firstName: "أحمد",
-  lastName: "محمد",
-  email: "ahmad.ali@example.com",
-  phone: "931234567",
-  city: "دمشق",
-  bio: "أنا محب للحيوانات وأسعى دائماً للمساعدة في إنقاذ الأرواح الضعيفة في شوارع دمشق.",
-  profession: "",
-  experienceYears: "3",
-  skills: ["إسعاف أولي", "تصوير فوتوغرافي"],
-  avatarUri: "https://images.unsplash.com/photo-1560250097-0b93528c311a?w=500",
-};
-
-export const PROFILE_STATS: ProfileStat[] = [
-  { label: "البلاغات", value: 18, color: COLORS.brown },
-  { label: "إنقاذات", value: 12, color: COLORS.successDark },
-  { label: "طلبات التبني", value: 3, color: COLORS.bgblue },
-  { label: "ساعات التطوع", value: 27, color: COLORS.brownDark },
-];
+import type { ProfileMenuSection } from "../types/profile";
 
 export const PROFILE_SECTIONS: ProfileMenuSection[] = [
   { title: "إعدادات الحساب", items: [
-    { id: "personal", label: "البيانات الشخصية", icon: "person-outline", color: COLORS.brown, route: "/profile/edit" },
     { id: "security", label: "الأمان والخصوصية", icon: "shield-half-outline", color: COLORS.warning, route: ROUTES.securityPrivacy },
     // معلّق حتى تُنفَّذ شاشته — أزل التعليق لإعادته إلى القائمة.
     // { id: "contact", label: "الهاتف والبريد", icon: "id-card-outline", color: COLORS.brown },
@@ -58,4 +37,3 @@ export const PROFILE_SECTIONS: ProfileMenuSection[] = [
   ]},
 ];
 
-export const PROFILE_CITIES = ["دمشق", "ريف دمشق", "حلب", "حمص", "اللاذقية"];

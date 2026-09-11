@@ -1,18 +1,2 @@
-import type { BackendId } from "./common";
-
-export type AdvertisementPlacement = "HOME_BANNER" | "ADOPTION" | "ORGANIZATIONS" | "MAP" | "SEARCH";
-
-/** Mobile receives only publishable fields. Contract/payment data stays admin-only. */
-export interface SponsoredAdvertisementDto {
-  id: BackendId;
-  title: string;
-  description?: string;
-  imageUrl: string;
-  galleryUrls?: string[];
-  altText: string;
-  callToActionLabel?: string;
-  targetUrl?: string;
-  placement: AdvertisementPlacement;
-  startAt?: string;
-  endAt?: string;
-}
+export type AdvertisementPlacement = "HOME_BANNER"|"ADOPTION"|"ORGANIZATIONS"|"MAP"|"SEARCH"|string;
+export interface SponsoredAdvertisementDto { id:number; number?:string|null; title?:string|null; description?:string|null; placement?:string|null; status?:string|null; imageUrl?:string|null; altText?:string|null; callToActionLabel?:string|null; targetUrl?:string|null; startAt?:string|null; endAt?:string|null; createdAt:string; updatedAt?:string|null; }

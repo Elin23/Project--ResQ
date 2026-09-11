@@ -1,4 +1,3 @@
-import * as ImagePicker from "expo-image-picker";
 import { useRouter } from "expo-router";
 import { useMemo, useState } from "react";
 import { Linking, useWindowDimensions } from "react-native";
@@ -11,7 +10,6 @@ import {
   SUPPORT_PHONE,
 } from "../constants/contact";
 import { useFeedback } from "@/src/components/ui/FeedbackProvider";
-import { usePermissionFeedback } from "@/src/hooks/usePermissionFeedback";
 
 const isValidEmail = (value: string) =>
   /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
@@ -19,14 +17,12 @@ const isValidEmail = (value: string) =>
 export function useContactUsForm() {
   const router = useRouter();
   const { showFeedback } = useFeedback();
-  const { handlePermission } = usePermissionFeedback();
   const { width } = useWindowDimensions();
   const [fullName, setFullName] = useState("");
   const [email, setEmail] = useState("");
   const [subject, setSubject] = useState("");
   const [messageType, setMessageType] = useState<MessageType | null>(null);
   const [message, setMessage] = useState("");
-  const [attachmentUri, setAttachmentUri] = useState<string | null>(null);
   const [typeModalVisible, setTypeModalVisible] = useState(false);
   const [errors, setErrors] = useState<ContactFormErrors>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
@@ -44,26 +40,23 @@ export function useContactUsForm() {
   const handleHelpCenter = () => router.push("/help-center");
 
   const openExternalUrl = async (url: string) => {
-    if (!(await Linking.canOpenURL(url))) {
+    try {
+      if (!(await Linking.canOpenURL(url))) {
+        showFeedback({ title: "تعذر فتح الرابط", message: "لا يوجد تطبيق مناسب لفتح هذا الرابط على الجهاز.", tone: "error" });
+        return false;
+      }
+      await Linking.openURL(url);
+      return true;
+    } catch {
       showFeedback({ title: "تعذر فتح الرابط", message: "يرجى المحاولة مرة أخرى لاحقًا.", tone: "error" });
-      return;
+      return false;
     }
-    await Linking.openURL(url);
   };
 
   const handleEmail = () => void openExternalUrl(`mailto:${SUPPORT_EMAIL}`);
-  const handlePhone = () =>
+  const handlePhone = () => {
+    if (!SUPPORT_PHONE) return;
     void openExternalUrl(`tel:${SUPPORT_PHONE.replace(/[^\d+]/g, "")}`);
-
-  const handlePickImage = async () => {
-    const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (!handlePermission(permission, { title: "السماح بالوصول للصور", message: "نحتاج إلى إذن الوصول للصور حتى تتمكن من إرفاق صورة." })) return;
-    const result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ["images"],
-      allowsEditing: false,
-      quality: 0.85,
-    });
-    if (!result.canceled && result.assets[0]?.uri) setAttachmentUri(result.assets[0].uri);
   };
 
   const validateForm = () => {
@@ -79,6 +72,10 @@ export function useContactUsForm() {
     return Object.keys(nextErrors).length === 0;
   };
 
+  /**
+   * Support currently uses the device mail client intentionally. We do not show
+   * a fake "sent" state because the app has no support-ticket backend endpoint.
+   */
   const handleSubmit = async () => {
     if (!validateForm()) {
       showFeedback({ title: "تحقق من البيانات", message: "يرجى تصحيح الحقول الموضحة ثم إعادة المحاولة.", tone: "warning" });
@@ -92,14 +89,16 @@ export function useContactUsForm() {
         `نوع الرسالة: ${messageType?.label ?? ""}`,
         "",
         message.trim(),
-        attachmentUri ? "\nتم اختيار صورة مرفقة داخل التطبيق." : "",
       ].join("\n");
       const mailUrl = `mailto:${SUPPORT_EMAIL}?subject=${encodeURIComponent(subject.trim())}&body=${encodeURIComponent(body)}`;
-      if (!(await Linking.canOpenURL(mailUrl))) {
-        showFeedback({ title: "تعذر فتح البريد", message: "يمكنك مراسلتنا مباشرة عبر support@resq.app", tone: "error" });
-        return;
+      const opened = await openExternalUrl(mailUrl);
+      if (opened) {
+        showFeedback({
+          title: "تم فتح تطبيق البريد",
+          message: "راجع الرسالة ثم اضغط إرسال من تطبيق البريد لإيصالها إلى فريق الدعم.",
+          tone: "info",
+        });
       }
-      await Linking.openURL(mailUrl);
     } finally {
       setIsSubmitting(false);
     }
@@ -107,10 +106,10 @@ export function useContactUsForm() {
 
   return {
     fullName, setFullName, email, setEmail, subject, setSubject,
-    messageType, setMessageType, message, setMessage, attachmentUri,
-    setAttachmentUri, typeModalVisible, setTypeModalVisible, errors, setErrors,
+    messageType, setMessageType, message, setMessage,
+    typeModalVisible, setTypeModalVisible, errors, setErrors,
     isSubmitting, horizontalPadding, contentWidth, remainingCharacters,
-    handleBack, handleHelpCenter, openExternalUrl, handleEmail, handlePhone, handlePickImage, handleSubmit,
+    handleBack, handleHelpCenter, openExternalUrl, handleEmail, handlePhone, handleSubmit,
   };
 }
 

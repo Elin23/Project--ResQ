@@ -47,7 +47,7 @@ must(
   "24-hour schedule helper",
 );
 must(
-  "src/data/repositories/inMemoryServicePlaceRepository.ts",
+  "test-fixtures/repositories/inMemoryServicePlaceRepository.ts",
   "validateOpeningHours(input.openingHours)",
   "repository hours validation",
 );

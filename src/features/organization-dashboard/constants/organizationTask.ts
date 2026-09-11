@@ -1,6 +1,7 @@
 import type { OrganizationTaskTimelineItem } from "../types/organizationTask";
 
 export const ORGANIZATION_TASK_TIMELINE: OrganizationTaskTimelineItem[] = [
+  { id: "assigned", label: "تم إسناد المهمة للجمعية" },
   { id: "accepted", label: "المهمة تم قبولها" },
   { id: "on-route", label: "في الطريق" },
   { id: "arrived", label: "تم الوصول" },

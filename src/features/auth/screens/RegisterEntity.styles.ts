@@ -153,8 +153,11 @@ export const styles = StyleSheet.create({
     backgroundColor: PALETTE.green700,
   },
   sectionTitle: {
+    flex: 1,
+    minWidth: 0,
     fontFamily: FONTS.medium,
     fontSize: TYPOGRAPHY.h3.fontSize,
+    lineHeight: TYPOGRAPHY.h3.lineHeight,
     color: PALETTE.green700,
     textAlign: "auto",
     writingDirection: "rtl",
@@ -183,6 +186,8 @@ export const styles = StyleSheet.create({
     paddingVertical: 0,
     fontFamily: FONTS.regular,
     fontSize: TYPOGRAPHY.bodyLarge.fontSize,
+    lineHeight: TYPOGRAPHY.bodyLarge.lineHeight,
+    includeFontPadding: true,
     color: COLORS.icon,
     writingDirection: "rtl",
   },
@@ -493,6 +498,8 @@ export const styles = StyleSheet.create({
     marginBottom: 7,
   },
   passwordStrengthTitle: {
+    flex: 1,
+    minWidth: 0,
     fontFamily: FONTS.regular,
     fontSize: TYPOGRAPHY.label.fontSize,
     color: COLORS.textMuted,
@@ -500,6 +507,7 @@ export const styles = StyleSheet.create({
     writingDirection: "rtl",
   },
   passwordStrengthLabel: {
+    flexShrink: 0,
     fontFamily: FONTS.medium,
     fontSize: TYPOGRAPHY.label.fontSize,
     textAlign: "auto",
@@ -531,6 +539,8 @@ export const styles = StyleSheet.create({
     gap: 7,
   },
   requirementText: {
+    flex: 1,
+    minWidth: 0,
     fontFamily: FONTS.regular,
     fontSize: TYPOGRAPHY.label.fontSize,
     color: COLORS.textSecondary,

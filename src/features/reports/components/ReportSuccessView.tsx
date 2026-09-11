@@ -1,5 +1,5 @@
 import { Ionicons } from "@expo/vector-icons";
-import { router } from "expo-router";
+import { router, useLocalSearchParams } from "expo-router";
 import React from "react";
 import { Image, Share, StyleSheet, View, useWindowDimensions } from "react-native";
 
@@ -17,15 +17,14 @@ import { LTR_TEXT } from "@/src/i18n/rtl";
 import { reportDetailsRoute, ROUTES } from "@/src/navigation/routes";
 import { COLORS, DENSITY, ICON_SIZES, LAYOUT, RADIUS, SPACING } from "@/src/theme";
 
-const REPORT_CODE = "RQ-2025-00481";
 const TIMELINE_NODE_SIZE = 26;
 const ILLUSTRATION_MAX_HEIGHT = 220;
 
-const TIMELINE_STEPS: { title: string; time?: string; done: boolean }[] = [
-    { title: "تم استلام البلاغ", time: "اليوم، 10:45 ص", done: true },
-    { title: "سيتم مراجعته من قبل الفريق", time: "بانتظار التأكيد", done: false },
-    { title: "تعيين متطوع أو جمعية", time: "بانتظار البدء", done: false },
-    { title: "وصول تحديثات مباشرة", done: false },
+const TIMELINE_STEPS: { title: string; done: boolean }[] = [
+    { title: "تم استلام البلاغ", done: true },
+    { title: "تتم مراجعة البلاغ وتحديد أولوية الاستجابة", done: false },
+    { title: "قد يتم إسناد الحالة إلى جمعية أو فريق إنقاذ", done: false },
+    { title: "ستظهر تحديثات الحالة عند تسجيلها في النظام", done: false },
 ];
 
 const PROMO_BENEFITS = [
@@ -36,6 +35,9 @@ const PROMO_BENEFITS = [
 
 export default function ReportSuccessScreen() {
     const { isGuest, accountKind } = useSession();
+    const params = useLocalSearchParams<{ id?: string | string[]; code?: string | string[] }>();
+    const reportId = Array.isArray(params.id) ? params.id[0] : params.id;
+    const reportCode = (Array.isArray(params.code) ? params.code[0] : params.code) || (reportId ? `#${reportId}` : "—");
     const { width } = useWindowDimensions();
     const illustrationHeight = Math.min(width * 0.52, ILLUSTRATION_MAX_HEIGHT);
 
@@ -69,7 +71,7 @@ export default function ReportSuccessScreen() {
                         <View style={styles.cardCopyGroup}>
                             <AppText variant="caption" color={COLORS.textSecondary}>رقم البلاغ</AppText>
                             <AppText variant="h3" weight="bold" color={COLORS.ink} style={LTR_TEXT}>
-                                {REPORT_CODE}
+                                {reportCode}
                             </AppText>
                         </View>
 
@@ -78,7 +80,7 @@ export default function ReportSuccessScreen() {
                             accessibilityLabel="مشاركة رقم البلاغ"
                             color={COLORS.brown}
                             contained
-                            onPress={() => void Share.share({ message: `رقم البلاغ: ${REPORT_CODE}` })}
+                            onPress={() => void Share.share({ message: `رقم البلاغ: ${reportCode}` })}
                         />
                     </View>
                 </Card>
@@ -92,7 +94,7 @@ export default function ReportSuccessScreen() {
                                 <AppText variant="body" weight="bold" color={COLORS.ink}>تم الاستلام</AppText>
                             </View>
                             <AppText variant="caption" color={COLORS.textSecondary}>
-                                المراجعة المتوقعة: 10–30 دقيقة
+                                ستصلك التحديثات بحسب تقدم معالجة البلاغ.
                             </AppText>
                         </View>
 
@@ -131,14 +133,7 @@ export default function ReportSuccessScreen() {
                                         >
                                             {step.title}
                                         </AppText>
-                                        {step.time ? (
-                                            <AppText
-                                                variant="caption"
-                                                color={step.done ? COLORS.textSecondary : COLORS.placeholder}
-                                            >
-                                                {step.time}
-                                            </AppText>
-                                        ) : null}
+
                                     </View>
                                 </View>
                             );
@@ -207,7 +202,8 @@ export default function ReportSuccessScreen() {
                 <ActionStack style={styles.footerActions}>
                     <Button
                         title="متابعة البلاغ"
-                        onPress={() => router.push(reportDetailsRoute("1", accountKind))}
+                        disabled={!reportId}
+                        onPress={() => reportId && router.push(reportDetailsRoute(reportId, accountKind))}
                         variant="custom"
                         size="large"
                         icon="chevron-back"

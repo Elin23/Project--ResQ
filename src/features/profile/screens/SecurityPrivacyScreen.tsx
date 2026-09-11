@@ -9,7 +9,6 @@ import Input from "@/src/components/ui/Input";
 import ListItem from "@/src/components/ui/ListItem";
 import Screen from "@/src/components/ui/Screen";
 import ScreenHeader from "@/src/components/ui/ScreenHeader";
-import ToggleField from "@/src/components/ui/ToggleField";
 import PasswordRequirementsCard from "@/src/features/auth/components/password-reset/PasswordRequirementsCard";
 import { useDecisionDialog } from "@/src/hooks/useDecisionDialog";
 import { COLORS, ICON_SIZES, LAYOUT, SPACING } from "@/src/theme";
@@ -70,29 +69,13 @@ export default function SecurityPrivacyScreen({ variant }: Props) {
           />
         </FormSection>
 
-        <FormSection title={content.protectionSectionTitle} subtitle={content.protectionSectionSubtitle}>
-          {content.protectionToggles.map((item) => (
-            <ToggleField
-              key={item.id}
-              label={item.label}
-              description={item.description}
-              value={state.settings[item.id]}
-              onValueChange={(value) => state.toggle(item.id, value)}
-            />
-          ))}
-        </FormSection>
-
-        <FormSection title={content.privacySectionTitle} subtitle={content.privacySectionSubtitle}>
-          {content.privacyToggles.map((item) => (
-            <ToggleField
-              key={item.id}
-              label={item.label}
-              description={item.description}
-              value={state.settings[item.id]}
-              onValueChange={(value) => state.toggle(item.id, value)}
-            />
-          ))}
-          <Button title="حفظ التفضيلات" onPress={state.savePreferences} />
+        <FormSection title="إعدادات الحساب" subtitle="لا يعرض التطبيق مفاتيح إعدادات وهمية؛ الخيارات غير المدعومة من الخادم لن تظهر حتى تتوفر لها واجهة API فعلية.">
+          <ListItem
+            title={content.privacyPolicyLabel}
+            icon={content.privacyPolicyIcon}
+            onPress={state.openPrivacyPolicy}
+            trailing={<DirectionalIcon direction="next" size={ICON_SIZES.sm} color={COLORS.iconMuted} />}
+          />
         </FormSection>
 
         <FormSection title={content.sessionsSectionTitle} subtitle={content.sessionsSectionSubtitle}>
@@ -117,14 +100,7 @@ export default function SecurityPrivacyScreen({ variant }: Props) {
           </ActionStack>
         </FormSection>
 
-        <FormSection title={content.dataSectionTitle} subtitle={content.dataSectionSubtitle} compact>
-          <ListItem
-            title={content.privacyPolicyLabel}
-            icon={content.privacyPolicyIcon}
-            onPress={state.openPrivacyPolicy}
-            trailing={<DirectionalIcon direction="next" size={ICON_SIZES.sm} color={COLORS.iconMuted} />}
-          />
-        </FormSection>
+
       </View>
 
       {decision.dialogProps ? <ConfirmDialog {...decision.dialogProps} /> : null}

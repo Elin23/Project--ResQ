@@ -7,6 +7,7 @@ export type AdoptionApplicationStatus =
   | "withdrawn";
 
 export type ApplicantHousing = "apartment" | "house" | "farm" | "other";
+export type PetExperienceLevel = "none" | "beginner" | "intermediate" | "experienced";
 
 export interface AdoptionApplication {
   id: string;
@@ -18,7 +19,8 @@ export interface AdoptionApplication {
   city: string;
   housing: ApplicantHousing;
   hasOtherPets: boolean;
-  experience: string;
+  hasOutdoorSpace: boolean;
+  experience: PetExperienceLevel;
   reason: string;
   notes?: string;
   status: AdoptionApplicationStatus;
@@ -39,7 +41,8 @@ export interface CreateAdoptionApplicationInput {
   city: string;
   housing: ApplicantHousing;
   hasOtherPets: boolean;
-  experience: string;
+  hasOutdoorSpace: boolean;
+  experience: PetExperienceLevel;
   reason: string;
   notes?: string;
 }

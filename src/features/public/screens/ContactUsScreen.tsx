@@ -16,7 +16,7 @@ import AppText from "@/src/components/ui/AppText";
 import IconButton from "@/src/components/ui/IconButton";
 import ScreenHeader from "@/src/components/ui/ScreenHeader";
 import { IMAGES } from "@/src/assets/images";
-import { MAX_MESSAGE_LENGTH, MESSAGE_TYPES, SOCIAL_ITEMS, SUPPORT_EMAIL, SUPPORT_PHONE } from "../constants/contact";
+import { MAX_MESSAGE_LENGTH, MESSAGE_TYPES, SOCIAL_ITEMS, SUPPORT_EMAIL, SUPPORT_HOURS, SUPPORT_PHONE } from "../constants/contact";
 import { useContactUsForm } from "../hooks/useContactUsForm";
 import { styles } from "./ContactUs.styles";
 
@@ -24,10 +24,10 @@ export default function ContactUsScreen() {
   const form = useContactUsForm();
   const {
     fullName, setFullName, email, setEmail, subject, setSubject,
-    messageType, setMessageType, message, setMessage, attachmentUri,
-    setAttachmentUri, typeModalVisible, setTypeModalVisible, errors, setErrors,
+    messageType, setMessageType, message, setMessage,
+    typeModalVisible, setTypeModalVisible, errors, setErrors,
     isSubmitting, horizontalPadding, contentWidth, remainingCharacters,
-    handleBack, handleHelpCenter, openExternalUrl, handleEmail, handlePhone, handlePickImage, handleSubmit,
+    handleBack, handleHelpCenter, openExternalUrl, handleEmail, handlePhone, handleSubmit,
   } = form;
   const [headerElevated, setHeaderElevated] = useState(false);
 
@@ -227,58 +227,6 @@ export default function ContactUsScreen() {
                 ) : null}
               </View>
 
-              <View style={styles.fieldGroupLast}>
-                <AppText style={styles.label}>إرفاق صورة (اختياري)</AppText>
-
-                <Pressable
-                  accessibilityRole="button"
-                  accessibilityLabel="اختيار صورة"
-                  onPress={handlePickImage}
-                  style={({ pressed }) => [
-                    styles.uploadBox,
-                    pressed && styles.fieldPressed,
-                  ]}
-                >
-                  {attachmentUri ? (
-                    <Image
-                      source={{ uri: attachmentUri }}
-                      resizeMode="cover"
-                      style={styles.attachmentPreview}
-                    />
-                  ) : (
-                    <>
-                      <Ionicons
-                        name="cloud-upload-outline"
-                        size={34}
-                        color={COLORS.primaryStrong}
-                      />
-                      <AppText style={styles.uploadTitle}>
-                        اضغط لرفع الملفات
-                      </AppText>
-                      <AppText style={styles.uploadHint}>
-                        JPG, PNG, WEBP
-                      </AppText>
-                    </>
-                  )}
-                </Pressable>
-
-                {attachmentUri ? (
-                  <Pressable
-                    accessibilityRole="button"
-                    accessibilityLabel="إزالة الصورة"
-                    onPress={() => setAttachmentUri(null)}
-                    style={({ pressed }) => [
-                      styles.removeAttachmentButton,
-                      pressed && styles.pressed,
-                    ]}
-                  >
-                    <Ionicons name="trash-outline" size={17} color={COLORS.danger} />
-                    <AppText style={styles.removeAttachmentText}>
-                      إزالة الصورة
-                    </AppText>
-                  </Pressable>
-                ) : null}
-              </View>
             </View>
 
             <View style={styles.helpCard}>
@@ -330,41 +278,33 @@ export default function ContactUsScreen() {
                 </View>
               </Pressable>
 
-              <Pressable
+              {SUPPORT_PHONE ? <Pressable
                 accessibilityRole="link"
                 accessibilityLabel="الاتصال برقم الدعم"
                 onPress={handlePhone}
-                style={({ pressed }) => [
-                  styles.contactInfoRow,
-                  pressed && styles.rowPressed,
-                ]}
+                style={({ pressed }) => [styles.contactInfoRow, pressed && styles.rowPressed]}
               >
                 <View style={styles.contactIconGreen}>
                   <Ionicons name="call-outline" size={21} color={COLORS.secondaryStrong} />
                 </View>
-
                 <View style={styles.contactTextWrap}>
                   <AppText style={styles.contactLabel}>رقم الهاتف</AppText>
-                  <AppText style={styles.contactValueLTR}>
-                    {SUPPORT_PHONE}
-                  </AppText>
+                  <AppText style={styles.contactValueLTR}>{SUPPORT_PHONE}</AppText>
                 </View>
-              </Pressable>
+              </Pressable> : null}
 
-              <View style={styles.contactInfoRow}>
+              {SUPPORT_HOURS ? <View style={styles.contactInfoRow}>
                 <View style={styles.contactIconNeutral}>
                   <Ionicons name="time-outline" size={21} color={COLORS.textMuted} />
                 </View>
-
                 <View style={styles.contactTextWrap}>
                   <AppText style={styles.contactLabel}>ساعات الدعم</AppText>
-                  <AppText style={styles.contactValue}>
-                    الأحد - الخميس | 09:00 - 17:00
-                  </AppText>
+                  <AppText style={styles.contactValue}>{SUPPORT_HOURS}</AppText>
                 </View>
-              </View>
+              </View> : null}
             </View>
 
+            {SOCIAL_ITEMS.length > 0 ? (
             <View style={styles.socialCard}>
               <AppText style={styles.sectionTitle}>تابعنا</AppText>
 
@@ -389,10 +329,11 @@ export default function ContactUsScreen() {
                 ))}
               </View>
             </View>
+            ) : null}
 
             <Pressable
               accessibilityRole="button"
-              accessibilityLabel="إرسال الرسالة"
+              accessibilityLabel="فتح تطبيق البريد لإرسال الرسالة"
               disabled={isSubmitting}
               onPress={handleSubmit}
               style={({ pressed }) => [
@@ -404,7 +345,7 @@ export default function ContactUsScreen() {
               <Ionicons name="send" size={20} color={PALETTE.neutral0} />
 
               <AppText style={styles.submitButtonText}>
-                {isSubmitting ? "جارٍ الإرسال..." : "إرسال الرسالة"}
+                {isSubmitting ? "جارٍ فتح البريد..." : "فتح تطبيق البريد"}
               </AppText>
             </Pressable>
           </View>

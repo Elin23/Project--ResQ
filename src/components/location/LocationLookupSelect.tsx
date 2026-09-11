@@ -63,7 +63,7 @@ export default function LocationLookupSelect({
         ]}
       >
         <Ionicons name="location-outline" size={20} color={disabled ? COLORS.placeholder : COLORS.iconMuted} />
-        <AppText style={[styles.value, !selectedLabel && styles.placeholder]} numberOfLines={1}>
+        <AppText style={[styles.value, !selectedLabel && styles.placeholder]}>
           {display}
         </AppText>
         <Ionicons name="chevron-down-outline" size={18} color={disabled ? COLORS.placeholder : COLORS.iconMuted} />
@@ -100,7 +100,7 @@ const styles = StyleSheet.create({
   },
   controlError: { borderColor: COLORS.danger },
   controlDisabled: { opacity: 0.62, backgroundColor: COLORS.surfaceSubtle },
-  value: { flex: 1, minWidth: 0, textAlign: "right", color: COLORS.textPrimary },
+  value: { flex: 1, minWidth: 0, textAlign: "right", color: COLORS.text },
   placeholder: { color: COLORS.placeholder },
   pressed: { opacity: 0.78 },
 });

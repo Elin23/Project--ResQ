@@ -1,71 +1,51 @@
-import type { BackendId, GeoLocationDto, MediaDto } from "./common";
-
-export type AdoptionSpecies = "DOG" | "CAT" | "BIRD" | "OTHER";
-export type AdoptionSex = "MALE" | "FEMALE" | "UNKNOWN";
-export type AdoptionPublisherType = "USER" | "ORGANIZATION";
-export type AdoptionModerationStatus = "DRAFT" | "PENDING_REVIEW" | "PUBLISHED" | "REJECTED";
-export type AdoptionLifecycleStatus = "AVAILABLE" | "RESERVED" | "ADOPTED" | "CLOSED";
-export type AdoptionApplicationStatus =
-  | "PENDING"
-  | "ACCEPTED"
-  | "REJECTED"
-  | "WITHDRAWN"
-  | "COMPLETED"
-  | "NOT_SELECTED";
-
+export type AdoptionModerationStatus = "DRAFT" | "PENDING_REVIEW" | "PUBLISHED" | "REJECTED" | string;
+export type AdoptionLifecycleStatus = "AVAILABLE" | "RESERVED" | "ADOPTED" | "CLOSED" | string;
+export interface AdoptionAnimalDto {
+  name?: string|null; species?: string|null; breed?: string|null; sex?: string|null;
+  estimatedAgeMonths?: number|null; color?: string|null; size?: string|null; weightKg?: number|null;
+  description?: string|null; healthStatus?: string|null; healthCondition?: string|null; isVaccinated?: boolean;
+  isFreeOfInfectiousDiseases?: boolean; isVeterinaryExamined?: boolean; traits?: string[]|null;
+}
+export interface AdoptionPublisherDto { type?: string|null; id?: string|null; name?: string|null; phone?: string|null; email?: string|null; }
+export interface AdoptionMediaDto { id:number; type?:string|null; url?:string|null; thumbnailUrl?:string|null; altText?:string|null; }
+export interface AdoptionLocationDto {
+  governorateId?: number | string | null;
+  governorateName?: string | null;
+  regionId?: number | string | null;
+  regionName?: string | null;
+  address?: string | null;
+  latitude?: number | null;
+  longitude?: number | null;
+}
 export interface AdoptionListingDto {
-  id: BackendId;
-  animal: {
-    name?: string;
-    species: AdoptionSpecies;
-    breed?: string;
-    sex: AdoptionSex;
-    estimatedAgeMonths?: number;
-    color?: string;
-    size?: "SMALL" | "MEDIUM" | "LARGE";
-    weightKg?: number;
-    description: string;
-    healthCondition?: string;
-    traits?: string[];
-  };
-  publisher: {
-    type: AdoptionPublisherType;
-    id: BackendId;
-    name: string;
-    phone?: string;
-    email?: string;
-  };
-  media: MediaDto[];
-  location: GeoLocationDto;
-  moderationStatus: AdoptionModerationStatus;
-  lifecycleStatus: AdoptionLifecycleStatus;
-  moderationReason?: string;
-  submittedAt?: string;
-  publishedAt?: string;
-  rejectedAt?: string;
-  adoptedAt?: string;
-  createdAt: string;
-  updatedAt: string;
+  id:number|string; code?:string|null; animal:AdoptionAnimalDto; publisher:AdoptionPublisherDto; media?:AdoptionMediaDto[]|null;
+  location?:AdoptionLocationDto|null;
+  /** Compatibility with endpoints that flatten location fields on the listing. */
+  governorateId?: number|string|null; governorateName?: string|null;
+  regionId?: number|string|null; regionName?: string|null;
+  address?: string|null; latitude?: number|null; longitude?: number|null;
+  moderationStatus?:string|null; lifecycleStatus?:string|null; moderationReason?:string|null;
+  submittedAt?:string|null; publishedAt?:string|null; rejectedAt?:string|null; adoptedAt?:string|null; createdAt:string; updatedAt:string;
+}
+export interface AdoptionApplicationDto {
+  id:number; listingId:number;
+  applicant:{id?:string|null;name?:string|null;phone?:string|null;email?:string|null;regionId?:number|null;regionName?:string|null};
+  status?:string|null; message?:string|null; submittedAt:string; respondedAt?:string|null; ownerResponse?:string|null;
+  additionalNotes?:string|null; hasPets?:boolean; hasOutdoorSpace?:boolean; houseType?:string|null; experienceLevel?:string|null;
+  contactShared:boolean; applicantHandoverConfirmedAt?:string|null; ownerHandoverConfirmedAt?:string|null; completedAt?:string|null;
 }
 
-export interface AdoptionApplicationDto {
-  id: BackendId;
-  listingId: BackendId;
-  applicant: {
-    id: BackendId;
-    name: string;
-    phone?: string;
-    email?: string;
-    regionId?: BackendId;
-    regionName?: string;
-  };
-  status: AdoptionApplicationStatus;
-  message?: string;
-  submittedAt: string;
-  respondedAt?: string;
-  ownerResponse?: string;
-  contactShared: boolean;
-  applicantHandoverConfirmedAt?: string;
-  ownerHandoverConfirmedAt?: string;
-  completedAt?: string;
+
+/**
+ * Some adoption write endpoints return an acknowledgement payload instead of
+ * the full listing DTO. Keep that response shape explicit so callers do not
+ * accidentally pass it to adoptionListingDtoToDomain().
+ */
+export interface AdoptionListingMutationResponseDto {
+  message?: string | null;
+  id?: number | string | null;
+  animalName?: string | null;
+  animalType?: string | null;
+  governorateId?: number | null;
+  regionId?: number | null;
 }

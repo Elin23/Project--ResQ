@@ -20,8 +20,15 @@ export type ContactFormErrors = {
   message?: string;
 };
 
-export const SUPPORT_EMAIL = "support@resq.app";
-export const SUPPORT_PHONE = "+963 XX XXX XXXX";
+const nonEmptyEnv = (value?: string) => value?.trim() || undefined;
+
+/**
+ * Public support details are deployment configuration, not demo data.
+ * Optional channels stay hidden when they are not configured.
+ */
+export const SUPPORT_EMAIL = nonEmptyEnv(process.env.EXPO_PUBLIC_SUPPORT_EMAIL) ?? "support@resq.app";
+export const SUPPORT_PHONE = nonEmptyEnv(process.env.EXPO_PUBLIC_SUPPORT_PHONE);
+export const SUPPORT_HOURS = nonEmptyEnv(process.env.EXPO_PUBLIC_SUPPORT_HOURS);
 export const MAX_MESSAGE_LENGTH = 1000;
 
 export const MESSAGE_TYPES: MessageType[] = [
@@ -33,9 +40,19 @@ export const MESSAGE_TYPES: MessageType[] = [
   { id: "other", label: "أخرى" },
 ];
 
-export const SOCIAL_ITEMS: SocialItem[] = [
-  { id: "website", label: "الموقع", icon: "globe-outline", url: "https://resq.app" },
-  { id: "facebook", label: "فيسبوك", icon: "logo-facebook", url: "https://www.facebook.com" },
-  { id: "instagram", label: "إنستغرام", icon: "logo-instagram", url: "https://www.instagram.com" },
-  { id: "linkedin", label: "لينكدإن", icon: "logo-linkedin", url: "https://www.linkedin.com" },
+const configuredSocialItems: (SocialItem | null)[] = [
+  nonEmptyEnv(process.env.EXPO_PUBLIC_WEBSITE_URL)
+    ? { id: "website", label: "الموقع", icon: "globe-outline", url: process.env.EXPO_PUBLIC_WEBSITE_URL!.trim() }
+    : null,
+  nonEmptyEnv(process.env.EXPO_PUBLIC_FACEBOOK_URL)
+    ? { id: "facebook", label: "فيسبوك", icon: "logo-facebook", url: process.env.EXPO_PUBLIC_FACEBOOK_URL!.trim() }
+    : null,
+  nonEmptyEnv(process.env.EXPO_PUBLIC_INSTAGRAM_URL)
+    ? { id: "instagram", label: "إنستغرام", icon: "logo-instagram", url: process.env.EXPO_PUBLIC_INSTAGRAM_URL!.trim() }
+    : null,
+  nonEmptyEnv(process.env.EXPO_PUBLIC_LINKEDIN_URL)
+    ? { id: "linkedin", label: "لينكدإن", icon: "logo-linkedin", url: process.env.EXPO_PUBLIC_LINKEDIN_URL!.trim() }
+    : null,
 ];
+
+export const SOCIAL_ITEMS = configuredSocialItems.filter((item): item is SocialItem => item !== null);

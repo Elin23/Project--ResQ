@@ -1,8 +1,8 @@
 import { describe, expect, it } from "vitest";
 
 import { RescueOperationsService } from "../RescueOperationsService";
-import { InMemoryReportRepository } from "@/src/data/repositories/inMemoryReportRepository";
-import { InMemoryRescueRepository } from "@/src/data/repositories/inMemoryRescueRepository";
+import { InMemoryReportRepository } from "@/test-fixtures/repositories/inMemoryReportRepository";
+import { InMemoryRescueRepository } from "@/test-fixtures/repositories/inMemoryRescueRepository";
 
 describe("RescueOperationsService", () => {
   it("turns an incoming report into an organization rescue task", async () => {

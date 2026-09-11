@@ -1,49 +1,91 @@
-import type { FeedingPointDetails, FeedingPointIssueReason, FeedingPointSummary, FoodLevel, ReportedStatus } from "@/src/features/feeding-points/types";
-import type { FeedingPointDto, FeedingPointFoodLevel, FeedingPointIssueType } from "@/src/contracts/backend/feedingPoints";
+import { resolveMediaUrl } from "../mediaUrl";
+import type {
+  FeedingPointDetails,
+  FeedingPointIssueReason,
+  FeedingPointSummary,
+  FoodLevel,
+  ReportedStatus,
+} from "@/src/features/feeding-points/types";
+import type {
+  FeedingPointDto,
+  FeedingPointIssueType,
+} from "@/src/contracts/backend/feedingPoints";
 
-const displayFoodLevel = (level?: FeedingPointFoodLevel): FoodLevel => {
-  if (level === "EMPTY") return "empty";
-  if (level === "LOW" || level === "MEDIUM") return "medium";
-  return "good";
-};
+const displayFoodLevel = (level?: string | null): FoodLevel =>
+  level === "EMPTY"
+    ? "empty"
+    : level === "LOW" || level === "MEDIUM"
+      ? "medium"
+      : "good";
 
-const reportedStatus = (level?: FeedingPointFoodLevel): ReportedStatus =>
+const reportedStatus = (level?: string | null): ReportedStatus =>
   level === "EMPTY" || level === "LOW" ? "needsFood" : "stocked";
 
-export function feedingPointDtoToSummary(dto: FeedingPointDto): FeedingPointSummary {
+export function feedingPointDtoToSummary(
+  dto: FeedingPointDto,
+): FeedingPointSummary {
+  const media = dto.media ?? [];
+
   return {
-    id: dto.id,
+    id: String(dto.id),
     name: dto.name ?? "نقطة إطعام",
-    address: dto.location.address,
-    coordinate: { latitude: dto.location.latitude, longitude: dto.location.longitude },
+    address: dto.address ?? "",
+    coordinate: {
+      latitude: dto.latitude,
+      longitude: dto.longitude,
+    },
     status: reportedStatus(dto.foodLevel),
-    lastStatusUpdateAt: dto.latestRefillReportAt ?? dto.updatedAt,
-    thumbnailUrl: dto.media.find((item) => item.type === "IMAGE")?.thumbnailUrl ?? dto.media.find((item) => item.type === "IMAGE")?.url ?? null,
+    lastStatusUpdateAt: dto.lastVerifiedRefillAt ?? dto.updatedAt,
+    thumbnailUrl:
+      resolveMediaUrl(
+        media.find((x) => !x.type || x.type === "IMAGE")?.thumbnailUrl ??
+          media.find((x) => !x.type || x.type === "IMAGE")?.url,
+      ) || null,
     isVerified: dto.status === "ACTIVE",
-    hasWater: dto.waterAvailable ?? false,
+    hasWater: dto.waterAvailable,
     foodLevel: displayFoodLevel(dto.foodLevel),
   };
 }
 
-export function feedingPointDtoToDetails(dto: FeedingPointDto): FeedingPointDetails {
-  const summary = feedingPointDtoToSummary(dto);
+export function feedingPointDtoToDetails(
+  dto: FeedingPointDto,
+): FeedingPointDetails {
+  const s = feedingPointDtoToSummary(dto);
+  const media = dto.media ?? [];
+
   return {
-    ...summary,
-    ownerAccountId: dto.createdBy.id,
-    ownerAccountKind: dto.createdBy.type === "ORGANIZATION" ? "organization" : "user",
-    moderationStatus: dto.status === "PENDING" ? "pending_review" : dto.status === "REJECTED" ? "rejected" : dto.status === "ACTIVE" ? "approved" : "archived",
-    rejectionReason: dto.rejectionReason,
-    photoUrl: dto.media.find((item) => item.type === "IMAGE")?.url ?? null,
-    description: dto.description ?? null,
-    createdByUserId: dto.createdBy.id,
-    createdByName: dto.createdBy.name,
+    ...s,
+    ownerAccountId: "",
+    ownerAccountKind: "user",
+    moderationStatus:
+      dto.status === "PENDING"
+        ? "pending_review"
+        : dto.status === "REJECTED"
+          ? "rejected"
+          : dto.status === "ACTIVE"
+            ? "approved"
+            : "archived",
+    rejectionReason: dto.rejectionReason ?? undefined,
+
+    // FeedingPointDetails.photoUrl معرف كـ string وليس string | null
+    photoUrl:
+      resolveMediaUrl(
+        media.find((x) => !x.type || x.type === "IMAGE")?.url,
+      ) || "",
+
+    description: dto.note ?? null,
+    createdByUserId: "",
+    createdByName: "",
     createdAt: dto.createdAt,
     updatesCount: 0,
     facilities: dto.waterAvailable ? ["water"] : [],
   };
 }
 
-export const ISSUE_REASON_TO_BACKEND: Record<FeedingPointIssueReason, FeedingPointIssueType> = {
+export const ISSUE_REASON_TO_BACKEND: Record<
+  FeedingPointIssueReason,
+  FeedingPointIssueType
+> = {
   empty: "EMPTY",
   noWater: "NO_WATER",
   damaged: "DAMAGED",

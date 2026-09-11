@@ -8,8 +8,8 @@ const required = [
   "src/domain/shared/ownership.ts",
   "src/domain/feeding-points/feedingPointSubmission.ts",
   "src/domain/feeding-points/feedingPointSubmissionRepository.ts",
-  "src/data/repositories/inMemoryFeedingPointSubmissionRepository.ts",
-  "src/data/repositories/inMemoryAdoptionRepository.ts",
+  "test-fixtures/repositories/inMemoryFeedingPointSubmissionRepository.ts",
+  "test-fixtures/repositories/inMemoryAdoptionRepository.ts",
 ];
 
 const errors = [];
@@ -20,8 +20,8 @@ for (const file of required) {
 if (!errors.length) {
   const moderation = read("src/domain/moderation/moderation.ts");
   const access = read("src/features/session/accessPolicy.ts");
-  const adoptionRepo = read("src/data/repositories/inMemoryAdoptionRepository.ts");
-  const feedingRepo = read("src/data/repositories/inMemoryFeedingPointSubmissionRepository.ts");
+  const adoptionRepo = read("test-fixtures/repositories/inMemoryAdoptionRepository.ts");
+  const feedingRepo = read("test-fixtures/repositories/inMemoryFeedingPointSubmissionRepository.ts");
   const accountModel = read("src/types/accounts.ts");
 
   for (const state of ["draft", "pending_review", "approved", "rejected", "archived"]) {

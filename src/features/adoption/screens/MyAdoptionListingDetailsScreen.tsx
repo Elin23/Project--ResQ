@@ -102,7 +102,7 @@ export default function MyAdoptionListingDetailsScreen() {
       />
 
       <View style={styles.content}>
-        <RemoteImage uri={listing.imageUrl} style={styles.hero} accessibilityLabel={listing.name} />
+        <RemoteImage uri={listing.imageUrl} style={styles.hero} accessibilityLabel={listing.animalName} />
 
         <View style={styles.titleBlock}>
           <View style={styles.titleRow}>

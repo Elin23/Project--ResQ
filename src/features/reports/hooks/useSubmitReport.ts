@@ -1,6 +1,7 @@
 import { useCallback, useState } from "react";
 import { repositories } from "@/src/services/domain/repositories";
 import type { CreateReportInput } from "@/src/domain";
+import { ApiError } from "@/src/services/api/client";
 
 export function useSubmitReport() {
   const [submitting, setSubmitting] = useState(false);
@@ -12,7 +13,7 @@ export function useSubmitReport() {
     try {
       return await repositories.reports.create(input);
     } catch (cause) {
-      setError("تعذر إرسال البلاغ. حاول مرة أخرى.");
+      setError(cause instanceof ApiError || cause instanceof Error ? cause.message : "تعذر إرسال البلاغ. حاول مرة أخرى.");
       throw cause;
     } finally {
       setSubmitting(false);

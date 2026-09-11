@@ -83,7 +83,7 @@ export default function OwnedDonationCampaignStatusScreen() {
   const verifyingTransfers = transferState.transfers.filter((item) => item.status === "verifying").length;
   const approvedTransfers = transferState.transfers.filter((item) => item.status === "approved").length;
   const rejectedTransfers = transferState.transfers.filter((item) => item.status === "rejected").length;
-  const editable = ["draft", "rejected", "active", "paused"].includes(campaign.status);
+  const editable = ["draft", "rejected"].includes(campaign.status);
 
   const pause = () => decision.request(
     { title: "إيقاف الحملة مؤقتًا", message: "ستتوقف الحملة عن استقبال تبرعات جديدة حتى تعيد فتحها.", confirmLabel: "إيقاف مؤقت", destructive: false, icon: "pause-circle-outline" },
@@ -180,7 +180,7 @@ export default function OwnedDonationCampaignStatusScreen() {
         <Card disabled style={styles.card}>
           <AppText variant="h3" weight="bold">بيانات الحملة</AppText>
           <InfoRow label="نوع الحملة" value={campaign.category} />
-          <InfoRow label="الموقع" value={[campaign.location.governorate, campaign.location.city].filter(Boolean).join(" - ")} />
+          {campaign.location && (campaign.location.governorate || campaign.location.city) ? <InfoRow label="الموقع" value={[campaign.location.governorate, campaign.location.city].filter(Boolean).join(" - ")} /> : null}
           <InfoRow label="الحالة العاجلة" value={campaign.urgent ? "نعم" : "لا"} />
           <InfoRow label="تاريخ الإنشاء" value={new Intl.DateTimeFormat("ar-SY").format(new Date(campaign.createdAt))} />
         </Card>
@@ -215,13 +215,13 @@ export default function OwnedDonationCampaignStatusScreen() {
                 icon="eye-outline"
                 onPress={() => router.push(donationCampaignDetailsRoute(campaign.id, accountKind))}
               />
-              <Button
+              {<Button
                 title="إيقاف مؤقت"
                 icon="pause-outline"
                 variant="outline"
                 disabled={actions.updating}
                 onPress={pause}
-              />
+              />}
             </>
           ) : null}
 

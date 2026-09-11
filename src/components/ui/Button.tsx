@@ -151,7 +151,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     gap: SPACING.sm,
-    overflow: Platform.OS === "web" ? "visible" : "hidden",
+    overflow: "visible",
   },
   hovered: { opacity: 0.96, transform: [{ translateY: -1 }], ...SHADOWS.sm },
   pressed: { opacity: 0.88, transform: [{ scale: 0.99 }] },

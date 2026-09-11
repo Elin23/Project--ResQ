@@ -6,7 +6,7 @@ const read = (p) => fs.readFileSync(path.join(root, p), "utf8");
 const mustExist = [
   "src/domain/adoption/adoptionApplication.ts",
   "src/domain/adoption/adoptionApplicationRepository.ts",
-  "src/data/repositories/inMemoryAdoptionApplicationRepository.ts",
+  "test-fixtures/repositories/inMemoryAdoptionApplicationRepository.ts",
   "src/features/adoption/screens/AdoptionApplicationScreen.tsx",
   "src/features/adoption/screens/MyAdoptionApplicationsScreen.tsx",
   "src/features/adoption/screens/AdoptionApplicationStatusScreen.tsx",
@@ -22,12 +22,12 @@ const details = read("src/features/adoption/screens/AdoptionDetailsScreen.tsx");
 if (details.includes("ROUTES.contactUs")) throw new Error("Adoption CTA must not route to Contact Us");
 if (!details.includes("adoptionApplyRoute")) throw new Error("Adoption CTA must route to the application flow");
 
-const repo = read("src/data/repositories/inMemoryAdoptionApplicationRepository.ts");
+const repo = read("test-fixtures/repositories/inMemoryAdoptionApplicationRepository.ts");
 for (const token of ["status: \"pending\"", "getByApplicant", "listByApplicant", "listByListing", "adoptionRepository.getById"]) {
   if (!repo.includes(token)) throw new Error(`Application repository missing contract: ${token}`);
 }
 
-const adoptionRepo = read("src/data/repositories/inMemoryAdoptionRepository.ts");
+const adoptionRepo = read("test-fixtures/repositories/inMemoryAdoptionRepository.ts");
 if (!adoptionRepo.includes("publicClone") || !adoptionRepo.includes('phone: ""')) {
   throw new Error("Public adoption reads must redact private owner contact");
 }

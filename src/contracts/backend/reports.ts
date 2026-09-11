@@ -1,78 +1,53 @@
-import type { BackendId, GeoLocationDto, MediaDto } from "./common";
-
 export type ReportStatus = "OPEN" | "EN_ROUTE" | "RECEIVED" | "CLOSED";
 export type ReportPriority = "NORMAL" | "URGENT";
-export type AnimalType = "DOG" | "CAT" | "BIRD" | "OTHER";
+export type AnimalType = "DOG" | "CAT" | "BIRD" | "RABBIT" | "OTHER";
 
-export interface ReportReporterDto {
-  id: BackendId;
-  name: string;
-  phone?: string;
-  email?: string;
+export interface ReportLocationDto {
+  governorateId: number;
+  governorateName?: string | null;
+  regionId: number;
+  regionName?: string | null;
+  address?: string | null;
+  latitude: number;
+  longitude: number;
 }
-
-export interface AssignedOrganizationDto {
-  id: BackendId;
-  name: string;
-}
+export interface ReportReporterDto { id?: string | null; name?: string | null; phone?: string | null; email?: string | null; }
+export interface AssignedOrganizationDto { id: number; name?: string | null; }
+export interface ReportMediaDto { id: number; type?: string | null; url?: string | null; thumbnailUrl?: string | null; altText?: string | null; }
 
 export interface ReportDto {
-  id: BackendId;
-  code: string;
-  status: ReportStatus;
-  priority: ReportPriority;
-  animalType: AnimalType;
-  animalDescription?: string;
-  title: string;
-  description: string;
-  location: GeoLocationDto;
+  id: number;
+  code?: string | null;
+  status?: string | null;
+  priority?: string | null;
+  animalType?: string | null;
+  animalDescription?: string | null;
+  title?: string | null;
+  description?: string | null;
+  location: ReportLocationDto;
   reporter: ReportReporterDto;
-  assignedOrganization?: AssignedOrganizationDto;
-  media: MediaDto[];
+  assignedOrganization?: AssignedOrganizationDto | null;
+  media?: ReportMediaDto[] | null;
   createdAt: string;
   updatedAt: string;
-  assignedAt?: string;
-  receivedAt?: string;
-  closedAt?: string;
+  assignedAt?: string | null;
+  receivedAt?: string | null;
+  closedAt?: string | null;
 }
 
-/** Reporting requires an authenticated account. Reporter identity is inferred from the access token. */
 export interface CreateReportRequestDto {
   animalType: AnimalType;
   title: string;
   description: string;
+  animalDescription?: string | null;
   priority: ReportPriority;
-  /** Optional when the backend resolves the approved location catalog from coordinates. */
-  governorateId?: BackendId;
-  regionId?: BackendId;
+  governorateId: number;
+  regionId: number;
   address: string;
   latitude: number;
   longitude: number;
-  mediaUploadIds?: BackendId[];
+  mediaUploadIds?: number[];
 }
 
-export type RescueMissionStatus =
-  | "ASSIGNED"
-  | "ACCEPTED"
-  | "ON_THE_WAY"
-  | "ARRIVED"
-  | "RESCUED"
-  | "COMPLETED"
-  | "CANCELLED";
-
-export interface RescueMissionDto {
-  id: BackendId;
-  reportId: BackendId;
-  organizationId: BackendId;
-  status: RescueMissionStatus;
-  acceptedAt?: string;
-  onTheWayAt?: string;
-  arrivedAt?: string;
-  rescuedAt?: string;
-  completedAt?: string;
-  cancelledAt?: string;
-  notes?: string;
-  evidence: MediaDto[];
-  createdAt: string;
-  updatedAt: string;
-}
+export type RescueMissionStatus = "ASSIGNED"|"ACCEPTED"|"ON_THE_WAY"|"ARRIVED"|"RESCUED"|"COMPLETED"|"CANCELLED";
+export interface RescueMissionDto { id: number; reportId: number; organizationId: number; status?: string|null; acceptedAt?: string|null; onTheWayAt?: string|null; arrivedAt?: string|null; rescuedAt?: string|null; completedAt?: string|null; cancelledAt?: string|null; notes?: string|null; createdAt: string; updatedAt: string; }

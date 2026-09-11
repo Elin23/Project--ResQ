@@ -8,9 +8,22 @@ import { COLORS, ICON_SIZES, LAYOUT, RADIUS, SPACING } from "@/src/theme";
 
 type Props = {
   onNotificationsPress: () => void;
+  unreadNotificationCount?: number;
+  organizationName: string;
+  logoUrl?: string;
+  verified?: boolean;
+  statusLabel?: string;
 };
 
-export default function OrganizationDashboardHeader({ onNotificationsPress }: Props) {
+export default function OrganizationDashboardHeader({
+  onNotificationsPress,
+  unreadNotificationCount = 0,
+  organizationName,
+  logoUrl,
+  verified = false,
+  statusLabel = "قيد المراجعة",
+}: Props) {
+  const hasUnreadNotifications = unreadNotificationCount !== 0;
   return (
     <>
       <ScreenHeader
@@ -19,13 +32,13 @@ export default function OrganizationDashboardHeader({ onNotificationsPress }: Pr
         right={
           <Pressable
             accessibilityRole="button"
-            accessibilityLabel="فتح التنبيهات"
+            accessibilityLabel={hasUnreadNotifications ? `فتح التنبيهات، لديك ${unreadNotificationCount} غير مقروء` : "فتح التنبيهات"}
             hitSlop={8}
             onPress={onNotificationsPress}
             style={({ pressed }) => [styles.notificationButton, pressed && styles.pressed]}
           >
             <Ionicons name="notifications-outline" size={ICON_SIZES.md} color={COLORS.icon} />
-            <View style={styles.notificationDot} />
+            {hasUnreadNotifications ? <View style={styles.notificationDot} /> : null}
           </Pressable>
         }
       />
@@ -33,17 +46,25 @@ export default function OrganizationDashboardHeader({ onNotificationsPress }: Pr
       <View style={styles.identityOuter}>
         <View style={styles.identityRow}>
           <View style={styles.avatarWrap}>
-            <RemoteImage uri="https://images.unsplash.com/photo-1601758228041-f3b2795255f1?auto=format&fit=crop&w=500&q=82" style={styles.avatar} accessibilityLabel="شعار الجمعية" />
-            <View style={styles.verifiedBadge}>
-              <Ionicons name="checkmark" size={12} color={COLORS.textInverse} />
-            </View>
+            {logoUrl ? (
+              <RemoteImage uri={logoUrl} style={styles.avatar} accessibilityLabel={`شعار ${organizationName}`} />
+            ) : (
+              <View style={[styles.avatar, styles.avatarPlaceholder]}>
+                <Ionicons name="business-outline" size={ICON_SIZES.md} color={COLORS.primaryStrong} />
+              </View>
+            )}
+            {verified ? (
+              <View style={styles.verifiedBadge}>
+                <Ionicons name="checkmark" size={12} color={COLORS.textInverse} />
+              </View>
+            ) : null}
           </View>
 
           <View style={styles.textWrap}>
-            <AppText variant="h3" weight="bold">جمعية الرفق</AppText>
+            <AppText variant="h3" weight="bold">{organizationName}</AppText>
             <View style={styles.statusRow}>
-              <Ionicons name="shield-checkmark-outline" size={ICON_SIZES.xs} color={COLORS.successDark} />
-              <AppText variant="caption" weight="medium" color={COLORS.successDark}>جمعية معتمدة</AppText>
+              <Ionicons name={verified ? "shield-checkmark-outline" : "time-outline"} size={ICON_SIZES.xs} color={verified ? COLORS.successDark : COLORS.warning} />
+              <AppText variant="caption" weight="medium" color={verified ? COLORS.successDark : COLORS.warning}>{statusLabel}</AppText>
             </View>
           </View>
         </View>
@@ -53,60 +74,15 @@ export default function OrganizationDashboardHeader({ onNotificationsPress }: Pr
 }
 
 const styles = StyleSheet.create({
-  notificationButton: {
-    width: 44,
-    height: 44,
-    alignItems: "center",
-    justifyContent: "center",
-    borderRadius: RADIUS.full,
-    backgroundColor: COLORS.surfaceMuted,
-  },
-  notificationDot: {
-    position: "absolute",
-    top: 9,
-    right: 10,
-    width: 6,
-    height: 6,
-    borderRadius: RADIUS.full,
-    backgroundColor: COLORS.danger,
-    borderWidth: 1,
-    borderColor: COLORS.surfaceElevated,
-  },
+  notificationButton: { width: 44, height: 44, alignItems: "center", justifyContent: "center", borderRadius: RADIUS.full, backgroundColor: COLORS.surfaceMuted },
+  notificationDot: { position: "absolute", top: 9, right: 10, width: 6, height: 6, borderRadius: RADIUS.full, backgroundColor: COLORS.danger, borderWidth: 1, borderColor: COLORS.surfaceElevated },
   pressed: { opacity: 0.65, transform: [{ scale: 0.96 }] },
   identityOuter: { paddingHorizontal: LAYOUT.screenPadding, paddingTop: SPACING.lg },
-  identityRow: {
-    flexDirection: "row",
-    direction: "rtl",
-    alignItems: "center",
-    gap: SPACING.md,
-    padding: SPACING.md,
-    borderWidth: 1,
-    borderColor: COLORS.border,
-    borderRadius: RADIUS.lg,
-    backgroundColor: COLORS.surfaceElevated,
-  },
+  identityRow: { flexDirection: "row", direction: "rtl", alignItems: "center", gap: SPACING.md, padding: SPACING.md, borderWidth: 1, borderColor: COLORS.border, borderRadius: RADIUS.lg, backgroundColor: COLORS.surfaceElevated },
   textWrap: { flex: 1, minWidth: 0, alignItems: "stretch", gap: SPACING.xs },
   statusRow: { flexDirection: "row", direction: "rtl", alignItems: "center", gap: SPACING.xs },
   avatarWrap: { position: "relative" },
-  avatar: {
-    width: 52,
-    height: 52,
-    borderRadius: RADIUS.full,
-    borderWidth: 2,
-    borderColor: COLORS.primary,
-    backgroundColor: COLORS.surfaceElevated,
-  },
-  verifiedBadge: {
-    position: "absolute",
-    left: -2,
-    bottom: -2,
-    width: 20,
-    height: 20,
-    borderRadius: RADIUS.full,
-    alignItems: "center",
-    justifyContent: "center",
-    backgroundColor: COLORS.secondary,
-    borderWidth: 2,
-    borderColor: COLORS.surfaceElevated,
-  },
+  avatar: { width: 52, height: 52, borderRadius: RADIUS.full, borderWidth: 2, borderColor: COLORS.primary, backgroundColor: COLORS.surfaceElevated },
+  avatarPlaceholder: { alignItems: "center", justifyContent: "center" },
+  verifiedBadge: { position: "absolute", left: -2, bottom: -2, width: 20, height: 20, borderRadius: RADIUS.full, alignItems: "center", justifyContent: "center", backgroundColor: COLORS.secondary, borderWidth: 2, borderColor: COLORS.surfaceElevated },
 });

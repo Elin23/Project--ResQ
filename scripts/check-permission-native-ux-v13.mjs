@@ -25,7 +25,6 @@ assert(!report.includes("Alert.alert"), "report flow must not use native Alert f
 const directPermissionFiles = [
   "src/features/feeding-points/screens/CreateFeedingPointScreen.tsx",
   "src/features/feeding-points/components/UpdateStatusSheet.tsx",
-  "src/features/public/hooks/useContactUsForm.ts",
   "src/features/donations/screens/CreateDonationCampaignScreen.tsx",
   "src/features/organization-dashboard/hooks/useOrganizationTaskDetails.ts",
   "src/features/adoption/screens/CreateAdoptionListingScreen.tsx",
@@ -38,9 +37,16 @@ for (const path of directPermissionFiles) {
   assert(source.includes("handlePermission"), `${path} must route denied permissions through the shared handler`);
 }
 
+
+const contact = read("src/features/public/hooks/useContactUsForm.ts");
+assert(!contact.includes("ImagePicker"), "contact-us must not request image-library permission when attachments are unsupported");
+assert(!contact.includes("usePermissionFeedback"), "contact-us must not keep stale permission plumbing after removing unsupported attachments");
+
 const profileForm = read("src/features/profile/hooks/useEditProfileForm.ts");
 assert(!profileForm.includes("Alert.prompt"), "profile skill editing must not depend on iOS-only Alert.prompt");
-assert(profileForm.includes("skillDraft"), "profile skill editing must expose inline skill input state");
+assert(profileForm.includes("profileApi.updateMine"), "profile editing must persist through the backend profile API");
+assert(profileForm.includes("uploadLocalMediaUris"), "profile avatar editing must upload through the media API");
+assert(profileForm.includes("useLocationLookups"), "profile location editing must use backend lookup values");
 
 const alertUsages = [];
 for (const root of ["src/features", "src/hooks"]) {

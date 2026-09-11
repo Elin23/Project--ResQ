@@ -4,11 +4,11 @@ import { useAsyncResource } from "@/src/hooks/useAsyncResource";
 
 export function useSponsoredAds(placement: import("@/src/domain").SponsoredAdPlacement = "HOME_BANNER") {
   const load = useCallback(() => repositories.sponsoredAds.listActive(undefined, placement), [placement]);
-  const state = useAsyncResource(load, []);
+  const state = useAsyncResource(load, [], "تعذر تحميل الإعلانات.", { cacheKey: `ads-${placement}`, refreshOnForeground: true });
   return {
     ads: state.data ?? [],
     loading: state.loading,
     error: state.error,
-    refresh: state.refresh,
+    refresh: state.reload,
   };
 }

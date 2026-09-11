@@ -1,8 +1,9 @@
-import { ActivityIndicator, Share, StyleSheet, View } from "react-native";
+import { Share, StyleSheet, View } from "react-native";
 import RemoteImage from "@/src/components/ui/RemoteImage";
 import { useLocalSearchParams, useRouter } from "expo-router";
 import AppText from "@/src/components/ui/AppText";
 import EmptyState from "@/src/components/ui/EmptyState";
+import LoadingState from "@/src/components/ui/LoadingState";
 import IconButton from "@/src/components/ui/IconButton";
 import Screen from "@/src/components/ui/Screen";
 import ScreenHeader from "@/src/components/ui/ScreenHeader";
@@ -35,7 +36,7 @@ export default function PublicContentDetailsScreen({ kind }: Props) {
         right={<IconButton icon="share-social-outline" accessibilityLabel="مشاركة المحتوى" onPress={() => void share()} />}
       />
 
-      {loading ? <ActivityIndicator color={COLORS.primary} size="large" style={styles.loader} /> : null}
+      {loading ? <LoadingState label="جاري تحميل المحتوى..." /> : null}
       {!loading && error ? <EmptyState title="تعذر تحميل المحتوى" description={error} icon="cloud-offline-outline" actionTitle="إعادة المحاولة" onActionPress={() => void reload()} /> : null}
       {!loading && !error && !item ? <EmptyState title="المحتوى غير موجود" description="قد يكون هذا المحتوى غير متاح أو تمت إزالته." icon="document-text-outline" actionTitle="العودة" onActionPress={() => router.replace(listRoute)} /> : null}
 
@@ -63,8 +64,7 @@ export default function PublicContentDetailsScreen({ kind }: Props) {
 }
 
 const styles = StyleSheet.create({
-  loader: { marginVertical: SPACING.xxl },
-  content: { gap: SPACING.md, paddingBottom: SPACING.xxl },
+  content: { gap: SPACING.md, paddingBottom: SPACING["2xl"] },
   hero: { width: "100%", height: 245, borderRadius: RADIUS.xl, backgroundColor: COLORS.surfaceMuted },
   metaRow: { flexDirection: "row", direction: "rtl", alignItems: "center", justifyContent: "space-between", gap: SPACING.sm },
   divider: { height: StyleSheet.hairlineWidth, backgroundColor: COLORS.divider },

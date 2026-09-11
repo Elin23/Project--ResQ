@@ -5,29 +5,40 @@ import AppText from "@/src/components/ui/AppText";
 import RemoteImage from "@/src/components/ui/RemoteImage";
 import { COLORS, ICON_SIZES, LAYOUT, RADIUS, SPACING } from "@/src/theme";
 
-type Props = { name: string };
+type Props = {
+  name: string;
+  logoUrl?: string;
+  locationLabel?: string;
+  verified?: boolean;
+  verifiedAt?: string;
+};
 
-/** بطاقة هوية الجمعية في أعلى شاشة الحساب — تقابل بطاقة هوية المستخدم بشعار وحالة اعتماد. */
-export default function OrganizationIdentityCard({ name }: Props) {
+function verifiedDateLabel(value?: string) {
+  if (!value) return undefined;
+  const date = new Date(value);
+  if (Number.isNaN(date.getTime())) return undefined;
+  return new Intl.DateTimeFormat("ar-SY", { year: "numeric", month: "long" }).format(date);
+}
+
+export default function OrganizationIdentityCard({ name, logoUrl, locationLabel, verified = false, verifiedAt }: Props) {
+  const dateLabel = verifiedDateLabel(verifiedAt);
   return (
     <View style={styles.outer}>
       <View style={styles.identity}>
         <View style={styles.logoWrap}>
-          <RemoteImage uri="https://images.unsplash.com/photo-1601758228041-f3b2795255f1?auto=format&fit=crop&w=500&q=82" style={styles.logo} accessibilityLabel="شعار الجمعية" />
-          <View style={styles.verified}>
-            <Ionicons name="checkmark" size={ICON_SIZES.xs} color={COLORS.textInverse} />
-          </View>
+          <RemoteImage uri={logoUrl} style={styles.logo} accessibilityLabel="شعار الجمعية" />
+          {verified ? <View style={styles.verified}><Ionicons name="checkmark" size={ICON_SIZES.xs} color={COLORS.textInverse} /></View> : null}
         </View>
 
         <View style={styles.identityText}>
           <AppText variant="h2" weight="bold" numberOfLines={2} style={styles.fullWidth}>{name}</AppText>
-          <AppText variant="bodySmall" color={COLORS.textSecondary} style={styles.fullWidth}>دمشق، سوريا</AppText>
+          <AppText variant="bodySmall" color={COLORS.textSecondary} style={styles.fullWidth}>{locationLabel || "الموقع غير منشور بعد"}</AppText>
           <View style={styles.metaRow}>
-            <View style={styles.badge}>
-              <Ionicons name="shield-checkmark-outline" size={ICON_SIZES.xs} color={COLORS.success} />
-              <AppText variant="caption" weight="medium" color={COLORS.success}>جمعية معتمدة</AppText>
+            <View style={[styles.badge, !verified && styles.pendingBadge]}>
+              <Ionicons name={verified ? "shield-checkmark-outline" : "time-outline"} size={ICON_SIZES.xs} color={verified ? COLORS.success : COLORS.warning} />
+              <AppText variant="caption" weight="medium" color={verified ? COLORS.success : COLORS.warning}>{verified ? "جمعية معتمدة" : "بانتظار الاعتماد"}</AppText>
             </View>
-            <AppText variant="caption" color={COLORS.textSecondary}>معتمدة منذ مارس 2025</AppText>
+            {verified && dateLabel ? <AppText variant="caption" color={COLORS.textSecondary}>معتمدة منذ {dateLabel}</AppText> : null}
           </View>
         </View>
       </View>
@@ -37,17 +48,7 @@ export default function OrganizationIdentityCard({ name }: Props) {
 
 const styles = StyleSheet.create({
   outer: { paddingHorizontal: LAYOUT.screenPadding, paddingTop: SPACING.lg },
-  identity: {
-    flexDirection: "row",
-    direction: "rtl",
-    alignItems: "center",
-    gap: SPACING.md,
-    backgroundColor: COLORS.surfaceElevated,
-    borderWidth: 1,
-    borderColor: COLORS.border,
-    borderRadius: RADIUS.lg,
-    padding: SPACING.lg,
-  },
+  identity: { flexDirection: "row", direction: "rtl", alignItems: "center", gap: SPACING.md, backgroundColor: COLORS.surfaceElevated, borderWidth: 1, borderColor: COLORS.border, borderRadius: RADIUS.lg, padding: SPACING.lg },
   logoWrap: { position: "relative" },
   logo: { width: 76, height: 76, borderRadius: RADIUS.full, borderWidth: 2, borderColor: COLORS.primary, backgroundColor: COLORS.surfaceElevated },
   verified: { position: "absolute", start: -1, bottom: 3, width: 24, height: 24, borderRadius: RADIUS.full, backgroundColor: COLORS.success, borderWidth: 2, borderColor: COLORS.surfaceElevated, alignItems: "center", justifyContent: "center" },
@@ -55,4 +56,5 @@ const styles = StyleSheet.create({
   fullWidth: { width: "100%" },
   metaRow: { width: "100%", flexDirection: "row", direction: "rtl", alignItems: "center", flexWrap: "wrap", gap: SPACING.sm },
   badge: { flexDirection: "row", direction: "rtl", alignItems: "center", gap: SPACING.xs, backgroundColor: COLORS.successSoft, borderRadius: RADIUS.full, paddingHorizontal: SPACING.sm, paddingVertical: SPACING.xs },
+  pendingBadge: { backgroundColor: COLORS.surfaceSubtle },
 });

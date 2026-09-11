@@ -1,61 +1,101 @@
-import type { BackendId, CurrencyCode, MediaDto } from "./common";
-
-export type DonationCampaignCategory = "MEDICAL" | "FOOD" | "SHELTER" | "RESCUE" | "SUPPLIES" | "OTHER";
-export type DonationCampaignStatus =
-  | "DRAFT"
-  | "PENDING_REVIEW"
-  | "PUBLISHED"
-  | "PAUSED"
-  | "COMPLETED"
-  | "CLOSED"
-  | "REJECTED"
-  | "DELETED";
+export interface DonationCampaignMediaDto {
+  id: number;
+  type?: string | null;
+  url?: string | null;
+  thumbnailUrl?: string | null;
+}
 
 export interface DonationCampaignDto {
-  id: BackendId;
-  publisher: { id: BackendId; name: string; logoUrl?: string; verified?: boolean };
-  beneficiaryOrganization: { id: BackendId; name: string };
-  title: string;
-  shortDescription?: string;
-  description: string;
-  category?: DonationCampaignCategory;
-  urgent?: boolean;
-  media: MediaDto[];
-  targetAmountMinor?: number;
+  id: number;
+  code?: string | null;
+  organizationId: number;
+  organizationName?: string | null;
+
+  beneficiaryOrganizationId?: number | null;
+  beneficiaryOrganizationName?: string | null;
+
+  title?: string | null;
+  shortDescription?: string | null;
+  description?: string | null;
+  category?: string | null;
+  urgent: boolean;
+
+  targetAmountMinor: number;
   raisedAmountMinor: number;
-  currency: CurrencyCode;
   donorCount: number;
-  status: DonationCampaignStatus;
-  submittedAt?: string;
-  reviewedAt?: string;
-  publishedAt?: string;
-  pausedAt?: string;
-  completedAt?: string;
-  closedAt?: string;
-  rejectionReason?: string;
+  currency?: string | null;
+  status?: string | null;
+
+  startAt?: string | null;
+  endAt?: string | null;
+  submittedAt?: string | null;
+  publishedAt?: string | null;
+  completedAt?: string | null;
+  closedAt?: string | null;
+  rejectionReason?: string | null;
+
+  /**
+   * Optional payment-recipient metadata returned by some campaign API responses.
+   * These fields are intentionally optional because older/other endpoints may
+   * omit them completely.
+   */
+  recipientName?: string | null;
+  recipientAccount?: string | null;
+  transferInstructions?: string | null;
+
+  media?: DonationCampaignMediaDto[] | null;
   createdAt: string;
   updatedAt: string;
 }
 
-export type DonationTransferStatus = "SUBMITTED" | "VERIFYING" | "APPROVED" | "REJECTED";
-
 export interface DonationTransferDto {
-  id: BackendId;
-  verificationCode: string;
-  campaignId: BackendId;
-  donorAccountId?: BackendId;
-  donorDisplayName?: string;
-  senderFullName: string;
-  senderMobile?: string;
-  senderGovernorateId?: BackendId;
-  transferProviderId: BackendId;
-  transferNumber: string;
+  id: number;
+  verificationCode?: string | null;
+  campaignId: number;
+  campaignTitle?: string | null;
+  donorAccountId?: string | null;
+  donorDisplayName?: string | null;
+  senderFullName?: string | null;
+  senderMobile: string;
+  senderGovernorateId?: number | null;
+  senderGovernorateName?: string | null;
+  transferProviderId: number;
+  transferProviderName?: string | null;
+  transferNumber?: string | null;
   amountMinor: number;
-  currency: CurrencyCode;
-  supportMessage?: string;
+  currency?: string | null;
+  supportMessage?: string | null;
   notifyOnStatusChange: boolean;
-  status: DonationTransferStatus;
-  createdAt: string;
-  updatedAt: string;
-  rejectionReason?: string;
+  status?: string | null;
+  submittedAt?: string;
+  createdAt?: string;
+  updatedAt?: string;
+  reviewedAt?: string | null;
+  rejectionReason?: string | null;
+}
+
+export type DonationTransferStatus =
+  | "SUBMITTED"
+  | "VERIFYING"
+  | "APPROVED"
+  | "REJECTED";
+
+export type DonationCampaignCategory =
+  | "MEDICAL"
+  | "FOOD"
+  | "SHELTER"
+  | "RESCUE"
+  | "SUPPLIES"
+  | "OTHER";
+
+export type DonationCampaignStatus = string;
+
+export interface TransferProviderDto {
+  id: number;
+  code: string;
+  name: string;
+  nameEn?: string | null;
+  instructions?: string | null;
+  recipientName?: string | null;
+  recipientAccount?: string | null;
 }

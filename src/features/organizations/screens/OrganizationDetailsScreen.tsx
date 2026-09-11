@@ -1,6 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import { Stack, useLocalSearchParams, useRouter } from "expo-router";
-import { Linking, Share, StyleSheet, View } from "react-native";
+import { Image, Linking, Share, StyleSheet, View, type ImageSourcePropType } from "react-native";
 import AppText from "@/src/components/ui/AppText";
 import RemoteImage from "@/src/components/ui/RemoteImage";
 import Button from "@/src/components/ui/Button";
@@ -20,7 +20,15 @@ import { useSession } from "@/src/features/session/SessionContext";
 import { adoptionDetailsRoute } from "@/src/navigation/routes";
 import OrganizationContactCard from "../components/OrganizationContactCard";
 import OrganizationStatsGrid from "../components/OrganizationStatsGrid";
-import { ORGANIZATIONS } from "../constants/organizations";
+import { useOrganizationDetails } from "../hooks/useOrganizationDetails";
+
+
+function imageSourceUri(source?: ImageSourcePropType): string | undefined {
+  if (!source) return undefined;
+  if (typeof source === "number") return Image.resolveAssetSource(source)?.uri;
+  if (Array.isArray(source)) return source.find((item) => typeof item === "object" && item?.uri)?.uri;
+  return typeof source === "object" && "uri" in source ? source.uri : undefined;
+}
 
 export default function OrganizationDetailsScreen() {
   const router = useRouter();
@@ -28,10 +36,13 @@ export default function OrganizationDetailsScreen() {
   const { can, accountKind } = useSession();
   const { isFavorite, toggleFavorite } = useFavorites();
   const { id } = useLocalSearchParams<{ id?: string }>();
-  const organization = ORGANIZATIONS.find((item) => item.id === id);
+  const organizationState = useOrganizationDetails(id);
+  const organization = organizationState.data;
   const canViewAdoption = can("view-adoption");
   const { listings, loading: adoptionLoading, error: adoptionError, reload: reloadAdoption } = useAdoptionListings(canViewAdoption);
   const adoptionListings = listings.filter((listing) => listing.organizationId === id);
+  if (organizationState.loading) return <Screen><Stack.Screen options={{headerShown:false}}/><SkeletonList count={4}/></Screen>;
+  if (organizationState.error) return <Screen><Stack.Screen options={{headerShown:false}}/><ErrorState description={organizationState.error} onRetry={() => void organizationState.reload()}/></Screen>;
   if (!organization) return <Screen><Stack.Screen options={{headerShown:false}}/><EmptyState title="الجهة غير موجودة" description="قد تكون الجهة غير متاحة حاليًا." actionTitle="العودة" onActionPress={() => router.back()}/></Screen>;
   const share = () => Share.share({ message: `${organization.name}\n${organization.city}، ${organization.country}` });
   const favorite = isFavorite("organization", organization.id);
@@ -55,23 +66,23 @@ export default function OrganizationDetailsScreen() {
         </View>
       }
     />
-    <RemoteImage uri="https://images.unsplash.com/photo-1601758228041-f3b2795255f1?auto=format&fit=crop&w=1400&q=84" style={styles.hero} accessibilityLabel="صورة الجمعية" />
+    <RemoteImage uri={organization.coverUrl ?? imageSourceUri(organization.image)} style={styles.hero} accessibilityLabel="صورة الجمعية" />
     <View style={styles.body}>
-      <RemoteImage uri={typeof (organization.logo ?? organization.image) === "object" && (organization.logo ?? organization.image) && "uri" in (organization.logo ?? organization.image) ? String((organization.logo ?? organization.image).uri) : undefined} style={styles.logo} accessibilityLabel={`شعار ${organization.name}`} />
-      <View style={styles.titleRow}><Ionicons name="checkmark-circle" size={20} color={COLORS.successDark}/><AppText variant="h1" weight="bold">{organization.name}</AppText></View>
-      <View style={styles.meta}><Ionicons name="location-outline" size={16} color={COLORS.textSecondary}/><AppText color={COLORS.textSecondary}>{organization.city}، {organization.country}</AppText><AppText color={COLORS.textSecondary}>★ {organization.rating} ({organization.reviews} تقييم)</AppText></View>
+      <RemoteImage uri={imageSourceUri(organization.logo ?? organization.image)} style={styles.logo} accessibilityLabel={`شعار ${organization.name}`} />
+      <View style={styles.titleRow}>{organization.verified ? <Ionicons name="checkmark-circle" size={20} color={COLORS.successDark}/> : null}<AppText variant="h1" weight="bold">{organization.name}</AppText></View>
+      <View style={styles.meta}><Ionicons name="location-outline" size={16} color={COLORS.textSecondary}/><AppText color={COLORS.textSecondary}>{organization.city}، {organization.country}</AppText>{(organization.reviews ?? 0) > 0 && organization.rating != null ? <AppText color={COLORS.textSecondary}>★ {organization.rating} ({organization.reviews} تقييم)</AppText> : null}</View>
       <SectionTitle title="نبذة عن الجمعية"/><AppText color={COLORS.textSecondary} style={styles.paragraph}>{organization.description}</AppText>
       <SectionTitle title="الخدمات"/><View style={styles.services}>{organization.services.map((item)=><View key={item} style={styles.service}><AppText>{item === "إنقاذ" ? "إنقاذ الحيوانات" : item === "علاج" ? "العلاج البيطري" : item}</AppText></View>)}</View>
-      <SectionTitle title="إحصائيات الجمعية"/><OrganizationStatsGrid organization={organization}/>
-      <SectionTitle title="ساعات العمل"/><View style={styles.hours}><View style={styles.hourRow}><AppText color={COLORS.textSecondary}>09:00 ص - 05:00 م</AppText><AppText>السبت - الخميس</AppText></View><View style={styles.separator}/><View style={styles.hourRow}><AppText color={COLORS.danger}>مغلق</AppText><AppText>الجمعة</AppText></View></View>
-      <SectionTitle title="الموقع"/><View style={styles.mapCard}><RemoteImage uri="https://images.unsplash.com/photo-1524661135-423995f22d0b?auto=format&fit=crop&w=1200&q=80" style={styles.map} accessibilityLabel="موقع الجمعية على الخريطة" /><View style={styles.address}><Ionicons name="location-outline" size={22} color={COLORS.primary}/><View style={styles.addressText}><AppText weight="bold">دمشق، المزة، خلف حديقة الجلاء</AppText><AppText variant="label" color={COLORS.textSecondary}>2.5 كم منك</AppText></View></View><View style={styles.mapActions}><Button title="فتح في الخرائط" onPress={() => Linking.openURL("https://www.google.com/maps/search/?api=1&query=33.5138,36.2765")} variant="outline" size="small" icon="map-outline" style={styles.flex}/><Button title="نسخ العنوان" onPress={() => showFeedback({ title: "تم النسخ", message: "تم نسخ عنوان الجمعية.", tone: "success" })} variant="outline" size="small" icon="copy-outline" style={styles.flex}/></View></View>
-      <SectionTitle title="معلومات التواصل"/><OrganizationContactCard icon="call-outline" label="رقم الهاتف" value="+963 11 1234567" tone="phone" onPress={() => Linking.openURL("tel:+963111234567")}/><OrganizationContactCard icon="mail-outline" label="البريد الإلكتروني" value="info@resq-sy.org" tone="email" onPress={() => Linking.openURL("mailto:info@resq-sy.org")}/>
+      {[organization.successfulCases, organization.animalsTreated, organization.volunteers, organization.activeRescues].some((value) => typeof value === "number") ? <><SectionTitle title="إحصائيات الجمعية"/><OrganizationStatsGrid organization={organization}/></> : null}
+      <SectionTitle title="ساعات العمل"/><View style={styles.hours}>{organization.operatingHours?.length ? organization.operatingHours.map((hour) => <View key={hour.id} style={styles.hourRow}><AppText color={hour.isClosed ? COLORS.danger : COLORS.textSecondary}>{hour.isClosed ? "مغلق" : hour.isOpen24Hours ? "24 ساعة" : `${hour.opensAt ?? "--"} - ${hour.closesAt ?? "--"}`}</AppText><AppText>{hour.dayOfWeek ?? ""}</AppText></View>) : <AppText color={COLORS.textSecondary}>لم تُحدد ساعات العمل.</AppText>}</View>
+      <SectionTitle title="الموقع"/><View style={styles.mapCard}><View style={styles.address}><Ionicons name="location-outline" size={22} color={COLORS.primary}/><View style={styles.addressText}><AppText weight="bold">{organization.address ?? `${organization.city}، ${organization.country}`}</AppText></View></View>{organization.latitude != null && organization.longitude != null ? <View style={styles.mapActions}><Button title="فتح في الخرائط" onPress={() => Linking.openURL(`https://www.google.com/maps/search/?api=1&query=${organization.latitude},${organization.longitude}`)} variant="outline" size="small" icon="map-outline" style={styles.flex}/></View> : null}</View>
+      <SectionTitle title="معلومات التواصل"/>{organization.phone ? <OrganizationContactCard icon="call-outline" label="رقم الهاتف" value={organization.phone} tone="phone" onPress={() => Linking.openURL(`tel:${organization.phone}`)}/> : null}{organization.email ? <OrganizationContactCard icon="mail-outline" label="البريد الإلكتروني" value={organization.email} tone="email" onPress={() => Linking.openURL(`mailto:${organization.email}`)}/> : null}
       {canViewAdoption ? <>
         <SectionTitle title="حيوانات متاحة للتبني"/>
         {adoptionLoading ? <SkeletonList count={2}/> : adoptionError ? <ErrorState description={adoptionError} onRetry={() => void reloadAdoption()}/> : adoptionListings.length > 0 ? adoptionListings.map((listing) => (
           <SearchResultCard
             key={listing.id}
-            result={{ id: listing.id, type: "animal", category: "adoption", title: `${listing.animalName} • ${listing.animalType}`, subtitle: listing.locationName, distance: "متاح للتبني", image: { uri: listing.imageUrl }, badge: { label: "متاح للتبني", backgroundColor: COLORS.successSoft, textColor: COLORS.successDark } }}
+            result={{ id: `adoption-${listing.id}`, entityId: listing.id, type: "adoption", title: `${listing.animalName} • ${listing.animalType}`, subtitle: listing.locationName, meta: "متاح للتبني", image: { uri: listing.imageUrl }, badge: { label: "متاح للتبني", backgroundColor: COLORS.successSoft, textColor: COLORS.successDark } }}
             onPress={() => router.push(adoptionDetailsRoute(listing.id, accountKind))}
           />
         )) : <EmptyState compact icon="paw-outline" title="لا توجد حيوانات متاحة للتبني" description="ستظهر هنا حالات التبني الخاصة بالجمعية عند إضافتها."/>}

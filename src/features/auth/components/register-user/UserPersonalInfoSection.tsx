@@ -7,7 +7,7 @@ import { styles } from "../../screens/RegisterUser.styles";
 import type { RegisterUserForm } from "../../hooks/useRegisterUserForm";
 
 export default function UserPersonalInfoSection({ form }: { form: RegisterUserForm }) {
-  const { fullName,setFullName,email,setEmail,birthDate,formattedBirthDate,openBirthDatePicker,phone,setPhone,normalizeSyrianMobile,governorateId,governorate,selectGovernorate,locationLookups,showGovernorates,setShowGovernorates,showBirthDatePicker,temporaryBirthDate,minimumBirthDate,maximumBirthDate,handleBirthDateChange,errors,setErrors,renderError } = form;
+  const { fullName,setFullName,email,setEmail,birthDate,formattedBirthDate,openBirthDatePicker,phone,setPhone,normalizeSyrianMobile,governorateId,governorate,selectGovernorate,regionId,region,selectRegion,showRegions,setShowRegions,locationLookups,showGovernorates,setShowGovernorates,showBirthDatePicker,temporaryBirthDate,minimumBirthDate,maximumBirthDate,handleBirthDateChange,errors,setErrors,renderError } = form;
   return (<>
 <View style={styles.sectionHeader}>
   <View style={styles.sectionMarker} />
@@ -224,5 +224,33 @@ export default function UserPersonalInfoSection({ form }: { form: RegisterUserFo
 
   {renderError(errors.governorate)}
 </View>
+
+<View style={styles.fieldGroup}>
+  <Pressable
+    disabled={!governorateId || locationLookups.loadingRegions}
+    onPress={() => setShowRegions((current) => !current)}
+    style={[styles.inputContainer, errors.region && styles.inputContainerError, (!governorateId || locationLookups.loadingRegions) && { opacity: 0.55 }]}
+  >
+    <Ionicons name="navigate-outline" size={22} color={PALETTE.neutral700} />
+    <AppText style={[styles.selectText, !region && styles.selectPlaceholder]}>
+      {region || (locationLookups.loadingRegions ? "جاري تحميل المناطق..." : "المنطقة")}
+    </AppText>
+    <Ionicons name={showRegions ? "chevron-up-outline" : "chevron-down-outline"} size={20} color={PALETTE.neutral700} />
+  </Pressable>
+  {showRegions ? (
+    <View style={styles.dropdown}>
+      <ScrollView nestedScrollEnabled showsVerticalScrollIndicator keyboardShouldPersistTaps="handled" contentContainerStyle={styles.dropdownContent}>
+        {locationLookups.regions.map((item) => (
+          <Pressable key={item.id} onPress={() => selectRegion(item.id)} style={({ pressed }) => [styles.dropdownItem, regionId === item.id && styles.selectedDropdownItem, pressed && styles.dropdownItemPressed]}>
+            <AppText style={styles.dropdownItemText}>{item.name}</AppText>
+            {regionId === item.id ? <Ionicons name="checkmark-circle" size={20} color={PALETTE.green700} /> : null}
+          </Pressable>
+        ))}
+      </ScrollView>
+    </View>
+  ) : null}
+  {renderError(errors.region)}
+</View>
+{renderError(errors.general)}
   </>);
 }

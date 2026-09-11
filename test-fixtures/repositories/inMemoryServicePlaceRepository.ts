@@ -7,7 +7,7 @@ import type {
   ServicePlaceRepository,
   UpdateOwnedServicePlaceInput,
 } from "@/src/domain/service-places";
-import { SERVICE_PLACES_SEED } from "@/src/data/servicePlaces.seed";
+import { SERVICE_PLACES_SEED } from "@/test-fixtures/servicePlaces.seed";
 
 function clonePlace(place: ServicePlace): ServicePlace {
   return { ...place, openingHours: place.openingHours.map((item) => ({ ...item })) };

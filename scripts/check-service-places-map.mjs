@@ -3,8 +3,8 @@ import fs from "node:fs";
 const required = [
   "src/domain/service-places/servicePlace.ts",
   "src/domain/service-places/servicePlaceRepository.ts",
-  "src/data/servicePlaces.seed.ts",
-  "src/data/repositories/inMemoryServicePlaceRepository.ts",
+  "test-fixtures/servicePlaces.seed.ts",
+  "test-fixtures/repositories/inMemoryServicePlaceRepository.ts",
   "src/features/map/screens/MapScreen.tsx",
   "src/features/map/screens/ServicePlaceDetailsScreen.tsx",
   "src/features/map/components/ServicePlacesMap.native.tsx",

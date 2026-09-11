@@ -22,9 +22,12 @@ describe("registration validation", () => {
     expect(validateSyrianMobile("812345678")).toBeTruthy();
   });
 
-  it("accepts letters from any language with a number", () => {
-    expect(validateRegistrationPassword("حماية1234")).toBeUndefined();
+  it("enforces lowercase, uppercase and numeric password requirements", () => {
     expect(validateRegistrationPassword("Secure123")).toBeUndefined();
+    expect(validateRegistrationPassword("حماية1234")).toBeTruthy();
+    expect(validateRegistrationPassword("secure123")).toBeTruthy();
+    expect(validateRegistrationPassword("SECURE123")).toBeTruthy();
+    expect(validateRegistrationPassword("SecurePass")).toBeTruthy();
     expect(validateRegistrationPassword("12345678")).toBeTruthy();
   });
 

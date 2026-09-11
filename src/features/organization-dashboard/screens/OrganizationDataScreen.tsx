@@ -1,248 +1,128 @@
-import { StyleSheet, View } from "react-native";
+import { Pressable, StyleSheet, View } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 
 import ActionStack from "@/src/components/ui/ActionStack";
 import AppText from "@/src/components/ui/AppText";
 import Button from "@/src/components/ui/Button";
 import Chip from "@/src/components/ui/Chip";
+import ErrorState from "@/src/components/ui/ErrorState";
 import FormSection from "@/src/components/ui/FormSection";
 import FormValidationSummary from "@/src/components/ui/FormValidationSummary";
 import Input from "@/src/components/ui/Input";
+import LoadingState from "@/src/components/ui/LoadingState";
+import RemoteImage from "@/src/components/ui/RemoteImage";
 import Screen from "@/src/components/ui/Screen";
 import ScreenHeader from "@/src/components/ui/ScreenHeader";
-import SelectionSheet from "@/src/components/ui/SelectionSheet";
-import ToggleField from "@/src/components/ui/ToggleField";
-import { COLORS, LAYOUT, SPACING } from "@/src/theme";
+import OpeningHoursEditor from "@/src/features/map-places/components/OpeningHoursEditor";
+import { COLORS, LAYOUT, RADIUS, SPACING } from "@/src/theme";
 
-import {
-  ORGANIZATION_ACTIVITY_OPTIONS,
-  ORGANIZATION_ANIMAL_OPTIONS,
-  ORGANIZATION_GOVERNORATE_OPTIONS,
-  ORGANIZATION_TYPE_OPTIONS,
-} from "../constants/organizationData";
+import { ORGANIZATION_ACTIVITY_OPTIONS } from "../constants/organizationData";
 import { useOrganizationDataForm } from "../hooks/useOrganizationDataForm";
 
-/** البيانات الرسمية للجمعية — تقابل «تعديل الحساب» في الحساب الشخصي. */
 export default function OrganizationDataScreen() {
   const state = useOrganizationDataForm();
-  const { form, errors, fieldNavigation } = state;
+
+  if (state.loading) {
+    return <Screen surface="app"><ScreenHeader title="بيانات الجمعية" onBack={state.cancel} /><LoadingState label="جاري تحميل بيانات الجمعية..." /></Screen>;
+  }
+  if (state.errors.general && !state.identity.name) {
+    return <Screen surface="app"><ScreenHeader title="بيانات الجمعية" onBack={state.cancel} /><ErrorState description={state.errors.general} onRetry={() => { void state.load(); }} /></Screen>;
+  }
 
   return (
     <Screen scroll padded={false} surface="app" contentContainerStyle={styles.screen}>
       <ScreenHeader
         title="بيانات الجمعية"
-        subtitle="المعلومات الرسمية التي يعتمدها فريق ResQ ويظهر جزء منها في الملف العام"
+        subtitle="البيانات الرسمية من الخادم، والتعديلات التشغيلية التي يمكن حفظها مباشرة"
         onBack={state.cancel}
       />
 
       <View style={styles.content}>
         <FormValidationSummary errors={state.validationErrors} />
 
-        <FormSection title="الهوية الرسمية" subtitle="اسم الجمعية وترخيصها كما ورد في الوثائق المعتمدة.">
-          <Input
-            ref={fieldNavigation.ref("name")}
-            label="اسم الجمعية"
-            required
-            value={form.name}
-            onChangeText={(value) => state.update("name", value)}
-            error={errors.name}
-            {...fieldNavigation.nextProps("name", "licenseNumber")}
-          />
-          <Input
-            label="نوع الجهة"
-            value={form.entityType}
-            readOnly
-            icon="chevron-down"
-            onIconPress={state.openEntityTypePicker}
-          />
-          <Input
-            ref={fieldNavigation.ref("licenseNumber")}
-            label="رقم الترخيص"
-            required
-            value={form.licenseNumber}
-            onChangeText={(value) => state.update("licenseNumber", value)}
-            error={errors.licenseNumber}
-            contentDirection="ltr"
-            {...fieldNavigation.nextProps("licenseNumber", "issuingAuthority")}
-          />
-          <Input
-            ref={fieldNavigation.ref("issuingAuthority")}
-            label="الجهة المانحة للترخيص"
-            required
-            value={form.issuingAuthority}
-            onChangeText={(value) => state.update("issuingAuthority", value)}
-            error={errors.issuingAuthority}
-            {...fieldNavigation.nextProps("issuingAuthority", "description")}
-          />
+        <FormSection title="الهوية الرسمية" subtitle="هذه البيانات مرتبطة بطلب اعتماد الجمعية ولا تُعدّل محليًا.">
+          <Input label="اسم الجمعية" value={state.identity.name} readOnly />
+          <Input label="رقم الترخيص" value={state.identity.licenseNumber || "غير مسجل"} readOnly contentDirection="ltr" />
+          {state.identity.registrationNumber ? <Input label="رقم التسجيل" value={state.identity.registrationNumber} readOnly contentDirection="ltr" /> : null}
+          <Input label="البريد الإلكتروني" value={state.identity.email || "غير مسجل"} readOnly contentDirection="ltr" />
         </FormSection>
 
-        <FormSection title="التعريف بالجمعية" subtitle="نبذة قصيرة تظهر للمستخدمين في الملف العام.">
+        <FormSection title="الشعار" subtitle="يتم رفع الشعار إلى الخادم ويظهر في الملف العام بعد الحفظ.">
+          <Pressable accessibilityRole="button" accessibilityLabel="تغيير شعار الجمعية" onPress={() => { void state.pickLogo(); }} style={styles.logoRow}>
+            <RemoteImage uri={state.form.logoUri || undefined} style={styles.logo} accessibilityLabel="شعار الجمعية" />
+            <View style={styles.logoCopy}>
+              <AppText weight="bold">تغيير شعار الجمعية</AppText>
+              <AppText variant="caption" color={COLORS.textSecondary}>اضغط لاختيار صورة من الجهاز</AppText>
+            </View>
+            <Ionicons name="camera-outline" size={22} color={COLORS.primaryStrong} />
+          </Pressable>
+        </FormSection>
+
+        <FormSection title="التعريف بالجمعية" subtitle="النبذة التي تظهر للمستخدمين في الملف العام.">
           <Input
-            ref={fieldNavigation.ref("description")}
             label="نبذة تعريفية"
             required
-            value={form.description}
+            value={state.form.description}
             onChangeText={(value) => state.update("description", value.slice(0, state.descriptionMaxLength))}
-            error={errors.description}
+            error={state.errors.description}
             multiline
             inputStyle={styles.description}
           />
-          <AppText variant="caption" color={COLORS.textSecondary}>
-            {state.descriptionCharCount} / {state.descriptionMaxLength}
-          </AppText>
+          <AppText variant="caption" color={COLORS.textSecondary}>{state.descriptionCharCount} / {state.descriptionMaxLength}</AppText>
         </FormSection>
 
-        <FormSection title="بيانات التواصل" subtitle="القنوات التي يصل عبرها المستخدمون والمتطوعون إلى الجمعية.">
+        <FormSection title="بيانات التواصل" subtitle="هذه القنوات تظهر في بيانات الجمعية العامة.">
           <Input
-            ref={fieldNavigation.ref("email")}
-            label="البريد الإلكتروني"
-            required
-            value={form.email}
-            onChangeText={(value) => state.update("email", value)}
-            error={errors.email}
-            keyboardType="email-address"
-            textContentType="emailAddress"
-            autoCapitalize="none"
-            {...fieldNavigation.nextProps("email", "phone")}
-          />
-          <Input
-            ref={fieldNavigation.ref("phone")}
             label="رقم الهاتف"
-            required
-            prefix="+963"
-            value={form.phone}
-            onChangeText={(value) => state.update("phone", value.replace(/\D/g, ""))}
-            error={errors.phone}
+            value={state.form.phone}
+            onChangeText={(value) => state.update("phone", value)}
+            error={state.errors.phone}
             keyboardType="phone-pad"
-            {...fieldNavigation.nextProps("phone", "website")}
+            contentDirection="ltr"
           />
           <Input
-            ref={fieldNavigation.ref("website")}
             label="الموقع الإلكتروني"
-            placeholder="مثال: resq.sy"
-            value={form.website}
+            placeholder="https://example.org"
+            value={state.form.website}
             onChangeText={(value) => state.update("website", value)}
+            error={state.errors.website}
             keyboardType="url"
             autoCapitalize="none"
-            {...fieldNavigation.nextProps("website", "district")}
+            contentDirection="ltr"
           />
         </FormSection>
 
-        <FormSection title="نطاق العمل" subtitle="المنطقة التي تغطيها فرق الجمعية ميدانياً.">
-          <Input
-            label="المحافظة"
-            value={form.governorate}
-            readOnly
-            icon="chevron-down"
-            onIconPress={state.openGovernoratePicker}
-          />
-          <Input
-            ref={fieldNavigation.ref("district")}
-            label="المنطقة"
-            required
-            value={form.district}
-            onChangeText={(value) => state.update("district", value)}
-            error={errors.district}
-            {...fieldNavigation.nextProps("district", "address")}
-          />
-          <Input
-            ref={fieldNavigation.ref("address")}
-            label="العنوان التفصيلي"
-            placeholder="الشارع وأقرب معلم معروف"
-            value={form.address}
-            onChangeText={(value) => state.update("address", value)}
-            {...fieldNavigation.nextProps("address", "workingHours")}
-          />
+        <FormSection title="الموقع المعتمد" subtitle="تغيير موقع جمعية معتمدة يحتاج مراجعة إدارية؛ لذلك يظهر هنا للقراءة فقط.">
+          <Input label="المحافظة" value={state.identity.governorateName || "غير محددة"} readOnly />
+          <Input label="المنطقة" value={state.identity.regionName || "غير محددة"} readOnly />
+          <Input label="العنوان" value={state.identity.address || "غير محدد"} readOnly multiline />
         </FormSection>
 
-        <FormSection title="الأنشطة وأنواع الحيوانات" subtitle="تحدد ما يظهر للمستخدمين ضمن خدمات الجمعية.">
-          <AppText variant="label" weight="medium">أنشطة الجمعية</AppText>
+        <FormSection title="خدمات الجمعية" subtitle="اختر الخدمات الفعلية التي تقدمها الجمعية.">
           <View style={styles.chipsRow}>
             {ORGANIZATION_ACTIVITY_OPTIONS.map((option) => (
               <Chip
                 key={option.id}
                 label={option.label}
                 icon={option.icon}
-                selected={form.activities.includes(option.id)}
-                onPress={() => state.toggleFromList("activities", option.id)}
+                selected={state.form.activities.includes(option.id)}
+                onPress={() => state.toggleActivity(option.id)}
               />
             ))}
           </View>
-          {errors.activities ? <AppText variant="caption" color={COLORS.danger}>{errors.activities}</AppText> : null}
-
-          <AppText variant="label" weight="medium" style={styles.subFieldLabel}>الحيوانات المستقبَلة</AppText>
-          <View style={styles.chipsRow}>
-            {ORGANIZATION_ANIMAL_OPTIONS.map((option) => (
-              <Chip
-                key={option.id}
-                label={option.label}
-                icon={option.icon}
-                color={COLORS.info}
-                selected={form.animals.includes(option.id)}
-                onPress={() => state.toggleFromList("animals", option.id)}
-              />
-            ))}
-          </View>
-          {errors.animals ? <AppText variant="caption" color={COLORS.danger}>{errors.animals}</AppText> : null}
+          {state.errors.activities ? <AppText variant="caption" color={COLORS.danger}>{state.errors.activities}</AppText> : null}
         </FormSection>
 
-        <FormSection title="قدرات التشغيل" subtitle="تُستخدم في توزيع بلاغات الإنقاذ وطلبات الانضمام.">
-          <Input
-            ref={fieldNavigation.ref("workingHours")}
-            label="ساعات العمل"
-            required
-            value={form.workingHours}
-            onChangeText={(value) => state.update("workingHours", value)}
-            error={errors.workingHours}
-            {...fieldNavigation.nextProps("workingHours", form.hasShelter ? "shelterCapacity" : undefined)}
-          />
-          <ToggleField
-            label="هل تتوفر لديكم منشأة إيواء؟"
-            description="أضف سعة المأوى إذا كانت الجمعية تمتلك مكاناً لاستقبال الحالات."
-            value={form.hasShelter}
-            onValueChange={(value) => state.update("hasShelter", value)}
-          />
-          {form.hasShelter ? (
-            <Input
-              ref={fieldNavigation.ref("shelterCapacity")}
-              label="سعة المأوى"
-              required
-              value={form.shelterCapacity}
-              onChangeText={(value) => state.update("shelterCapacity", value.replace(/\D/g, ""))}
-              error={errors.shelterCapacity}
-              keyboardType="number-pad"
-              {...fieldNavigation.doneProps()}
-            />
-          ) : null}
-          <ToggleField
-            label="تستقبلون متطوعين؟"
-            description="يمكن للمستخدمين إرسال طلبات انضمام للجمعية."
-            value={form.acceptsVolunteers}
-            onValueChange={(value) => state.update("acceptsVolunteers", value)}
-          />
+        <FormSection title="أوقات الدوام" subtitle="هذه الساعات محفوظة في حساب الجمعية وتظهر للزوار.">
+          <OpeningHoursEditor value={state.form.openingHours} onChange={(value) => state.update("openingHours", value)} />
+          {state.errors.openingHours ? <AppText variant="caption" color={COLORS.danger}>{state.errors.openingHours}</AppText> : null}
         </FormSection>
 
         <ActionStack>
-          <Button title="حفظ التغييرات" onPress={state.save} />
-          <Button title="إلغاء" variant="outline" onPress={state.cancel} />
+          <Button title={state.saving ? "جارٍ حفظ التغييرات..." : "حفظ التغييرات"} loading={state.saving} disabled={state.saving} onPress={() => { void state.save(); }} />
+          <Button title="إلغاء" variant="outline" onPress={state.cancel} disabled={state.saving} />
         </ActionStack>
       </View>
-
-      <SelectionSheet
-        visible={state.entityTypePickerVisible}
-        title="نوع الجهة"
-        options={ORGANIZATION_TYPE_OPTIONS.map((option) => ({ value: option, label: option }))}
-        selectedValue={form.entityType}
-        onSelect={(value) => state.update("entityType", value)}
-        onClose={state.closeEntityTypePicker}
-      />
-      <SelectionSheet
-        visible={state.governoratePickerVisible}
-        title="المحافظة"
-        options={ORGANIZATION_GOVERNORATE_OPTIONS.map((option) => ({ value: option, label: option }))}
-        selectedValue={form.governorate}
-        onSelect={(value) => state.update("governorate", value)}
-        onClose={state.closeGovernoratePicker}
-      />
     </Screen>
   );
 }
@@ -250,14 +130,12 @@ export default function OrganizationDataScreen() {
 const styles = StyleSheet.create({
   screen: { paddingTop: 0, paddingBottom: SPACING.xl },
   content: {
-    width: "100%",
-    maxWidth: LAYOUT.contentMaxWidth,
-    alignSelf: "center",
-    paddingHorizontal: LAYOUT.screenPadding,
-    paddingTop: SPACING.lg,
-    gap: SPACING.lg,
+    width: "100%", maxWidth: LAYOUT.contentMaxWidth, alignSelf: "center",
+    paddingHorizontal: LAYOUT.screenPadding, paddingTop: SPACING.lg, gap: SPACING.lg,
   },
-  description: { minHeight: 96 },
+  description: { minHeight: 110 },
   chipsRow: { flexDirection: "row", direction: "rtl", flexWrap: "wrap", gap: SPACING.sm },
-  subFieldLabel: { marginTop: SPACING.sm },
+  logoRow: { flexDirection: "row", direction: "rtl", alignItems: "center", gap: SPACING.md, padding: SPACING.sm, borderWidth: 1, borderColor: COLORS.border, borderRadius: RADIUS.lg },
+  logo: { width: 66, height: 66, borderRadius: RADIUS.full, backgroundColor: COLORS.surfaceSubtle },
+  logoCopy: { flex: 1, minWidth: 0, gap: 4 },
 });

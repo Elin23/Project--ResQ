@@ -1,4 +1,4 @@
-export type RescueTaskStage = "accepted" | "on-route" | "arrived" | "rescued" | "completed";
+export type RescueTaskStage = "assigned" | "accepted" | "on-route" | "arrived" | "rescued" | "completed" | "cancelled";
 export type RescueChecklistKey = "arrived" | "assessed" | "secured";
 
 export interface RescueTask {

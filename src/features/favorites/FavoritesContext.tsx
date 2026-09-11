@@ -26,7 +26,7 @@ type FavoritesContextValue = {
 const STORAGE_KEY = "resq.favorites.v1";
 const FavoritesContext = createContext<FavoritesContextValue | null>(null);
 
-const FAVORITE_KINDS: FavoriteKind[] = ["feeding-point", "campaign", "organization", "adoption"];
+const FAVORITE_KINDS: FavoriteKind[] = ["feeding-point", "campaign", "organization", "adoption", "report"];
 
 function parseStoredFavorites(raw: string | null): FavoriteItem[] {
   if (!raw) return [];

@@ -2,6 +2,9 @@ import { useRouter } from "expo-router";
 import { useEffect, useRef, useState } from "react";
 import { Animated, Easing, Keyboard, useWindowDimensions } from "react-native";
 
+import { authApi } from "@/src/services/api/authApi";
+import { ApiError } from "@/src/services/api/client";
+
 import { normalizeSyrianMobile, validateSyrianMobile } from "../utils/passwordResetValidation";
 
 type FormErrors = {
@@ -15,7 +18,7 @@ export function useForgotPasswordForm() {
 
   const [phone, setPhone] = useState("");
   const [errors, setErrors] = useState<FormErrors>({});
-  const [isSubmitting] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [isNavigating, setIsNavigating] = useState(false);
 
   const navigationTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -299,32 +302,38 @@ export function useForgotPasswordForm() {
     }, 200);
   };
 
-  const handleSendCode = () => {
-    if (isNavigating) {
-      return;
-    }
+  const handleSendCode = async () => {
+    if (isNavigating || isSubmitting) return;
 
     const phoneError = validateSyrianMobile(phone);
-
     if (phoneError) {
-      setErrors({
-        phone: phoneError,
-      });
+      setErrors({ phone: phoneError });
       return;
     }
 
     Keyboard.dismiss();
-    setErrors({});
-    setIsNavigating(true);
-
     const normalizedPhone = normalizeSyrianMobile(phone);
-
-    router.push({
-      pathname: "/verify-reset-code",
-      params: {
-        phone: `+963${normalizedPhone}`,
-      },
-    });
+    const internationalPhone = `+963${normalizedPhone}`;
+    try {
+      setIsSubmitting(true);
+      setErrors({});
+      // The backend deliberately returns the same success response even when an
+      // account does not exist, preventing phone-number enumeration.
+      await authApi.sendPasswordResetCode(internationalPhone);
+      setIsNavigating(true);
+      router.push({
+        pathname: "/verify-reset-code",
+        params: { phone: internationalPhone },
+      });
+    } catch (cause) {
+      setErrors({
+        general: cause instanceof ApiError
+          ? cause.message
+          : "تعذر إرسال رمز الاستعادة. تحقق من اتصالك ثم حاول مرة أخرى.",
+      });
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return {

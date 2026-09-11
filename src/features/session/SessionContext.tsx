@@ -16,6 +16,10 @@ import type {
   SessionPrincipal,
 } from "@/src/types/accounts";
 import { resetOnboarding } from "@/src/utils/onboardingStorage";
+import { authApi } from "@/src/services/api/authApi";
+import { profileApi } from "@/src/services/api/profileApi";
+import { clearAuthTokens, isIsoExpiryPast, loadAuthTokens } from "@/src/services/api/authTokens";
+import { subscribeSessionInvalidated } from "@/src/services/api/authSessionEvents";
 import { can, type AppCapability } from "./accessPolicy";
 
 type StoredSession = {
@@ -29,6 +33,10 @@ type StartSessionInput = {
   status?: AccountStatus;
   displayName?: string;
   email?: string;
+  organizationId?: number;
+  normalUserId?: number;
+  phone?: string;
+  phoneVerified?: boolean;
 };
 
 type SessionContextValue = {
@@ -43,6 +51,7 @@ type SessionContextValue = {
   continueAsGuest: () => Promise<void>;
   startAuthenticatedSession: (input: StartSessionInput) => Promise<void>;
   signOut: () => Promise<void>;
+  signOutAll: () => Promise<void>;
   deleteAccount: () => Promise<void>;
 };
 
@@ -80,6 +89,15 @@ export function SessionProvider({ children }: PropsWithChildren) {
         if (stored) {
           const parsed: unknown = JSON.parse(stored);
           if (isValidStoredSession(parsed) && mounted) {
+            if (parsed.principal.kind === "authenticated") {
+              const tokens = await loadAuthTokens();
+              if (!tokens?.accessToken || !tokens.refreshToken || isIsoExpiryPast(tokens.refreshTokenExpiresAt, 5_000)) {
+                await clearAuthTokens();
+                setPrincipal({ kind: "anonymous" });
+                await AsyncStorage.removeItem(STORAGE_KEY);
+                return;
+              }
+            }
             setPrincipal(parsed.principal);
             return;
           }
@@ -92,10 +110,8 @@ export function SessionProvider({ children }: PropsWithChildren) {
         if (legacyMode === "guest") {
           setPrincipal({ kind: "guest" });
         } else if (legacyMode === "member") {
-          setPrincipal({
-            kind: "authenticated",
-            account: { id: createLocalAccountId("user"), kind: "user", status: "active" },
-          });
+          // Legacy member sessions had no server identity/token and are unsafe to restore.
+          setPrincipal({ kind: "anonymous" });
         }
       } catch {
         if (mounted) setPrincipal({ kind: "anonymous" });
@@ -107,6 +123,15 @@ export function SessionProvider({ children }: PropsWithChildren) {
     void restore();
     return () => { mounted = false; };
   }, []);
+
+
+  useEffect(() => subscribeSessionInvalidated(() => {
+    setPrincipal({ kind: "anonymous" });
+    void Promise.all([
+      AsyncStorage.removeItem(STORAGE_KEY),
+      AsyncStorage.removeItem(LEGACY_STORAGE_KEY),
+    ]);
+  }), []);
 
   const persistPrincipal = useCallback(async (nextPrincipal: SessionPrincipal) => {
     setPrincipal(nextPrincipal);
@@ -129,11 +154,20 @@ export function SessionProvider({ children }: PropsWithChildren) {
         status: input.status ?? "active",
         displayName: input.displayName,
         email: input.email,
+        organizationId: input.organizationId,
+        normalUserId: input.normalUserId,
+        phone: input.phone,
+        phoneVerified: input.phoneVerified,
       },
     });
   }, [persistPrincipal]);
 
   const signOut = useCallback(async () => {
+    const tokens = await loadAuthTokens();
+    if (tokens?.refreshToken) {
+      try { await authApi.logout(tokens.refreshToken); } catch { /* local sign-out must still succeed */ }
+    }
+    await clearAuthTokens();
     setPrincipal({ kind: "anonymous" });
     await Promise.all([
       AsyncStorage.removeItem(STORAGE_KEY),
@@ -141,14 +175,23 @@ export function SessionProvider({ children }: PropsWithChildren) {
     ]);
   }, []);
 
-  // Local account erasure while the backend is not connected: every persisted
-  // trace of the account leaves the device and the session drops to anonymous.
-  // The server-side deletion request belongs here once the API is wired.
-  const deleteAccount = useCallback(async () => {
+  const signOutAll = useCallback(async () => {
+    try { await authApi.logoutAll(); } catch { /* local cleanup still has to run */ }
+    await clearAuthTokens();
     setPrincipal({ kind: "anonymous" });
     await Promise.all([
       AsyncStorage.removeItem(STORAGE_KEY),
       AsyncStorage.removeItem(LEGACY_STORAGE_KEY),
+    ]);
+  }, []);
+
+  const deleteAccount = useCallback(async () => {
+    await profileApi.deactivateMine();
+    setPrincipal({ kind: "anonymous" });
+    await Promise.all([
+      AsyncStorage.removeItem(STORAGE_KEY),
+      AsyncStorage.removeItem(LEGACY_STORAGE_KEY),
+      clearAuthTokens(),
       resetOnboarding(),
     ]);
   }, []);
@@ -167,9 +210,10 @@ export function SessionProvider({ children }: PropsWithChildren) {
       continueAsGuest,
       startAuthenticatedSession,
       signOut,
+      signOutAll,
       deleteAccount,
     };
-  }, [continueAsGuest, deleteAccount, isReady, principal, signOut, startAuthenticatedSession]);
+  }, [continueAsGuest, deleteAccount, isReady, principal, signOut, signOutAll, startAuthenticatedSession]);
 
   return <SessionContext.Provider value={value}>{children}</SessionContext.Provider>;
 }

@@ -6,21 +6,17 @@ import { repositories } from "@/src/services/domain/repositories";
 import { domainServices } from "@/src/services/domain/services";
 import { useAsyncResource } from "@/src/hooks/useAsyncResource";
 import type { Report, RescueTask } from "@/src/domain";
-import type { EmergencyRescueCase, OrganizationRescueTask } from "../types/organizationDashboard";
+import type { OrganizationRescueTask } from "../types/organizationDashboard";
 import { COLORS } from "@/src/theme";
 import { useSession } from "@/src/features/session/SessionContext";
 import type { WorkspaceMetric } from "@/src/components/ui/WorkspaceMetricGrid";
 import { useFeedback } from "@/src/components/ui/FeedbackProvider";
-
-const fallbackImage = { uri: "https://images.unsplash.com/photo-1583511655857-d19b40a7a54e?auto=format&fit=crop&w=900&q=82" };
+import { useUnreadNotificationCount } from "@/src/features/notifications/hooks";
+import { fetchMyOrganization } from "@/src/services/api/organizationsApi";
 
 function relativeLabel(createdAt: string) {
   const minutes = Math.max(1, Math.round((Date.now() - new Date(createdAt).getTime()) / 60000));
   return minutes < 60 ? `منذ ${minutes} دقيقة` : `منذ ${Math.round(minutes / 60)} ساعة`;
-}
-
-function reportView(report: Report): EmergencyRescueCase {
-  return { id: report.id, title: report.title, location: report.locationName, distance: "قريب منك", reportedAgo: relativeLabel(report.createdAt), image: fallbackImage, urgent: report.priority === "urgent" };
 }
 
 function taskView(task: RescueTask): OrganizationRescueTask {
@@ -31,21 +27,33 @@ export function useOrganizationDashboard() {
   const router = useRouter();
   const { showFeedback } = useFeedback();
   const { account } = useSession();
-  const organizationId = account?.kind === "organization" ? account.id : "local-organization";
+  const organizationId = account?.kind === "organization" ? String(account.organizationId ?? "") : "";
+  const unreadNotifications = useUnreadNotificationCount(Boolean(account));
+  const organizationLoader = useCallback(async () => account?.kind === "organization" ? fetchMyOrganization() : null, [account?.kind]);
+  const organizationResource = useAsyncResource(organizationLoader, null, "تعذر تحميل بيانات الجمعية.");
   const reportsLoader = useCallback(() => repositories.reports.listForOrganization(organizationId), [organizationId]);
   const tasksLoader = useCallback(() => repositories.rescue.listByOrganization(organizationId), [organizationId]);
   const reportsResource = useAsyncResource<Report[]>(reportsLoader, [], "تعذر تحميل البلاغات.");
   const tasksResource = useAsyncResource<RescueTask[]>(tasksLoader, [], "تعذر تحميل مهام الإنقاذ.");
 
-  const emergencyCases = useMemo(() => reportsResource.data.filter((item) => item.status === "pending").map(reportView), [reportsResource.data]);
-  const acceptedCaseIds = useMemo(() => reportsResource.data.filter((item) => item.assignedOrganizationId === organizationId).map((item) => item.id), [reportsResource.data]);
-  const activeTask = useMemo(() => tasksResource.data[0] ? taskView(tasksResource.data[0]) : undefined, [tasksResource.data]);
+  const assignedTasks = useMemo(() => tasksResource.data.filter((item) => item.stage === "assigned"), [tasksResource.data]);
+  const emergencyCases = useMemo(() => assignedTasks.map((task) => ({ id: task.reportId, title: task.title, location: task.locationLabel, distance: task.locationDistance, reportedAgo: relativeLabel(task.createdAt), image: { uri: task.imageUri }, urgent: false })), [assignedTasks]);
+  const acceptedCaseIds = useMemo(() => tasksResource.data.filter((item) => item.stage !== "assigned" && item.stage !== "cancelled").map((item) => item.reportId), [tasksResource.data]);
+  const activeTask = useMemo(() => tasksResource.data.find((item) => !["assigned", "completed", "cancelled"].includes(item.stage)) ? taskView(tasksResource.data.find((item) => !["assigned", "completed", "cancelled"].includes(item.stage))!) : undefined, [tasksResource.data]);
+  const operationsAvailable = organizationResource.data?.status === "ACTIVE"
+    && organizationResource.data?.verificationStatus === "VERIFIED";
+  const operationsAvailabilityLabel = operationsAvailable
+    ? "الفريق يستقبل حالات جديدة"
+    : organizationResource.data?.verificationStatus === "REJECTED"
+      ? "الحساب غير معتمد ولا يمكنه استلام حالات جديدة"
+      : "استلام الحالات سيتاح بعد اعتماد الجمعية";
+
   const metrics = useMemo<WorkspaceMetric[]>(() => [
     { key: "incoming", label: "بلاغات بانتظار الفرز", value: emergencyCases.length, icon: "notifications-outline", color: COLORS.warning },
-    { key: "active", label: "مهام إنقاذ نشطة", value: tasksResource.data.filter((item) => item.stage !== "completed").length, icon: "navigate-outline", color: COLORS.primaryStrong },
+    { key: "active", label: "مهام إنقاذ نشطة", value: tasksResource.data.filter((item) => !["assigned", "completed", "cancelled"].includes(item.stage)).length, icon: "navigate-outline", color: COLORS.primaryStrong },
     { key: "completed", label: "مكتملة هذا الشهر", value: tasksResource.data.filter((item) => item.stage === "completed").length, icon: "checkmark-done-outline", color: COLORS.success },
-    { key: "team", label: "أعضاء متاحون", value: 12, icon: "people-outline", color: COLORS.info },
-  ], [emergencyCases.length, organizationId, tasksResource.data]);
+    { key: "assigned", label: "مهام بانتظار القبول", value: assignedTasks.length, icon: "time-outline", color: COLORS.info },
+  ], [assignedTasks.length, emergencyCases.length, tasksResource.data]);
 
   const acceptCase = useCallback(async (id: string) => {
     await domainServices.rescueOperations.acceptIncomingReport(id, organizationId);
@@ -58,9 +66,21 @@ export function useOrganizationDashboard() {
     acceptedCaseIds,
     activeTask,
     metrics,
-    loading: reportsResource.loading || tasksResource.loading,
-    error: reportsResource.error ?? tasksResource.error,
-    reload: async () => { await Promise.all([reportsResource.reload(), tasksResource.reload()]); },
+    operationsAvailable,
+    operationsAvailabilityLabel,
+    loading: reportsResource.loading || tasksResource.loading || organizationResource.loading,
+    error: reportsResource.error ?? tasksResource.error ?? organizationResource.error,
+    reload: async () => { await Promise.all([reportsResource.reload(), tasksResource.reload(), organizationResource.reload()]); },
+    unreadNotificationCount: unreadNotifications.count,
+    organizationName: organizationResource.data?.name ?? account?.displayName ?? "الجمعية",
+    organizationLogoUrl: organizationResource.data?.logoUrl ?? undefined,
+    organizationVerified: organizationResource.data?.verificationStatus === "VERIFIED" && organizationResource.data?.status === "ACTIVE",
+    organizationStatusLabel: organizationResource.data?.verificationStatus === "VERIFIED" && organizationResource.data?.status === "ACTIVE"
+      ? "جمعية معتمدة"
+      : organizationResource.data?.verificationStatus === "REJECTED"
+        ? "تعذر اعتماد الجمعية"
+        : "قيد المراجعة والاعتماد",
+    totalRescueTasks: tasksResource.data.length,
     openNotifications: () => router.push(ROUTES.organizationNotifications),
     openReports: () => router.push(ROUTES.organizationReports),
     openTasks: () => router.push(ROUTES.organizationTasks),
@@ -77,7 +97,7 @@ export function useOrganizationDashboard() {
     openArticle: (id: string) => router.push(articleDetailsRoute(id, "organization")),
     openSuccessStories: () => router.push(successStoriesRoute("organization")),
     openSuccessStory: (id: string) => router.push(successStoryDetailsRoute(id, "organization")),
-    updateOrganizationLocation: () => showFeedback({ title: "تحديث موقع الجمعية", message: "سيتم اعتماد الموقع الجديد بعد تأكيده من الخريطة.", tone: "info" }),
+    updateOrganizationLocation: () => router.push(ROUTES.organizationData),
     openOrganizationProfile: () => router.push(organizationDetailsRoute(organizationId)),
   };
 }

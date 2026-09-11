@@ -56,7 +56,7 @@ export interface FeedingPointSummary {
 
 /** الشكل الكامل — بيرجع بس لما تفتح شاشة التفاصيل */
 export interface FeedingPointDetails extends FeedingPointSummary, ContentOwner, ModerationMetadata {
-  photoUrl: string | null;
+  photoUrl: string;                 // إجبارية
   description: string | null;
   createdByUserId: string;
   createdByName: string;
@@ -76,7 +76,7 @@ export interface StatusUpdate {
   userName: string;
   userAvatarUrl: string | null;
   reportedStatus: ReportedStatus;
-  photoUrl: string;                 // إجبارية
+  photoUrl: string | null;
   note: string | null;
   createdAt: string;
   reviewState: ReviewState;

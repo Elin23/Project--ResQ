@@ -62,8 +62,10 @@ export interface DonationCampaign {
   urgent: boolean;
   coverImageUrl: string;
   images: string[];
-  location: CampaignLocation;
-  impactItems: CampaignImpactItem[];
+  mediaIds?: string[];
+  /** Optional display metadata. The current backend campaign contract does not accept campaign-specific location/impact fields. */
+  location?: CampaignLocation;
+  impactItems?: CampaignImpactItem[];
 
   /** UI compatibility values in SYP. Backend transports integer minor units. */
   targetAmount: number;
@@ -75,7 +77,8 @@ export interface DonationCampaign {
   startsAt?: string;
   endsAt?: string;
 
-  paymentRecipient: CampaignPaymentRecipient;
+  /** Campaign-specific transfer recipient shown to donors in addition to the selected transfer provider. */
+  paymentRecipient?: CampaignPaymentRecipient;
 
   status: DonationCampaignStatus;
   createdAt: string;
@@ -102,12 +105,13 @@ export interface CreateDonationCampaignInput {
   urgent: boolean;
   coverImageUrl: string;
   images?: string[];
-  location: CampaignLocation;
-  impactItems: CampaignImpactItem[];
+  /** Optional display metadata. The current backend campaign contract does not accept campaign-specific location/impact fields. */
+  location?: CampaignLocation;
+  impactItems?: CampaignImpactItem[];
   targetAmount: number;
   startsAt?: string;
   endsAt?: string;
-  paymentRecipient: CampaignPaymentRecipient;
+  paymentRecipient?: CampaignPaymentRecipient;
 }
 
 export type UpdateDonationCampaignInput = Omit<

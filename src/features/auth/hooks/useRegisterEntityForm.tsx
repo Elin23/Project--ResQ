@@ -1,7 +1,7 @@
 import { Ionicons } from "@expo/vector-icons";
 import { DateTimePickerEvent } from "@react-native-community/datetimepicker";
 import * as ImagePicker from "expo-image-picker";
-import { useLocalSearchParams, useRouter } from "expo-router";
+import { useRouter } from "expo-router";
 import { useMemo, useRef, useState } from "react";
 import { Image, Platform, Pressable, ScrollView, useWindowDimensions, View } from "react-native";
 import type { MapPressEvent, Region } from "react-native-maps";
@@ -16,10 +16,14 @@ import type { RegisterEntityChipOption, RegisterEntityErrors, RegisterEntityType
 import { buildRegisterEntityPayload, getRegisterEntityErrors } from "@/src/features/auth/utils/registerEntityForm";
 import { ENTITY_MANAGER_MINIMUM_AGE, getMaximumBirthDate, getMinimumBirthDate, getRegistrationPasswordRequirements, getRegistrationPasswordStrength, normalizeSyrianMobile } from "@/src/features/auth/utils/registrationValidation";
 import { useLocationLookups } from "@/src/hooks/useLocationLookups";
+import { authApi } from "@/src/services/api/authApi";
+import { saveAuthTokens } from "@/src/services/api/authTokens";
+import { ApiError, apiRequest } from "@/src/services/api/client";
+import { uploadLocalMediaUris } from "@/src/services/api/uploadsApi";
+import { API_ENDPOINTS } from "@/src/services/api/endpoints";
 
 export function useRegisterEntityForm() {
   const router = useRouter();
-  const params = useLocalSearchParams<{ entityType?: string }>();
   const { width } = useWindowDimensions();
   const { handlePermission } = usePermissionFeedback();
   const { showFeedback } = useFeedback();
@@ -153,15 +157,15 @@ export function useRegisterEntityForm() {
   );
 
   const passwordStrengthLabel =
-    passwordStrength === 3
+    passwordStrength === 4
       ? "قوية"
-      : passwordStrength === 2
+      : passwordStrength >= 2
         ? "متوسطة"
         : "ضعيفة";
   const passwordStrengthColor =
-    passwordStrength === 3
+    passwordStrength === 4
       ? COLORS.strengthStrong
-      : passwordStrength === 2
+      : passwordStrength >= 2
         ? COLORS.strengthMedium
         : COLORS.strengthWeak;
 
@@ -202,7 +206,7 @@ export function useRegisterEntityForm() {
     Object.values(getRegisterEntityErrors(validationInput)).every(
       (message) => !message,
     ) &&
-    passwordStrength === 3 &&
+    passwordStrength === 4 &&
     !isSubmitting;
 
   const closeDropdowns = () => {
@@ -372,12 +376,10 @@ export function useRegisterEntityForm() {
     if (isSubmitting) return;
 
     setSubmitAttempted(true);
-
     if (!validateForm()) return;
 
+    setIsSubmitting(true);
     try {
-      setIsSubmitting(true);
-
       const payload = buildRegisterEntityPayload({
         ...validationInput,
         logo,
@@ -387,18 +389,108 @@ export function useRegisterEntityForm() {
         emergencyService,
       });
 
-      await new Promise((resolve) => setTimeout(resolve, 900));
-      void payload;
+      // Creating the organization account is the authoritative operation. Once this
+      // succeeds, optional logo/doc uploads must never turn the successful registration
+      // into a false "creation failed" message.
+      const response = await authApi.registerOrganization({
+        organizationName: entityName.trim(),
+        email: email.trim(),
+        phone: payload.manager.phone,
+        password,
+        description: description.trim(),
+        licenseNumber: licenseNumber.trim(),
+        registrationNumber: licenseNumber.trim(),
+        governorateId: Number(serviceGovernorateId),
+        regionId: Number(serviceRegionId),
+        address: serviceDistrict.trim(),
+        latitude: selectedLocation!.latitude,
+        longitude: selectedLocation!.longitude,
+      });
 
-      router.push({
+      if (!response.accessToken || !response.refreshToken || !response.account?.id) {
+        throw new ApiError("تم استلام الطلب لكن استجابة تسجيل الجمعية غير مكتملة. يرجى تسجيل الدخول لإكمال التحقق.");
+      }
+
+      await saveAuthTokens({
+        accessToken: response.accessToken,
+        accessTokenExpiresAt: response.accessTokenExpiresAt,
+        refreshToken: response.refreshToken,
+        refreshTokenExpiresAt: response.refreshTokenExpiresAt,
+      });
+
+      let setupWarning: string | undefined;
+      try {
+        const logoUpload = logo ? (await uploadLocalMediaUris([logo]))[0] : undefined;
+        await apiRequest(API_ENDPOINTS.organizations.me, {
+          method: "PUT",
+          body: JSON.stringify({
+            description: description.trim(),
+            phone: payload.manager.phone,
+            website: null,
+            governorateId: Number(serviceGovernorateId),
+            regionId: Number(serviceRegionId),
+            address: serviceDistrict.trim(),
+            latitude: selectedLocation!.latitude,
+            longitude: selectedLocation!.longitude,
+            logoMediaId: logoUpload?.id ?? null,
+            coverMediaId: null,
+            services: selectedActivities.map((value) => value.toUpperCase()),
+            operatingHours: null,
+          }),
+        });
+
+        const documents = [
+          { uri: licenseDocument, type: "LICENSE" },
+          // Backend document enum uses IDENTITY; MANAGER_ID was rejected after
+          // the organization record had already been created.
+          { uri: managerDocument, type: "IDENTITY" },
+          { uri: extraDocument, type: "OTHER" },
+        ].filter((item): item is { uri: string; type: string } => Boolean(item.uri));
+
+        for (const item of documents) {
+          const media = (await uploadLocalMediaUris([item.uri]))[0];
+          if (media) {
+            await apiRequest(API_ENDPOINTS.organizations.documents, {
+              method: "POST",
+              body: JSON.stringify({ mediaId: media.id, documentType: item.type }),
+            });
+          }
+        }
+      } catch (error) {
+        setupWarning = error instanceof ApiError
+          ? error.message
+          : "تم إنشاء طلب الجمعية، لكن تعذر رفع بعض الصور أو الوثائق. يمكنك إكمالها لاحقًا.";
+      }
+
+      if (setupWarning) {
+        showFeedback({
+          title: "تم إنشاء طلب الجمعية",
+          message: `تم حفظ الحساب بنجاح. ${setupWarning}`,
+          tone: "info",
+        });
+      }
+
+      router.replace({
         pathname: "/verify-registration-phone",
         params: {
-          phone: payload.manager.phone,
-          accountType: "entity",
-          entityType,
-          name: entityName.trim(),
-          email: email.trim(),
+          accountType: "organization",
+          flow: "registration",
+          phone: response.account.phone ?? payload.manager.phone,
+          name: response.account.displayName ?? entityName.trim(),
+          email: response.account.email ?? email.trim(),
+          accountId: response.account.id,
+          accountStatus: response.account.accountStatus ?? "ACTIVE",
+          organizationId: response.account.organizationId != null ? String(response.account.organizationId) : "",
+          normalUserId: response.account.normalUserId != null ? String(response.account.normalUserId) : "",
         },
+      });
+    } catch (error) {
+      showFeedback({
+        title: "تعذر إنشاء الحساب",
+        message: error instanceof ApiError
+          ? error.message
+          : "تعذر إرسال طلب تسجيل الجمعية. تحقق من الاتصال وحاول مرة أخرى.",
+        tone: "error",
       });
     } finally {
       setIsSubmitting(false);

@@ -19,6 +19,7 @@ import {
   feedingPointDetailsRoute,
   feedingPointsRoute,
   organizationDetailsRoute,
+  reportDetailsRoute,
 } from "@/src/navigation/routes";
 import { COLORS, ICON_SIZES, RADIUS, SPACING } from "@/src/theme";
 
@@ -72,6 +73,10 @@ export default function FavoritesScreen() {
     }
     if (item.kind === "organization") {
       router.push(organizationDetailsRoute(item.id));
+      return;
+    }
+    if (item.kind === "report") {
+      router.push(reportDetailsRoute(item.id, accountKind));
       return;
     }
     router.push(adoptionDetailsRoute(item.id, accountKind));

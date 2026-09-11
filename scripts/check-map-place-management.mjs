@@ -38,8 +38,8 @@ must("app/map-places/[id]/edit.tsx", 'capability="edit-owned-map-place"', "owned
 
 must("src/domain/service-places/mapPlaceApplication.ts", 'applicantUserId: string', "application ownership");
 must("src/domain/service-places/servicePlace.ts", 'ownerUserId?: string', "place ownership");
-must("src/data/repositories/inMemoryMapPlaceApplicationRepository.ts", "application.applicantUserId === userId", "repository application ownership enforcement");
-must("src/data/repositories/inMemoryServicePlaceRepository.ts", "item.ownerUserId === userId", "repository place ownership enforcement");
+must("test-fixtures/repositories/inMemoryMapPlaceApplicationRepository.ts", "application.applicantUserId === userId", "repository application ownership enforcement");
+must("test-fixtures/repositories/inMemoryServicePlaceRepository.ts", "item.ownerUserId === userId", "repository place ownership enforcement");
 must("src/features/map-places/screens/MapPlaceApplicationDetailsScreen.tsx", "canUserManageMapPlaceApplication", "screen application ownership enforcement");
 must("src/features/map-places/screens/EditOwnedMapPlaceScreen.tsx", "canUserManageMapPlace", "screen place ownership enforcement");
 

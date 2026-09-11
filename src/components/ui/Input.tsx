@@ -182,8 +182,7 @@ const Input = forwardRef<TextInput, Props>(function Input({
     <View style={[styles.container, containerStyle]}>
       {label ? (
         <View style={styles.labelRow}>
-          <AppText style={styles.label}>{label}</AppText>
-          {required ? <AppText style={styles.required}>*</AppText> : null}
+          <AppText style={styles.label}>{required ? `${label} *` : label}</AppText>
         </View>
       ) : null}
 
@@ -233,13 +232,19 @@ const styles = StyleSheet.create({
     marginBottom: SPACING.sm,
   },
   label: {
+    width: "100%",
+    flexShrink: 0,
+    minWidth: 0,
+    includeFontPadding: true,
     fontFamily: TYPOGRAPHY.label.fontFamily,
     fontSize: TYPOGRAPHY.label.fontSize,
     lineHeight: TYPOGRAPHY.label.lineHeight,
     color: COLORS.text,
-    textAlign: "auto",
+    textAlign: "right",
   },
   required: {
+    flexShrink: 0,
+    includeFontPadding: true,
     fontFamily: TYPOGRAPHY.label.fontFamily,
     fontSize: TYPOGRAPHY.label.fontSize,
     lineHeight: TYPOGRAPHY.label.lineHeight,
@@ -274,6 +279,7 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     minWidth: 0,
+    includeFontPadding: true,
     paddingHorizontal: SPACING.md,
     paddingVertical: 0,
     fontFamily: TYPOGRAPHY.body.fontFamily,

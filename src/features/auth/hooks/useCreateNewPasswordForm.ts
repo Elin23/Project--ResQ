@@ -2,6 +2,9 @@ import { useLocalSearchParams, useRouter } from "expo-router";
 import { useEffect, useMemo, useRef, useState } from "react";
 import { Animated, Easing, Keyboard, useWindowDimensions } from "react-native";
 
+import { authApi } from "@/src/services/api/authApi";
+import { ApiError } from "@/src/services/api/client";
+
 import { getPasswordRequirements } from "../utils/passwordRequirements";
 import { validateNewPassword, validatePasswordConfirmation } from "../utils/passwordResetValidation";
 
@@ -15,7 +18,7 @@ export function useCreateNewPasswordForm() {
   const router = useRouter();
   const params = useLocalSearchParams<{
     phone?: string;
-    code?: string;
+    resetToken?: string;
   }>();
 
   const { width, height } = useWindowDimensions();
@@ -238,20 +241,18 @@ export function useCreateNewPasswordForm() {
       setIsSubmitting(true);
       setErrors({});
 
-      const resetPayload = {
-        phone: params.phone ?? "",
-        code: params.code ?? "",
-        newPassword: password,
-      };
-
-      await new Promise((resolve) => setTimeout(resolve, 700));
-
-      void resetPayload;
+      const phone = Array.isArray(params.phone) ? params.phone[0] : params.phone;
+      const resetToken = Array.isArray(params.resetToken) ? params.resetToken[0] : params.resetToken;
+      if (!phone || !resetToken) {
+        throw new ApiError("انتهت بيانات استعادة كلمة المرور. اطلب رمزًا جديدًا.");
+      }
+      await authApi.completePasswordReset(phone, resetToken, password);
       navigateToSuccess();
-    } catch {
+    } catch (cause) {
       setErrors({
-        general:
-          "تعذر حفظ كلمة المرور الجديدة. تحقق من اتصالك بالإنترنت ثم حاول مجددًا.",
+        general: cause instanceof ApiError
+          ? cause.message
+          : "تعذر حفظ كلمة المرور الجديدة. تحقق من اتصالك بالإنترنت ثم حاول مجددًا.",
       });
     } finally {
       setIsSubmitting(false);

@@ -11,7 +11,8 @@ const baseInput = {
   city: "دمشق",
   housing: "apartment" as const,
   hasOtherPets: false,
-  experience: "لدي خبرة سابقة في رعاية القطط داخل المنزل.",
+  hasOutdoorSpace: false,
+  experience: "experienced" as const,
   reason: "أبحث عن حيوان أليف وسأوفر له الرعاية المناسبة.",
 };
 

@@ -11,6 +11,7 @@ import {
   type ViewStyle,
 } from "react-native";
 import { COLORS } from "@/src/theme";
+import { resolveMediaUrl } from "@/src/services/api/mediaUrl";
 
 type Props = {
   uri?: string | null;
@@ -33,18 +34,19 @@ export default function RemoteImage({
   retryable = true,
   fallbackStyle,
 }: Props) {
-  const [loading, setLoading] = useState(Boolean(uri));
-  const [failed, setFailed] = useState(!uri);
+  const resolvedUri = resolveMediaUrl(uri);
+  const [loading, setLoading] = useState(Boolean(resolvedUri));
+  const [failed, setFailed] = useState(!resolvedUri);
   const [attempt, setAttempt] = useState(0);
 
   useEffect(() => {
-    setLoading(Boolean(uri));
-    setFailed(!uri);
+    setLoading(Boolean(resolvedUri));
+    setFailed(!resolvedUri);
     setAttempt(0);
-  }, [uri]);
+  }, [resolvedUri]);
 
   const retry = () => {
-    if (!uri) return;
+    if (!resolvedUri) return;
     setFailed(false);
     setLoading(true);
     setAttempt((value) => value + 1);
@@ -52,15 +54,15 @@ export default function RemoteImage({
 
   return (
     <View style={[styles.root, style as StyleProp<ViewStyle>, fallbackStyle]}>
-      {!failed && uri ? (
+      {!failed && resolvedUri ? (
         <Image
-          key={`${uri}-${attempt}`}
-          source={{ uri }}
+          key={`${resolvedUri}-${attempt}`}
+          source={{ uri: resolvedUri }}
           style={StyleSheet.absoluteFill}
           contentFit={contentFit}
           transition={180}
           cachePolicy="memory-disk"
-          recyclingKey={uri}
+          recyclingKey={resolvedUri}
           accessibilityLabel={accessibilityLabel}
           onLoadStart={() => setLoading(true)}
           onLoad={() => setLoading(false)}
@@ -79,14 +81,14 @@ export default function RemoteImage({
 
       {failed ? (
         <Pressable
-          accessibilityRole={retryable && uri ? "button" : undefined}
-          accessibilityLabel={retryable && uri ? "إعادة تحميل الصورة" : accessibilityLabel ?? "الصورة غير متاحة"}
-          disabled={!retryable || !uri}
+          accessibilityRole={retryable && resolvedUri ? "button" : undefined}
+          accessibilityLabel={retryable && resolvedUri ? "إعادة تحميل الصورة" : accessibilityLabel ?? "الصورة غير متاحة"}
+          disabled={!retryable || !resolvedUri}
           onPress={retry}
           style={styles.overlay}
         >
           <Ionicons name="image-outline" size={24} color={COLORS.iconMuted} />
-          {retryable && uri ? <Ionicons name="refresh-outline" size={15} color={COLORS.primaryStrong} /> : null}
+          {retryable && resolvedUri ? <Ionicons name="refresh-outline" size={15} color={COLORS.primaryStrong} /> : null}
         </Pressable>
       ) : null}
     </View>

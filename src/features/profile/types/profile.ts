@@ -16,10 +16,12 @@ export type EditableProfile = {
   lastName: string;
   email: string;
   phone: string;
-  city: string;
+  governorateId: string;
+  governorateName: string;
+  regionId: string;
+  regionName: string;
+  birthDate?: string;
   bio: string;
-  profession: string;
-  experienceYears: string;
-  skills: string[];
   avatarUri: string;
+  phoneVerified: boolean;
 };

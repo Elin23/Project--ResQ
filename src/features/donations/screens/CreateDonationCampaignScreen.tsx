@@ -22,10 +22,7 @@ import {
   ownedCampaignStatusRoute,
 } from "@/src/navigation/routes";
 import { COLORS, RADIUS, SPACING } from "@/src/theme";
-import type {
-  CampaignImpactItem,
-  DonationCampaignCategory,
-} from "@/src/domain";
+import type { DonationCampaignCategory } from "@/src/domain";
 import { useCreateDonationCampaign } from "../hooks/useCreateDonationCampaign";
 import { useOwnedDonationCampaign } from "../hooks/useOwnedDonationCampaign";
 
@@ -62,17 +59,10 @@ export default function CreateDonationCampaignScreen() {
   const [category, setCategory] = useState<DonationCampaignCategory>("rescue");
   const [urgent, setUrgent] = useState(false);
   const [targetAmount, setTargetAmount] = useState("");
-  const [governorate, setGovernorate] = useState("");
-  const [city, setCity] = useState("");
-  const [address, setAddress] = useState("");
   const [endDate, setEndDate] = useState("");
-  const [impactItems, setImpactItems] = useState<CampaignImpactItem[]>([]);
-  const [newImpactTitle, setNewImpactTitle] = useState("");
-  const [newImpactDescription, setNewImpactDescription] = useState("");
-  const [recipientName, setRecipientName] = useState(account?.displayName ?? "");
-  const [recipientMobile, setRecipientMobile] = useState("");
-  const [recipientGovernorate, setRecipientGovernorate] = useState("");
-  const [recipientNotes, setRecipientNotes] = useState("");
+  const [recipientName, setRecipientName] = useState("");
+  const [recipientAccount, setRecipientAccount] = useState("");
+  const [transferInstructions, setTransferInstructions] = useState("");
 
   useEffect(() => {
     const campaign = editState.campaign;
@@ -85,15 +75,12 @@ export default function CreateDonationCampaignScreen() {
     setCategory(campaign.category);
     setUrgent(campaign.urgent);
     setTargetAmount(String(campaign.targetAmount || ""));
-    setGovernorate(campaign.location.governorate);
-    setCity(campaign.location.city ?? "");
-    setAddress(campaign.location.address ?? "");
     setEndDate(campaign.endsAt ? campaign.endsAt.slice(0, 10) : "");
-    setImpactItems(campaign.impactItems);
-    setRecipientName(campaign.paymentRecipient.fullName);
-    setRecipientMobile(campaign.paymentRecipient.mobile ?? "");
-    setRecipientGovernorate(campaign.paymentRecipient.governorate);
-    setRecipientNotes(campaign.paymentRecipient.notes ?? "");
+    setRecipientName(campaign.paymentRecipient?.fullName ?? "");
+    const recipientNotes = campaign.paymentRecipient?.notes ?? "";
+    const accountMatch = recipientNotes.match(/رقم المستلم\/الحساب:\s*([^\n]+)/);
+    setRecipientAccount(campaign.paymentRecipient?.mobile ?? accountMatch?.[1]?.trim() ?? "");
+    setTransferInstructions(recipientNotes.replace(/رقم المستلم\/الحساب:\s*[^\n]+\n?/, "").trim());
   }, [editId, editState.campaign]);
 
   const targetNumber = Number(targetAmount.replace(/[^\d.]/g, ""));
@@ -112,22 +99,18 @@ export default function CreateDonationCampaignScreen() {
           description.trim() &&
           Number.isFinite(targetNumber) &&
           targetNumber > 0 &&
-          governorate.trim() &&
-          impactItems.length &&
-          recipientName.trim() &&
-          recipientGovernorate.trim(),
+          recipientName.trim().length >= 2 &&
+          recipientAccount.trim().length >= 3,
       ),
     [
       canManageCampaigns,
       description,
-      governorate,
       images.length,
-      impactItems.length,
-      recipientGovernorate,
-      recipientName,
       shortDescription,
       targetNumber,
       title,
+      recipientName,
+      recipientAccount,
     ],
   );
 
@@ -144,22 +127,6 @@ export default function CreateDonationCampaignScreen() {
       const next = result.assets.map((asset) => asset.uri).filter(Boolean);
       setImages((current) => [...current, ...next].slice(0, 6));
     }
-  };
-
-  const addImpact = () => {
-    const titleValue = newImpactTitle.trim();
-    if (!titleValue) return;
-    setImpactItems((current) => [
-      ...current,
-      {
-        id: `impact-${Date.now()}-${current.length}`,
-        title: titleValue,
-        description: newImpactDescription.trim() || undefined,
-        icon: category === "medical" ? "medkit-outline" : category === "food" ? "restaurant-outline" : "heart-outline",
-      },
-    ]);
-    setNewImpactTitle("");
-    setNewImpactDescription("");
   };
 
   const buildInput = () => {
@@ -184,20 +151,14 @@ export default function CreateDonationCampaignScreen() {
       urgent,
       coverImageUrl: images[0] ?? "",
       images,
-      location: {
-        governorate: governorate.trim(),
-        city: city.trim() || undefined,
-        address: address.trim() || undefined,
-      },
-      impactItems,
       targetAmount: targetNumber,
       startsAt: editState.campaign?.startsAt ?? new Date().toISOString(),
       endsAt: end,
       paymentRecipient: {
         fullName: recipientName.trim(),
-        mobile: recipientMobile.trim() || undefined,
-        governorate: recipientGovernorate.trim(),
-        notes: recipientNotes.trim() || undefined,
+        mobile: recipientAccount.trim(),
+        governorate: "",
+        notes: transferInstructions.trim() || undefined,
       },
     };
   };
@@ -253,7 +214,7 @@ export default function CreateDonationCampaignScreen() {
   if (
     editId &&
     editState.campaign &&
-    !["draft", "rejected", "active", "paused"].includes(editState.campaign.status)
+    !["draft", "rejected"].includes(editState.campaign.status)
   ) {
     return (
       <Screen>
@@ -263,7 +224,7 @@ export default function CreateDonationCampaignScreen() {
           <View style={styles.flex}>
             <AppText variant="label" weight="bold">لا يمكن تعديل الحملة في حالتها الحالية</AppText>
             <AppText variant="caption" color={COLORS.textSecondary}>
-              يمكن تعديل المسودات والحملات المرفوضة والنشطة والموقوفة مؤقتًا فقط.
+              يمكن تعديل المسودات والحملات المرفوضة فقط. الحملات المنشورة تُدار عبر الإيقاف والاستئناف والإغلاق دون تعديل محتواها.
             </AppText>
           </View>
         </Card>
@@ -294,9 +255,7 @@ export default function CreateDonationCampaignScreen() {
         title={editId ? "تعديل الحملة" : "فتح حملة تبرع"}
         subtitle={
           editId
-            ? editState.campaign?.status === "active" || editState.campaign?.status === "paused"
-              ? "حدّث تفاصيل الحملة مع الحفاظ على حالتها الحالية"
-              : "عدّل البيانات ثم احفظ أو أعد الإرسال للمراجعة"
+            ? "عدّل البيانات ثم احفظ أو أعد الإرسال للمراجعة"
             : "احفظها كمسودة أو أرسلها للمراجعة"
         }
         onBack={() => router.back()}
@@ -431,113 +390,54 @@ export default function CreateDonationCampaignScreen() {
           helperText="اختياري. اتركه فارغًا إذا لم تكن للحملة مدة محددة."
         />
 
-        <SectionHeader title="موقع الحملة" />
-        <Input label="المحافظة" required value={governorate} onChangeText={setGovernorate} placeholder="دمشق" />
-        <Input label="المدينة / المنطقة" value={city} onChangeText={setCity} placeholder="اختياري" />
-        <Input label="العنوان" value={address} onChangeText={setAddress} placeholder="اختياري" />
-
-        <SectionHeader title="ماذا سيحقق تبرعك؟" subtitle="تظهر هذه العناصر في صفحة تفاصيل الحملة" />
-        <View style={styles.impactList}>
-          {impactItems.map((item) => (
-            <Card key={item.id} disabled style={styles.impactItem}>
-              <View style={styles.impactIcon}>
-                <Ionicons name={(item.icon as keyof typeof Ionicons.glyphMap) ?? "heart-outline"} size={21} color={COLORS.primaryStrong} />
-              </View>
-              <View style={styles.flex}>
-                <AppText variant="label" weight="bold">{item.title}</AppText>
-                {item.description ? <AppText variant="caption" color={COLORS.textSecondary}>{item.description}</AppText> : null}
-              </View>
-              <Pressable
-                accessibilityRole="button"
-                accessibilityLabel={`حذف ${item.title}`}
-                onPress={() => setImpactItems((current) => current.filter((impact) => impact.id !== item.id))}
-                hitSlop={8}
-              >
-                <Ionicons name="trash-outline" size={20} color={COLORS.danger} />
-              </Pressable>
-            </Card>
-          ))}
-        </View>
+        <SectionHeader title="استلام الحوالات" subtitle="هذه البيانات تظهر للمتبرع مع شركة الحوالات المختارة" />
         <Input
-          label="عنوان الهدف"
-          value={newImpactTitle}
-          onChangeText={setNewImpactTitle}
-          placeholder="مثال: علاج 5 حالات مصابة"
+          label="اسم مستلم الحوالة"
+          required
+          value={recipientName}
+          onChangeText={setRecipientName}
+          placeholder="الاسم الثلاثي للمستلم"
         />
         <Input
-          label="وصف الهدف"
-          value={newImpactDescription}
-          onChangeText={setNewImpactDescription}
-          placeholder="اختياري"
+          label="رقم المستلم / رقم الحساب"
+          required
+          value={recipientAccount}
+          onChangeText={setRecipientAccount}
+          contentDirection="ltr"
+          placeholder="رقم الهاتف أو رقم الحساب المعتمد"
         />
-        <Button
-          title="إضافة هدف"
-          icon="add-outline"
-          variant="outline"
-          disabled={!newImpactTitle.trim()}
-          onPress={addImpact}
+        <Input
+          label="تعليمات التحويل"
+          value={transferInstructions}
+          onChangeText={setTransferInstructions}
+          multiline
+          numberOfLines={3}
+          placeholder="مثال: اذكر اسم الحملة في ملاحظة الحوالة"
         />
-
-        <SectionHeader title="بيانات استلام الحوالات" subtitle="تظهر للمتبرع عند تأكيد الحوالة" />
         <Card disabled backgroundColor={COLORS.surfaceSubtle} style={styles.recipientNotice}>
           <Ionicons name="information-circle-outline" size={21} color={COLORS.info} />
           <AppText variant="caption" color={COLORS.textSecondary} style={styles.flex}>
-            استخدم بيانات رسمية ودقيقة. لن تتمكن الحملة من استقبال حوالات صحيحة إذا كانت هذه البيانات خاطئة.
+            شركة الحوالات نفسها تُدار من الإدارة، بينما بيانات المستلم أعلاه خاصة بهذه الحملة وتُحفظ على الخادم.
           </AppText>
         </Card>
-        <Input label="اسم المستلم الكامل" required value={recipientName} onChangeText={setRecipientName} placeholder="الاسم الثلاثي أو الرباعي" />
-        <Input
-          label="رقم الموبايل"
-          value={recipientMobile}
-          onChangeText={setRecipientMobile}
-          keyboardType="phone-pad"
-          contentDirection="ltr"
-          placeholder="اختياري"
-        />
-        <Input
-          label="محافظة المستلم"
-          required
-          value={recipientGovernorate}
-          onChangeText={setRecipientGovernorate}
-          placeholder="دمشق"
-        />
-        <Input
-          label="ملاحظات التحويل"
-          value={recipientNotes}
-          onChangeText={setRecipientNotes}
-          multiline
-          placeholder="أي تعليمات يجب أن يعرفها المتبرع قبل التحويل"
-        />
 
         {error ? <AppText variant="bodySmall" color={COLORS.danger}>{error}</AppText> : null}
 
         <ActionStack gap={SPACING.md}>
-          {editId && ["active", "paused"].includes(editState.campaign?.status ?? "") ? (
-            <Button
-              title="حفظ التعديلات"
-              icon="save-outline"
-              loading={saving}
-              disabled={!formValid}
-              onPress={() => void saveDraft()}
-            />
-          ) : (
-            <>
-              <Button
-                title={editId ? "حفظ وإرسال للمراجعة" : "إرسال الحملة للمراجعة"}
-                icon="paper-plane-outline"
-                loading={saving}
-                disabled={!formValid}
-                onPress={() => void submit()}
-              />
-              <Button
-                title={editId ? "حفظ التعديلات" : "حفظ كمسودة"}
-                icon="save-outline"
-                variant="outline"
-                disabled={!title.trim() || saving}
-                onPress={() => void saveDraft()}
-              />
-            </>
-          )}
+          <Button
+            title={editId ? "حفظ وإرسال للمراجعة" : "إرسال الحملة للمراجعة"}
+            icon="paper-plane-outline"
+            loading={saving}
+            disabled={!formValid}
+            onPress={() => void submit()}
+          />
+          <Button
+            title={editId ? "حفظ التعديلات" : "حفظ كمسودة"}
+            icon="save-outline"
+            variant="outline"
+            disabled={!title.trim() || saving}
+            onPress={() => void saveDraft()}
+          />
           <Button title="إلغاء" variant="ghost" disabled={saving} onPress={() => router.back()} />
         </ActionStack>
       </View>
@@ -561,9 +461,6 @@ const styles = StyleSheet.create({
   toggleCardSelected: { borderColor: COLORS.primaryStrong, backgroundColor: COLORS.primarySoft },
   toggleIcon: { width: 42, height: 42, borderRadius: RADIUS.full, backgroundColor: COLORS.dangerSoft, alignItems: "center", justifyContent: "center" },
   toggleIconSelected: { backgroundColor: COLORS.primaryStrong },
-  impactList: { gap: SPACING.sm },
-  impactItem: { flexDirection: "row", direction: "rtl", alignItems: "center", gap: SPACING.md },
-  impactIcon: { width: 44, height: 44, borderRadius: RADIUS.full, backgroundColor: COLORS.primarySoft, alignItems: "center", justifyContent: "center" },
   recipientNotice: { flexDirection: "row", direction: "rtl", alignItems: "flex-start", gap: SPACING.md },
   pressed: { opacity: 0.84 },
   flex: { flex: 1 },

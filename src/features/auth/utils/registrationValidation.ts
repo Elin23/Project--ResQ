@@ -6,12 +6,13 @@ export const MINIMUM_BIRTH_YEAR = 1900;
 
 export const PASSWORD_POLICY = {
   minimumLength: 8,
-  requiresLetter: true,
+  requiresLowercase: true,
+  requiresUppercase: true,
   requiresNumber: true,
 } as const;
 
 export type RegistrationPasswordRequirement = {
-  id: "length" | "letter" | "number";
+  id: "length" | "lowercase" | "uppercase" | "number";
   label: string;
   isValid: boolean;
 };
@@ -58,9 +59,14 @@ export function getRegistrationPasswordRequirements(
       isValid: password.length >= PASSWORD_POLICY.minimumLength,
     },
     {
-      id: "letter",
-      label: "محرف واحد على الأقل",
-      isValid: hasLetter(password),
+      id: "lowercase",
+      label: "حرف لاتيني صغير واحد على الأقل (a-z)",
+      isValid: /[a-z]/.test(password),
+    },
+    {
+      id: "uppercase",
+      label: "حرف لاتيني كبير واحد على الأقل (A-Z)",
+      isValid: /[A-Z]/.test(password),
     },
     {
       id: "number",
@@ -88,8 +94,12 @@ export function validateRegistrationPassword(
     return `يجب أن تتكون كلمة المرور من ${PASSWORD_POLICY.minimumLength} أحرف على الأقل`;
   }
 
-  if (!hasLetter(value)) {
-    return "يجب أن تحتوي كلمة المرور على حرف واحد على الأقل";
+  if (!/[a-z]/.test(value)) {
+    return "يجب أن تحتوي كلمة المرور على حرف لاتيني صغير واحد على الأقل";
+  }
+
+  if (!/[A-Z]/.test(value)) {
+    return "يجب أن تحتوي كلمة المرور على حرف لاتيني كبير واحد على الأقل";
   }
 
   if (!/\d/.test(value)) {

@@ -6,7 +6,7 @@ import { useSession } from "@/src/features/session/SessionContext";
 
 export function useOrganizationReports() {
   const { account } = useSession();
-  const organizationId = account?.kind === "organization" ? account.id : "local-organization";
+  const organizationId = account?.kind === "organization" ? String(account.organizationId ?? "") : "";
   const loader = useCallback(() => repositories.reports.listForOrganization(organizationId), [organizationId]);
   const resource = useAsyncResource<Report[]>(loader, [], "تعذر تحميل البلاغات الواردة.");
   return { reports: resource.data, loading: resource.loading, error: resource.error, reload: resource.reload };

@@ -1,6 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { InMemoryMapPlaceApplicationRepository } from "@/src/data/repositories/inMemoryMapPlaceApplicationRepository";
-import { InMemoryServicePlaceRepository } from "@/src/data/repositories/inMemoryServicePlaceRepository";
+import { InMemoryMapPlaceApplicationRepository } from "@/test-fixtures/repositories/inMemoryMapPlaceApplicationRepository";
+import { InMemoryServicePlaceRepository } from "@/test-fixtures/repositories/inMemoryServicePlaceRepository";
 import { MapPlaceReviewService } from "../MapPlaceReviewService";
 
 function input(overrides: Partial<Parameters<InMemoryMapPlaceApplicationRepository["createDraft"]>[0]> = {}) {
@@ -8,6 +8,10 @@ function input(overrides: Partial<Parameters<InMemoryMapPlaceApplicationReposito
     applicantUserId: "user-review-test",
     requestedType: "clinic" as const,
     name: "عيادة الاختبار",
+    governorateId: "gov-damascus",
+    governorateName: "دمشق",
+    regionId: "reg-mazzeh",
+    regionName: "المزة",
     address: "دمشق - المزة",
     latitude: 33.5,
     longitude: 36.2,

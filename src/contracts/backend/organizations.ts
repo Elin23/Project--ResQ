@@ -1,47 +1,11 @@
-import type { BackendId, GeoLocationDto, MediaDto } from "./common";
+export interface PlaceDto { id:number; type?:string|null; name?:string|null; description?:string|null; governorateId:number; governorateName?:string|null; regionId:number; regionName?:string|null; address?:string|null; latitude:number; longitude:number; phone?:string|null; email?:string|null; website?:string|null; status?:string|null; openingTime?:string|null; closingTime?:string|null; }
+export interface OrganizationOperatingHoursDto { id:number; dayOfWeek?:string|null; isClosed:boolean; isOpen24Hours:boolean; opensAt?:string|null; closesAt?:string|null; }
+export interface OrganizationDocumentDto { id:number; type:string; status:string; mediaId:number; url:string; adminNote?:string|null; createdAt:string; reviewedAt?:string|null; }
+export interface OrganizationSummaryDto { id:number; organizationNumber:string; name:string; description:string; status:string; verificationStatus:string; logoUrl?:string|null; governorateId?:number|null; governorateName?:string|null; regionId?:number|null; regionName?:string|null; address?:string|null; latitude?:number|null; longitude?:number|null; services:string[]; }
+export interface OrganizationPublicDto { id:number; accountId?:string|null; organizationNumber?:string|null; name?:string|null; description?:string|null; licenseNumber?:string|null; registrationNumber?:string|null; status?:string|null; verificationStatus?:string|null; reviewNote?:string|null; phone?:string|null; email?:string|null; website?:string|null; logoUrl?:string|null; coverUrl?:string|null; place?:PlaceDto|null; services?:string[]|null; operatingHours?:OrganizationOperatingHoursDto[]|null; documents?:OrganizationDocumentDto[]|null; createdAt:string; verifiedAt?:string|null; suspendedAt?:string|null; }
+export type OrganizationDetailsDto = OrganizationPublicDto;
+export type OrganizationStatus = string; export type OrganizationVerificationStatus = string; export type OrganizationServiceKey = string;
 
-export type OrganizationStatus = "PENDING_VERIFICATION" | "ACTIVE" | "SUSPENDED" | "REJECTED";
-export type OrganizationVerificationStatus =
-  | "NOT_REVIEWED"
-  | "IN_REVIEW"
-  | "VERIFIED"
-  | "REJECTED"
-  | "MORE_INFO_REQUIRED";
-
-export type OrganizationServiceKey =
-  | "RESCUE"
-  | "SHELTER"
-  | "FOSTER"
-  | "ADOPTION"
-  | "AWARENESS"
-  | "TRANSPORT"
-  | "FOOD_SUPPORT";
-
-export interface OrganizationOperatingHoursDto {
-  day: "SATURDAY" | "SUNDAY" | "MONDAY" | "TUESDAY" | "WEDNESDAY" | "THURSDAY" | "FRIDAY";
-  closed: boolean;
-  open24Hours?: boolean;
-  opensAt?: string;
-  closesAt?: string;
-}
-
-export interface OrganizationPublicDto {
-  id: BackendId;
-  name: string;
-  description?: string;
-  logoUrl?: string;
-  coverImageUrl?: string;
-  status: OrganizationStatus;
-  verificationStatus: OrganizationVerificationStatus;
-  registrationNumber?: string;
-  licenseNumber?: string;
-  location: GeoLocationDto;
-  phone?: string;
-  email?: string;
-  website?: string;
-  services: OrganizationServiceKey[];
-  operatingHours: OrganizationOperatingHoursDto[];
-  media?: MediaDto[];
-  createdAt: string;
-  updatedAt: string;
-}
+export interface OperatingHourRequest { dayOfWeek?: string | null; isClosed: boolean; isOpen24Hours: boolean; opensAt?: string | null; closesAt?: string | null; }
+export interface UpdateOrganizationProfileRequest { description?: string | null; phone?: string | null; website?: string | null; governorateId: number; regionId: number; address?: string | null; latitude: number; longitude: number; logoMediaId?: number | null; coverMediaId?: number | null; services?: string[] | null; operatingHours?: OperatingHourRequest[] | null; }
+export interface AddOrganizationDocumentRequest { mediaId: number; documentType?: string | null; }

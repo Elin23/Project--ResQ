@@ -1,5 +1,5 @@
 import type { LocationLookupRepository } from "@/src/domain/lookups/locationLookup";
-import { GOVERNORATE_LOOKUPS, REGION_LOOKUPS } from "@/src/data/seeds/locationLookups.seed";
+import { GOVERNORATE_LOOKUPS, REGION_LOOKUPS } from "@/test-fixtures/seeds/locationLookups.seed";
 
 export class InMemoryLocationLookupRepository implements LocationLookupRepository {
   async listGovernorates() {

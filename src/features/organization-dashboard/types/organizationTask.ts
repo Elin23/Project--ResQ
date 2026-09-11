@@ -1,6 +1,4 @@
-import type { ImageSourcePropType } from "react-native";
-
-export type OrganizationTaskStage = "accepted" | "on-route" | "arrived" | "rescued";
+export type OrganizationTaskStage = "assigned" | "accepted" | "on-route" | "arrived" | "rescued" | "cancelled";
 
 export type OrganizationTaskChecklistKey = "arrived" | "assessed" | "secured";
 
@@ -18,13 +16,10 @@ export type OrganizationTask = {
   healthStatus: string;
   reporterNote: string;
   reportedAgo: string;
-  etaMinutes: number;
   locationLabel: string;
-  locationDistance: string;
   reporterName: string;
   reporterPhone: string;
-  image: ImageSourcePropType;
-  mapImage: ImageSourcePropType;
+  imageUri: string;
 };
 
 export type CompletedTaskSummary = {

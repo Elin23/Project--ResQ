@@ -15,6 +15,7 @@ const adoptionInput = {
   description: "كلب هادئ يبحث عن منزل مناسب.",
   color: "بني",
   size: "medium" as const,
+  healthStatus: "good" as const,
   healthCondition: "بحالة مستقرة",
   healthChecklist: [
     { id: "vaccinated", label: "مطعّم", checked: true },

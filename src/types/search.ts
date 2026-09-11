@@ -1,34 +1,40 @@
-import { ImageSourcePropType } from "react-native";
+import type { ImageSourcePropType } from "react-native";
 
-export type SearchFilterKey = "all" | "clinics" | "adoption" | "lost";
+export type SearchFilterKey = "all" | "clinics" | "adoption" | "reports";
 
-export type AnimalSearchResult = {
+type SearchBadge = { label: string; backgroundColor: string; textColor: string };
+
+export type AdoptionSearchResult = {
   id: string;
-  type: "animal";
-  category: "adoption" | "lost";
+  entityId: string;
+  type: "adoption";
   title: string;
   subtitle: string;
-  distance: string;
-  image: ImageSourcePropType;
-  badge?: {
-    label: string;
-    backgroundColor: string;
-    textColor: string;
-  };
+  meta: string;
+  image?: ImageSourcePropType;
+  badge?: SearchBadge;
+};
+
+export type ReportSearchResult = {
+  id: string;
+  entityId: string;
+  type: "report";
+  title: string;
+  subtitle: string;
+  meta: string;
+  image?: ImageSourcePropType;
+  badge?: SearchBadge;
 };
 
 export type ClinicSearchResult = {
   id: string;
+  entityId: string;
   type: "clinic";
   title: string;
   subtitle: string;
-  distance: string;
+  meta: string;
   services: string;
-  status?: {
-    label: string;
-    backgroundColor: string;
-    textColor: string;
-  };
+  status?: SearchBadge;
 };
 
-export type SearchResult = AnimalSearchResult | ClinicSearchResult;
+export type SearchResult = AdoptionSearchResult | ReportSearchResult | ClinicSearchResult;

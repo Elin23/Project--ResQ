@@ -1,5 +1,5 @@
 import { useRouter } from "expo-router";
-import { useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef, useState } from "react";
 import { Animated, Easing, useWindowDimensions } from "react-native";
 import { useSession } from "@/src/features/session/SessionContext";
 import { ROUTES, type AppRoute } from "@/src/navigation/routes";
@@ -14,6 +14,12 @@ export function useWelcomeScreen() {
   const [isNavigating, setIsNavigating] = useState(false);
 
   const navigationTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+  const clearNavigationTimer = useCallback(() => {
+    const timer = navigationTimer.current;
+    if (!timer) return;
+    clearTimeout(timer);
+    navigationTimer.current = null;
+  }, []);
 
   const screenOpacity = useRef(new Animated.Value(0)).current;
 
@@ -288,9 +294,7 @@ export function useWelcomeScreen() {
     });
 
     return () => {
-      if (navigationTimer.current) {
-        clearTimeout(navigationTimer.current);
-      }
+      clearNavigationTimer();
 
       logoFloatingAnimation.stop();
       glowAnimation.stop();
@@ -322,6 +326,7 @@ export function useWelcomeScreen() {
       shimmerTranslateX.stopAnimation();
     };
   }, [
+    clearNavigationTimer,
     createButtonOpacity,
     createButtonTranslateY,
     descriptionOpacity,

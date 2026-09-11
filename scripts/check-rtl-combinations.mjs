@@ -61,7 +61,7 @@ if (/locationCopy:\s*\{[^}]*alignItems:\s*["']flex-end["']/s.test(report)) failu
 
 const orgCard = fs.readFileSync(path.join(root, "src/features/organizations/components/OrganizationCard.tsx"), "utf8");
 const infoIndex = orgCard.indexOf('<View style={styles.info}>');
-const imageIndex = orgCard.indexOf('<Image source={organization.image}');
+const imageIndex = orgCard.indexOf('<RemoteImage');
 if (infoIndex < 0 || imageIndex < 0 || infoIndex > imageIndex) failures.push("OrganizationCard: content block must precede side image so Arabic title starts from the card start edge");
 if (!orgCard.includes('info: { flex: 1, minWidth: 0, alignItems: "stretch" }')) failures.push("OrganizationCard: text container must stretch instead of shrink-aligning to an edge");
 

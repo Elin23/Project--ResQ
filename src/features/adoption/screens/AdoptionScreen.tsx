@@ -51,7 +51,7 @@ export default function AdoptionScreen() {
       <RefreshStatus refreshing={refreshing} error={refreshError} stale={isStale} lastUpdatedAt={lastUpdatedAt} onRetry={() => void reload()} />
       {loading ? <SkeletonList count={3} /> : error ? <ErrorState description={error} onRetry={() => void reload()} /> : listings.length > 0 ? (
         listings.map((listing) => (
-          <SearchResultCard key={listing.id} result={{ id: listing.id, type: "animal", category: "adoption", title: `${listing.animalName} • ${listing.animalType}`, subtitle: listing.locationName, distance: "متاح للتبني", image: { uri: listing.imageUrl }, badge: { label: "متاح للتبني", backgroundColor: COLORS.successSoft, textColor: COLORS.successDark } }} onPress={() => router.push(adoptionDetailsRoute(listing.id, accountKind))} />
+          <SearchResultCard key={listing.id} result={{ id: `adoption-${listing.id}`, entityId: listing.id, type: "adoption", title: `${listing.animalName} • ${listing.animalType}`, subtitle: listing.locationName, meta: "متاح للتبني", image: { uri: listing.imageUrl }, badge: { label: "متاح للتبني", backgroundColor: COLORS.successSoft, textColor: COLORS.successDark } }} onPress={() => router.push(adoptionDetailsRoute(listing.id, accountKind))} />
         ))
       ) : (
         <EmptyState title="لا توجد حالات متاحة الآن" description="ستظهر هنا الحيوانات المتاحة للتبني عند إضافتها." icon="heart-outline" />

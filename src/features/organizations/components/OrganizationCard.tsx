@@ -19,7 +19,7 @@ export default function OrganizationCard({ organization, onOpen, onContact }: Pr
       <View style={styles.info}>
         <View style={styles.titleRow}>
           <AppText weight="bold" size={FONT_SIZES.title} numberOfLines={2} style={styles.title}>{organization.name}</AppText>
-          <AppText size={FONT_SIZES.label} color={COLORS.primary}>★ {organization.rating}</AppText>
+          {(organization.reviews ?? 0) > 0 && organization.rating != null ? <AppText size={FONT_SIZES.label} color={COLORS.primary}>★ {organization.rating}</AppText> : null}
         </View>
         <View style={styles.metaRow}>
           {organization.verified ? <StatusBadge label="جهة موثقة" color={COLORS.successDark} icon="checkmark-circle" size="sm" /> : null}

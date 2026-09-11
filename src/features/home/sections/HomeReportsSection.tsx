@@ -1,22 +1,35 @@
-import { ScrollView, View } from "react-native";
+import { useEffect, useState } from "react";
+import { View } from "react-native";
+import AppText from "@/src/components/ui/AppText";
 import SectionHeader from "@/src/components/ui/SectionHeader";
 import ActiveReportCard from "../components/ActiveReportCard";
-import NearbyReportCard from "../components/NearbyReportCard";
-import { NEARBY_REPORTS } from "../constants/home";
+import { useSession } from "@/src/features/session/SessionContext";
+import { repositories } from "@/src/services/domain/repositories";
+import type { Report } from "@/src/domain";
+import { COLORS } from "@/src/theme";
 import { styles } from "../screens/Home.styles";
 
 type Props = { onOpenReports: () => void };
+
+const progressFor = (status: Report["status"]) => status === "closed" ? 100 : status === "assigned" ? 65 : status === "approved" ? 35 : 10;
+
 export default function HomeReportsSection({ onOpenReports }: Props) {
-  return <>
-    <View style={styles.section}>
-      <SectionHeader title="بلاغاتي" actionLabel="عرض الكل" onActionPress={onOpenReports} />
-      <ActiveReportCard title="قطة ضالة" reportNumber="RQ-2481" progress={65} imageUrl="https://images.unsplash.com/photo-1573865526739-10659fec78a5?auto=format&fit=crop&w=600&q=80" onPress={onOpenReports} />
-    </View>
-    <View style={styles.section}>
-      <SectionHeader title="بلاغات قريبة منك" actionLabel="عرض الكل" onActionPress={onOpenReports} />
-      <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.horizontalList}>
-        {NEARBY_REPORTS.map((report) => <NearbyReportCard key={report.id} {...report} onPress={onOpenReports} />)}
-      </ScrollView>
-    </View>
-  </>;
+  const { account } = useSession();
+  const [report, setReport] = useState<Report | null>(null);
+  const [loading, setLoading] = useState(true);
+  useEffect(() => {
+    let active = true;
+    if (!account || account.kind !== "user") { setLoading(false); return () => { active = false; }; }
+    repositories.reports.listByUser(account.id)
+      .then((items) => { if (active) setReport(items.find((item) => item.status !== "closed") ?? items[0] ?? null); })
+      .catch(() => { if (active) setReport(null); })
+      .finally(() => { if (active) setLoading(false); });
+    return () => { active = false; };
+  }, [account]);
+  if (loading) return <View style={styles.section}><SectionHeader title="بلاغاتي" /><AppText variant="bodySmall" color={COLORS.textSecondary}>جاري تحميل البلاغات...</AppText></View>;
+  if (!report) return null;
+  return <View style={styles.section}>
+    <SectionHeader title="بلاغاتي" actionLabel="عرض الكل" onActionPress={onOpenReports} />
+    <ActiveReportCard title={report.title} reportNumber={report.code} progress={progressFor(report.status)} imageUrl={report.imageUrl} onPress={onOpenReports} />
+  </View>;
 }

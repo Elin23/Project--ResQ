@@ -47,7 +47,7 @@ const mustNotContain = [
   ['src/features/feeding-points/screens/CreateFeedingPointScreen.tsx', 'const useCurrentLocation'],
   ['src/features/public/screens/PrivacyPolicyScreen.tsx', 'styles.topBarButton'],
   ['src/features/donations/screens/CreateDonationCampaignScreen.tsx', '!account.kind === "organization"'],
-  ['src/data/repositories/inMemoryMapPlaceApplicationRepository.ts', 'import type { validateMapPlaceDraft'],
+  ['test-fixtures/repositories/inMemoryMapPlaceApplicationRepository.ts', 'import type { validateMapPlaceDraft'],
 ];
 for (const [file, needle] of mustNotContain) {
   const text = fs.readFileSync(file, 'utf8');

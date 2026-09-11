@@ -12,9 +12,9 @@ function clone(item: DonationCampaign): DonationCampaign {
   return {
     ...item,
     images: [...item.images],
-    location: { ...item.location },
-    impactItems: item.impactItems.map((impact) => ({ ...impact })),
-    paymentRecipient: { ...item.paymentRecipient },
+    location: item.location ? { ...item.location } : undefined,
+    impactItems: item.impactItems?.map((impact) => ({ ...impact })),
+    paymentRecipient: item.paymentRecipient ? { ...item.paymentRecipient } : undefined,
   };
 }
 
@@ -29,10 +29,7 @@ function validateCampaignInput(
     | "shortDescription"
     | "description"
     | "targetAmount"
-    | "impactItems"
     | "coverImageUrl"
-    | "location"
-    | "paymentRecipient"
   >,
 ) {
   if (!input.title.trim()) throw new Error("اسم الحملة مطلوب.");
@@ -42,10 +39,6 @@ function validateCampaignInput(
   if (!Number.isFinite(input.targetAmount) || input.targetAmount <= 0) {
     throw new Error("المبلغ المستهدف يجب أن يكون أكبر من صفر.");
   }
-  if (!input.location.governorate.trim()) throw new Error("محافظة الحملة مطلوبة.");
-  if (!input.impactItems.length) throw new Error("أضف هدفًا واحدًا على الأقل لاستخدام التبرعات.");
-  if (!input.paymentRecipient.fullName.trim()) throw new Error("اسم مستلم الحوالات مطلوب.");
-  if (!input.paymentRecipient.governorate.trim()) throw new Error("محافظة مستلم الحوالات مطلوبة.");
 }
 
 export class InMemoryDonationCampaignRepository implements DonationCampaignRepository {
@@ -95,9 +88,9 @@ export class InMemoryDonationCampaignRepository implements DonationCampaignRepos
         : input.coverImageUrl.trim()
           ? [input.coverImageUrl]
           : [],
-      impactItems: input.impactItems.map((impact) => ({ ...impact })),
-      location: { ...input.location },
-      paymentRecipient: { ...input.paymentRecipient },
+      impactItems: input.impactItems?.map((impact) => ({ ...impact })),
+      location: input.location ? { ...input.location } : undefined,
+      paymentRecipient: input.paymentRecipient ? { ...input.paymentRecipient } : undefined,
       raisedAmount: 0,
       donorCount: 0,
       currency: "SYP",
@@ -147,9 +140,9 @@ export class InMemoryDonationCampaignRepository implements DonationCampaignRepos
         : input.coverImageUrl.trim()
           ? [input.coverImageUrl]
           : [],
-      impactItems: input.impactItems.map((impact) => ({ ...impact })),
-      location: { ...input.location },
-      paymentRecipient: { ...input.paymentRecipient },
+      impactItems: input.impactItems?.map((impact) => ({ ...impact })),
+      location: input.location ? { ...input.location } : undefined,
+      paymentRecipient: input.paymentRecipient ? { ...input.paymentRecipient } : undefined,
       updatedAt: new Date().toISOString(),
       rejectionReason: current.status === "rejected" ? undefined : current.rejectionReason,
       reviewedAt: current.status === "rejected" ? undefined : current.reviewedAt,

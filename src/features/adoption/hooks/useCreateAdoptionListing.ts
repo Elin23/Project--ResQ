@@ -18,10 +18,12 @@ export function useCreateAdoptionListing() {
     setError(null);
     try {
       return await repositories.adoption.submit(input);
-    } catch {
-      const message = "تعذر إرسال إعلان التبني للمراجعة. حاول مرة أخرى.";
+    } catch (cause) {
+      const message = cause instanceof Error && cause.message.trim()
+        ? cause.message
+        : "تعذر إرسال إعلان التبني للمراجعة. حاول مرة أخرى.";
       setError(message);
-      throw new Error(message);
+      throw cause instanceof Error ? cause : new Error(message);
     } finally {
       setSubmitting(false);
     }
@@ -36,10 +38,12 @@ export function useCreateAdoptionListing() {
     setError(null);
     try {
       return await repositories.adoption.updateAndResubmit(id, ownerAccountId, input);
-    } catch {
-      const message = "تعذر تحديث الإعلان وإعادة إرساله للمراجعة.";
+    } catch (cause) {
+      const message = cause instanceof Error && cause.message.trim()
+        ? cause.message
+        : "تعذر تحديث الإعلان وإعادة إرساله للمراجعة.";
       setError(message);
-      throw new Error(message);
+      throw cause instanceof Error ? cause : new Error(message);
     } finally {
       setSubmitting(false);
     }

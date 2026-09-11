@@ -10,10 +10,11 @@ import ShellAwareScrollView from "@/src/components/ui/ShellAwareScrollView";
 import SectionHeader from "@/src/components/ui/SectionHeader";
 import { COLORS, FONTS, FONT_SIZES, RADIUS, SPACING } from "@/src/theme";
 import { useResponsiveCardWidth } from "@/src/hooks/useResponsiveCardWidth";
-import CommunityStatCard from "../components/CommunityStatCard";
 import OrganizationCard from "../components/OrganizationCard";
-import { COMMUNITY_STATS, ORGANIZATIONS } from "../constants/organizations";
 import { useOrganizations } from "../hooks/useOrganizations";
+import ErrorState from "@/src/components/ui/ErrorState";
+import { SkeletonList } from "@/src/components/ui/Skeleton";
+import type { Organization } from "../types/organization";
 
 export default function OrganizationsScreen() {
   const router = useRouter();
@@ -26,19 +27,17 @@ export default function OrganizationsScreen() {
       <View style={styles.searchBox}><Ionicons name="search-outline" size={22} color={COLORS.textSecondary}/><TextInput value={controller.query} onChangeText={controller.setQuery} placeholder="ابحث عن جمعية أو مدينة..." placeholderTextColor={COLORS.placeholder} style={styles.searchInput}/></View>
       <SectionHeader title="الجهات الموصى بها" actionLabel="عرض الكل" onActionPress={() => controller.setQuery("")} style={styles.sectionHeader} />
       <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.recommendedRow}>
-        {ORGANIZATIONS.slice(0,2).map((item) => <Pressable key={item.id} onPress={() => controller.openOrganization(item.id)} style={[styles.recommendedCard, { width: recommendedCardWidth }]}>
+        {controller.organizations.slice(0,2).map((item) => <Pressable key={item.id} onPress={() => controller.openOrganization(item.id)} style={[styles.recommendedCard, { width: recommendedCardWidth }]}>
           <ImageCard item={item}/>
         </Pressable>)}
       </ScrollView>
-      <SectionHeader title="إحصائيات المجتمع" style={styles.communityTitle} />
-      <View style={styles.statsGrid}>{COMMUNITY_STATS.map((item) => <CommunityStatCard key={item.id} {...item}/>)}</View>
       <View style={styles.resultsHeader}><AppText variant="h3" weight="bold">كافة الجهات</AppText><AppText variant="label" color={COLORS.textSecondary}>تم العثور على {controller.organizations.length} جهة</AppText></View>
-      <View style={styles.orgList}>{controller.organizations.length ? controller.organizations.map((item) => <OrganizationCard key={item.id} organization={item} onOpen={() => controller.openOrganization(item.id)} onContact={() => router.push("/contact-us")}/>) : <EmptyState title="لا توجد جهات" description="جرّب البحث باسم آخر أو مدينة مختلفة."/>}</View>
+      <View style={styles.orgList}>{controller.loading ? <SkeletonList count={3}/> : controller.error ? <ErrorState description={controller.error} onRetry={() => void controller.reload()}/> : controller.organizations.length ? controller.organizations.map((item) => <OrganizationCard key={item.id} organization={item} onOpen={() => controller.openOrganization(item.id)} onContact={() => router.push("/contact-us")}/>) : <EmptyState title="لا توجد جهات" description="لا توجد جمعيات منشورة تطابق البحث الحالي."/>}</View>
     </ShellAwareScrollView>
   </Screen>;
 }
 
-function ImageCard({ item }: { item: (typeof ORGANIZATIONS)[number] }) {
+function ImageCard({ item }: { item: Organization }) {
   return <><View style={styles.recommendedImageWrap}><RemoteImage uri={typeof item.image === "object" && item.image && "uri" in item.image ? String(item.image.uri) : undefined} style={styles.recommendedImage} accessibilityLabel={item.name} />{item.verified && <View style={styles.verifiedPill}><Ionicons name="checkmark-circle" size={14} color={COLORS.onColor}/><AppText variant="caption" color={COLORS.onColor}>موثوق</AppText></View>}</View><View style={styles.recommendedBody}><AppText weight="bold" numberOfLines={2}>{item.name}</AppText><AppText variant="caption" color={COLORS.textSecondary}>{item.city}، {item.country}</AppText></View></>;
 }
 

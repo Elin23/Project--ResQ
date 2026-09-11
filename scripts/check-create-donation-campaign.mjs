@@ -4,13 +4,12 @@ import path from "node:path";
 const root = process.cwd();
 const read = (file) => fs.readFileSync(path.join(root, file), "utf8");
 const failures = [];
-const mustFile = (file) => {
-  if (!fs.existsSync(path.join(root, file))) failures.push(`Missing ${file}`);
-};
+const mustFile = (file) => { if (!fs.existsSync(path.join(root, file))) failures.push(`Missing ${file}`); };
 const must = (file, token, label = token) => {
-  if (!fs.existsSync(path.join(root, file)) || !read(file).includes(token)) {
-    failures.push(`${file}: missing ${label}`);
-  }
+  if (!fs.existsSync(path.join(root, file)) || !read(file).includes(token)) failures.push(`${file}: missing ${label}`);
+};
+const mustNot = (file, token, label = token) => {
+  if (fs.existsSync(path.join(root, file)) && read(file).includes(token)) failures.push(`${file}: unsupported ${label}`);
 };
 
 [
@@ -19,6 +18,7 @@ const must = (file, token, label = token) => {
   "src/features/donations/hooks/useCreateDonationCampaign.ts",
   "src/features/donations/hooks/useOwnedDonationCampaign.ts",
   "src/features/donations/CampaignManagerRouteGate.tsx",
+  "src/services/api/apiWriteRepositories.ts",
   "app/campaigns/create.tsx",
   "app/organization/(tabs)/(home)/donations/campaigns/[id]/index.tsx",
 ].forEach(mustFile);
@@ -27,20 +27,20 @@ for (const token of [
   "صور الحملة",
   "المعلومات الأساسية",
   "الهدف المالي والمدة",
-  "موقع الحملة",
-  "ماذا سيحقق تبرعك؟",
-  "بيانات استلام الحوالات",
+  "استلام الحوالات",
   "إرسال الحملة للمراجعة",
   "حفظ كمسودة",
-]) {
-  must("src/features/donations/screens/CreateDonationCampaignScreen.tsx", token, `campaign form section: ${token}`);
-}
+]) must("src/features/donations/screens/CreateDonationCampaignScreen.tsx", token, `campaign form section: ${token}`);
 
 must("src/features/donations/screens/CreateDonationCampaignScreen.tsx", "allowsMultipleSelection: true", "multi-image campaign picker");
 must("src/features/donations/hooks/useCreateDonationCampaign.ts", "createDraft(input)", "draft persistence");
-must("src/data/repositories/inMemoryDonationCampaignRepository.ts", "validateDraftInput", "partial draft validation");
-must("src/data/repositories/inMemoryDonationCampaignRepository.ts", "validateCampaignInput(current)", "full validation before moderation submission");
 must("src/features/donations/hooks/useCreateDonationCampaign.ts", "submitForReview", "moderation submission");
+must("src/services/api/apiWriteRepositories.ts", "retainMediaIds", "campaign media replacement contract");
+must("src/services/api/apiWriteRepositories.ts", "newMediaUploadIds", "new campaign media uploads");
+mustNot("src/features/donations/screens/CreateDonationCampaignScreen.tsx", "recipientName", "campaign recipient fields ignored by backend");
+mustNot("src/features/donations/screens/CreateDonationCampaignScreen.tsx", "recipientGovernorate", "campaign recipient governorate ignored by backend");
+mustNot("src/features/donations/screens/CreateDonationCampaignScreen.tsx", 'SectionHeader title="موقع الحملة"', "campaign-specific location ignored by backend");
+mustNot("src/features/donations/screens/CreateDonationCampaignScreen.tsx", "newImpactTitle", "campaign impact items ignored by backend");
 must("src/features/donations/CampaignManagerRouteGate.tsx", 'can("manage-campaigns")', "capability route protection");
 must("src/features/session/accessPolicy.ts", '"manage-campaigns"', "campaign capability");
 const access = read("src/features/session/accessPolicy.ts");
@@ -58,4 +58,4 @@ if (failures.length) {
   console.error("Create donation campaign check failed:\n" + failures.map((item) => `- ${item}`).join("\n"));
   process.exit(1);
 }
-console.log("Create donation campaign check passed: organization campaign creation, drafts, moderation submission, and owner status are wired.");
+console.log("Create donation campaign check passed: the form matches the backend contract, transfer recipients are provider-owned, and campaign media replacement is wired.");

@@ -6,6 +6,7 @@ import { useEffect, useMemo, useRef, useState } from "react";
 import { Image, Pressable, StyleSheet, View } from "react-native";
 
 import { useFormFieldNavigation } from "@/src/components/forms/useFormFieldNavigation";
+import LocationLookupSelect from "@/src/components/location/LocationLookupSelect";
 import ActionStack from "@/src/components/ui/ActionStack";
 import AppText from "@/src/components/ui/AppText";
 import Button from "@/src/components/ui/Button";
@@ -21,24 +22,30 @@ import ErrorState from "@/src/components/ui/ErrorState";
 import LoadingState from "@/src/components/ui/LoadingState";
 import { useFeedback } from "@/src/components/ui/FeedbackProvider";
 import { usePermissionFeedback } from "@/src/hooks/usePermissionFeedback";
-import type { AdoptionAgeUnit, AdoptionGender, AdoptionHealthItem, AdoptionSize } from "@/src/domain/adoption/adoption";
+import type { AdoptionAgeUnit, AdoptionGender, AdoptionHealthItem, AdoptionHealthStatus, AdoptionSize } from "@/src/domain/adoption/adoption";
 import { useSession } from "@/src/features/session/SessionContext";
 import { useUnsavedChangesGuard } from "@/src/hooks/useUnsavedChangesGuard";
-import { adoptionMyListingDetailsRoute } from "@/src/navigation/routes";
+import { useLocationLookups } from "@/src/hooks/useLocationLookups";
+import { adoptionMyListingDetailsRoute, ROUTES } from "@/src/navigation/routes";
 import { COLORS, DENSITY, RADIUS, SPACING } from "@/src/theme";
 import AdoptionLocationPicker, { type AdoptionLocationValue } from "../components/AdoptionLocationPicker";
 import { useCreateAdoptionListing } from "../hooks/useCreateAdoptionListing";
 import { useOwnedAdoptionListingDetails } from "../hooks/useOwnedAdoptionListingDetails";
 
 const DEFAULT_LOCATION: AdoptionLocationValue = { latitude: 33.5138, longitude: 36.2765 };
-const FIELD_KEYS = ["animalName", "animalType", "age", "description", "weight", "color", "breed", "healthCondition", "address", "area", "contactName", "phone", "alternatePhone"] as const;
+const FIELD_KEYS = ["animalName", "age", "description", "weight", "color", "breed", "healthCondition", "address"] as const;
 const DEFAULT_HEALTH: AdoptionHealthItem[] = [
   { id: "vaccinated", label: "مطعّم", checked: false },
-  { id: "sterilized", label: "معقّم", checked: false },
-  { id: "parasites", label: "علاج طفيليات", checked: false },
-  { id: "vet-check", label: "فحص بيطري", checked: false },
-  { id: "medical-record", label: "لديه سجل طبي", checked: false },
-  { id: "needs-followup", label: "يحتاج متابعة طبية", checked: false },
+  { id: "disease-free", label: "خالٍ من الأمراض المعدية", checked: false },
+  { id: "examined", label: "تم فحصه بيطريًا", checked: false },
+];
+const ANIMAL_TYPE_OPTIONS = ["قطة", "كلب", "طائر", "أرنب", "أخرى"] as const;
+const HEALTH_STATUS_OPTIONS: { value: AdoptionHealthStatus; label: string }[] = [
+  { value: "good", label: "جيدة" },
+  { value: "needs_care", label: "تحتاج رعاية" },
+  { value: "under_treatment", label: "تحت العلاج" },
+  { value: "special_needs", label: "احتياجات خاصة" },
+  { value: "unknown", label: "غير محددة" },
 ];
 
 export default function CreateAdoptionListingScreen() {
@@ -60,7 +67,7 @@ export default function CreateAdoptionListingScreen() {
 
   const [images, setImages] = useState<string[]>([]);
   const [animalName, setAnimalName] = useState("");
-  const [animalType, setAnimalType] = useState("قطة");
+  const [animalType, setAnimalType] = useState<(typeof ANIMAL_TYPE_OPTIONS)[number]>("قطة");
   const [age, setAge] = useState("");
   const [ageUnit, setAgeUnit] = useState<AdoptionAgeUnit>("years");
   const [gender, setGender] = useState<AdoptionGender>("unknown");
@@ -71,28 +78,30 @@ export default function CreateAdoptionListingScreen() {
   const [color, setColor] = useState("");
   const [size, setSize] = useState<AdoptionSize>("medium");
   const [breed, setBreed] = useState("");
+  const [healthStatus, setHealthStatus] = useState<AdoptionHealthStatus>("good");
   const [healthCondition, setHealthCondition] = useState("");
   const [healthChecklist, setHealthChecklist] = useState<AdoptionHealthItem[]>(DEFAULT_HEALTH);
-  const [newHealthItem, setNewHealthItem] = useState("");
   const [location, setLocation] = useState<AdoptionLocationValue>(DEFAULT_LOCATION);
+  const [governorateId, setGovernorateId] = useState("");
+  const [governorateName, setGovernorateName] = useState("");
+  const [regionId, setRegionId] = useState("");
+  const [regionName, setRegionName] = useState("");
+  const [governorateSheetVisible, setGovernorateSheetVisible] = useState(false);
+  const [regionSheetVisible, setRegionSheetVisible] = useState(false);
   const [address, setAddress] = useState("");
-  const [area, setArea] = useState("");
   const [locating, setLocating] = useState(false);
-  const [contactName, setContactName] = useState(account?.displayName ?? "");
-  const [phone, setPhone] = useState("");
-  const [alternatePhone, setAlternatePhone] = useState("");
-  const [preferredMethod, setPreferredMethod] = useState<"phone" | "whatsapp">("phone");
+  const locationLookups = useLocationLookups(governorateId);
 
   const formSignature = JSON.stringify({
     images, animalName, animalType, age, ageUnit, gender, traits, description, weight, color, size, breed,
-    healthCondition, healthChecklist, location, address, area, contactName, phone, alternatePhone, preferredMethod,
+    healthStatus, healthCondition, healthChecklist, location, governorateId, regionId, address,
   });
 
   useEffect(() => {
     if (!editingListing || hydratedEditId === editingListing.id) return;
     setImages([...editingListing.images]);
     setAnimalName(editingListing.animalName);
-    setAnimalType(editingListing.animalType);
+    setAnimalType(ANIMAL_TYPE_OPTIONS.includes(editingListing.animalType as (typeof ANIMAL_TYPE_OPTIONS)[number]) ? editingListing.animalType as (typeof ANIMAL_TYPE_OPTIONS)[number] : "أخرى");
     setAge(String(editingListing.age));
     setAgeUnit(editingListing.ageUnit);
     setGender(editingListing.gender);
@@ -102,18 +111,18 @@ export default function CreateAdoptionListingScreen() {
     setColor(editingListing.color);
     setSize(editingListing.size);
     setBreed(editingListing.breed ?? "");
+    setHealthStatus(editingListing.healthStatus);
     setHealthCondition(editingListing.healthCondition);
-    setHealthChecklist(editingListing.healthChecklist.map((item) => ({ ...item })));
+    setHealthChecklist(DEFAULT_HEALTH.map((item) => ({ ...item, checked: !!editingListing.healthChecklist.find((existing) => existing.id === item.id)?.checked })));
     setLocation({
       latitude: editingListing.location.latitude,
       longitude: editingListing.location.longitude,
     });
+    setGovernorateId(editingListing.location.governorateId ?? "");
+    setGovernorateName(editingListing.location.governorateName ?? "");
+    setRegionId(editingListing.location.regionId ?? "");
+    setRegionName(editingListing.location.regionName ?? "");
     setAddress(editingListing.location.address);
-    setArea(editingListing.location.area ?? "");
-    setContactName(editingListing.contact.name);
-    setPhone(editingListing.contact.phone);
-    setAlternatePhone(editingListing.contact.alternatePhone ?? "");
-    setPreferredMethod(editingListing.contact.preferredMethod);
     setHydratedEditId(editingListing.id);
   }, [editingListing, hydratedEditId]);
 
@@ -131,22 +140,17 @@ export default function CreateAdoptionListingScreen() {
     const next: string[] = [];
     if (!images.length) next.push("أضف صورة واحدة على الأقل للحيوان.");
     if (!animalName.trim()) next.push("اسم الحيوان مطلوب.");
-    if (!animalType.trim()) next.push("نوع الحيوان مطلوب.");
+
     if (!(ageNumber > 0)) next.push("أدخل عمرًا صحيحًا أكبر من صفر.");
     if (!description.trim()) next.push("أضف نبذة عن الحيوان.");
     if (weightNumber !== undefined && (!Number.isFinite(weightNumber) || weightNumber <= 0)) next.push("الوزن يجب أن يكون رقمًا أكبر من صفر أو يترك فارغًا.");
     if (!color.trim()) next.push("لون الحيوان مطلوب.");
     if (!healthCondition.trim()) next.push("أدخل وصفًا للحالة الصحية.");
+    if (!governorateId) next.push("اختر المحافظة من القائمة المعتمدة.");
+    if (!regionId) next.push("اختر المنطقة التابعة للمحافظة.");
     if (!address.trim()) next.push("عنوان الحيوان مطلوب.");
-    if (!contactName.trim()) next.push("اسم جهة التواصل مطلوب.");
-    if (!phone.trim()) next.push("رقم الهاتف مطلوب.");
     return next;
-  }, [address, ageNumber, animalName, animalType, color, contactName, description, healthCondition, images.length, phone, weightNumber]);
-
-  const canSubmit = useMemo(() => Boolean(
-    account && images.length > 0 && animalName.trim() && animalType.trim() && ageNumber > 0 && description.trim()
-    && color.trim() && healthCondition.trim() && address.trim() && contactName.trim() && phone.trim() && !submitting,
-  ), [account, ageNumber, animalName, animalType, color, contactName, description, healthCondition, images.length, phone, address, submitting]);
+  }, [address, ageNumber, animalName, color, description, governorateId, healthCondition, images.length, regionId, weightNumber]);
 
   const pickImages = async () => {
     const permission = await ImagePicker.requestMediaLibraryPermissionsAsync();
@@ -170,13 +174,6 @@ export default function CreateAdoptionListingScreen() {
   };
 
   const toggleHealth = (id: string) => setHealthChecklist((current) => current.map((item) => item.id === id ? { ...item, checked: !item.checked } : item));
-  const addHealthItem = () => {
-    const label = newHealthItem.trim();
-    if (!label) return;
-    setHealthChecklist((current) => [...current, { id: `custom-${Date.now()}`, label, checked: true }]);
-    setNewHealthItem("");
-  };
-
   const handleUseCurrentLocation = async () => {
     if (locating) return;
     setLocating(true);
@@ -190,7 +187,7 @@ export default function CreateAdoptionListingScreen() {
         const [place] = await Location.reverseGeocodeAsync(next);
         const parts = [place?.city, place?.district, place?.street].filter(Boolean);
         if (parts.length) setAddress(parts.join(" - "));
-        if (!area.trim() && place?.district) setArea(place.district);
+
       } catch { /* Coordinates remain valid. */ }
     } catch {
       showFeedback({ title: "تعذر تحديد الموقع", message: "يمكنك اختيار الموقع يدويًا من الخريطة.", tone: "error" });
@@ -201,14 +198,11 @@ export default function CreateAdoptionListingScreen() {
     if (!account || submitting) return;
     const firstMissing = !images.length ? null
       : !animalName.trim() ? "animalName"
-      : !animalType.trim() ? "animalType"
       : !(ageNumber > 0) ? "age"
       : !description.trim() ? "description"
       : !color.trim() ? "color"
       : !healthCondition.trim() ? "healthCondition"
       : !address.trim() ? "address"
-      : !contactName.trim() ? "contactName"
-      : !phone.trim() ? "phone"
       : null;
     setShowValidation(true);
     if (validationErrors.length) {
@@ -229,20 +223,24 @@ export default function CreateAdoptionListingScreen() {
         color: color.trim(),
         size,
         breed: breed.trim() || undefined,
+        healthStatus,
         healthCondition: healthCondition.trim(),
         healthChecklist,
         images,
         location: {
+          governorateId,
+          governorateName,
+          regionId,
+          regionName,
           latitude: location.latitude,
           longitude: location.longitude,
           address: address.trim(),
-          area: area.trim() || undefined,
+          area: regionName || undefined,
         },
         contact: {
-          name: contactName.trim(),
-          phone: phone.trim(),
-          alternatePhone: alternatePhone.trim() || undefined,
-          preferredMethod,
+          name: account.displayName ?? "",
+          phone: account.phone ?? "",
+          preferredMethod: "phone" as const,
         },
         organizationId: account.kind === "organization" ? account.id : undefined,
       };
@@ -357,8 +355,9 @@ export default function CreateAdoptionListingScreen() {
         </FormSection>
 
         <FormSection title="المعلومات الأساسية" subtitle="بيانات مختصرة تساعد المتبني على فهم الحيوان بسرعة.">
-        <Input ref={fieldNavigation.ref("animalName")} label="اسم الحيوان" required error={showValidation && !animalName.trim() ? "اسم الحيوان مطلوب." : undefined} value={animalName} onChangeText={setAnimalName} placeholder="مثال: لولو" {...fieldNavigation.nextProps("animalName", "animalType")} />
-        <Input ref={fieldNavigation.ref("animalType")} label="النوع" required error={showValidation && !animalType.trim() ? "نوع الحيوان مطلوب." : undefined} value={animalType} onChangeText={setAnimalType} placeholder="قطة، كلب، أرنب..." {...fieldNavigation.nextProps("animalType", "age")} />
+        <Input ref={fieldNavigation.ref("animalName")} label="اسم الحيوان" required error={showValidation && !animalName.trim() ? "اسم الحيوان مطلوب." : undefined} value={animalName} onChangeText={setAnimalName} placeholder="مثال: لولو" {...fieldNavigation.nextProps("animalName", "age")} />
+        <AppText variant="label" weight="medium">نوع الحيوان</AppText>
+        <View style={styles.chipsRow}>{ANIMAL_TYPE_OPTIONS.map((option) => <Chip key={option} label={option} selected={animalType === option} onPress={() => setAnimalType(option)} />)}</View>
         <View style={styles.inlineFields}>
           <Input ref={fieldNavigation.ref("age")} containerStyle={styles.inlineField} label="العمر" required error={showValidation && !(ageNumber > 0) ? "أدخل عمرًا صحيحًا." : undefined} value={age} onChangeText={setAge} keyboardType="decimal-pad" contentDirection="ltr" placeholder="2" {...fieldNavigation.doneProps()} />
           <View style={styles.inlineField}><AppText variant="label" weight="medium" style={styles.fieldLabel}>وحدة العمر</AppText><View style={styles.chipsRow}><Chip label="سنة" selected={ageUnit === "years"} onPress={() => setAgeUnit("years")} /><Chip label="شهر" selected={ageUnit === "months"} onPress={() => setAgeUnit("months")} /></View></View>
@@ -386,7 +385,9 @@ export default function CreateAdoptionListingScreen() {
         </FormSection>
 
         <FormSection title="الحالة والسجل الصحي" subtitle="اذكر أي معلومات صحية قد تؤثر على قرار التبني أو الرعاية.">
-        <Input ref={fieldNavigation.ref("healthCondition")} label="الحالة الصحية" required error={showValidation && !healthCondition.trim() ? "صف الحالة الصحية الحالية." : undefined} value={healthCondition} onChangeText={setHealthCondition} multiline placeholder="صف الحالة الحالية، الأدوية أو أي متابعة مطلوبة" returnKeyType="default" />
+        <AppText variant="label" weight="medium">التقييم الصحي العام</AppText>
+        <View style={styles.chipsRow}>{HEALTH_STATUS_OPTIONS.map((option) => <Chip key={option.value} label={option.label} selected={healthStatus === option.value} onPress={() => setHealthStatus(option.value)} />)}</View>
+        <Input ref={fieldNavigation.ref("healthCondition")} label="تفاصيل الحالة الصحية" required error={showValidation && !healthCondition.trim() ? "صف الحالة الصحية الحالية." : undefined} value={healthCondition} onChangeText={setHealthCondition} multiline placeholder="صف الحالة الحالية، الأدوية أو أي متابعة مطلوبة" returnKeyType="default" />
         <View style={styles.checklist}>
           {healthChecklist.map((item) => (
             <Pressable key={item.id} accessibilityRole="checkbox" accessibilityState={{ checked: item.checked }} onPress={() => toggleHealth(item.id)} style={({ pressed }) => [styles.checkRow, pressed && styles.pressed]}>
@@ -395,22 +396,37 @@ export default function CreateAdoptionListingScreen() {
             </Pressable>
           ))}
         </View>
-        <View style={styles.addRow}><View style={styles.flexCopy}><Input value={newHealthItem} onChangeText={setNewHealthItem} placeholder="إضافة بند صحي" containerStyle={styles.noMargin} /></View><Button title="إضافة بند" icon="add-outline" fullWidth={false} onPress={addHealthItem} disabled={!newHealthItem.trim()} /></View>
         </FormSection>
 
         <FormSection title="الموقع الدقيق" subtitle="يُستخدم الموقع لعرض الحيوان للمتبنين القريبين وتسهيل التنسيق.">
-        <Input ref={fieldNavigation.ref("address")} label="العنوان" required error={showValidation && !address.trim() ? "العنوان مطلوب." : undefined} value={address} onChangeText={setAddress} placeholder="المدينة - المنطقة - أقرب معلم" {...fieldNavigation.nextProps("address", "area")} />
-        <Input ref={fieldNavigation.ref("area")} label="المنطقة" value={area} onChangeText={setArea} placeholder="اختياري" {...fieldNavigation.doneProps()} />
+        <LocationLookupSelect
+          label="المحافظة" placeholder="اختر المحافظة" value={governorateId} selectedLabel={governorateName}
+          options={locationLookups.governorateOptions} visible={governorateSheetVisible} required loading={locationLookups.loadingGovernorates}
+          error={showValidation && !governorateId ? "المحافظة مطلوبة." : undefined}
+          onOpen={() => setGovernorateSheetVisible(true)} onClose={() => setGovernorateSheetVisible(false)}
+          onSelect={(value) => { const selected = locationLookups.governorates.find((item) => item.id === value); setGovernorateId(value); setGovernorateName(selected?.name ?? ""); setRegionId(""); setRegionName(""); setGovernorateSheetVisible(false); }}
+        />
+        <LocationLookupSelect
+          label="المنطقة" placeholder={governorateId ? "اختر المنطقة" : "اختر المحافظة أولًا"} value={regionId} selectedLabel={regionName}
+          options={locationLookups.regionOptions} visible={regionSheetVisible} required disabled={!governorateId} loading={locationLookups.loadingRegions}
+          error={showValidation && !regionId ? "المنطقة مطلوبة." : undefined}
+          onOpen={() => setRegionSheetVisible(true)} onClose={() => setRegionSheetVisible(false)}
+          onSelect={(value) => { const selected = locationLookups.regions.find((item) => item.id === value); setRegionId(value); setRegionName(selected?.name ?? ""); setRegionSheetVisible(false); }}
+        />
+        {locationLookups.error ? <AppText variant="caption" color={COLORS.danger}>{locationLookups.error}</AppText> : null}
+        <Input ref={fieldNavigation.ref("address")} label="العنوان التفصيلي" required error={showValidation && !address.trim() ? "العنوان مطلوب." : undefined} value={address} onChangeText={setAddress} placeholder="الحي - الشارع - أقرب معلم" {...fieldNavigation.doneProps()} />
         <Button title={locating ? "جاري تحديد الموقع..." : "استخدام موقعي الحالي"} icon="locate-outline" variant="outline" loading={locating} onPress={() => void handleUseCurrentLocation()} />
         <AdoptionLocationPicker value={location} onChange={setLocation} />
         </FormSection>
 
-        <FormSection title="معلومات التواصل" subtitle="لن تُستخدم هذه البيانات إلا ضمن تدفق طلبات التبني.">
-        <Input ref={fieldNavigation.ref("contactName")} label="اسم جهة التواصل" required error={showValidation && !contactName.trim() ? "اسم جهة التواصل مطلوب." : undefined} value={contactName} onChangeText={setContactName} placeholder="الاسم الذي سيظهر بعد قبول طلب التبني" {...fieldNavigation.nextProps("contactName", "phone")} />
-        <Input ref={fieldNavigation.ref("phone")} label="رقم الهاتف" required error={showValidation && !phone.trim() ? "رقم الهاتف مطلوب." : undefined} value={phone} onChangeText={setPhone} keyboardType="phone-pad" contentDirection="ltr" placeholder="09xxxxxxxx" {...fieldNavigation.nextProps("phone", "alternatePhone")} />
-        <Input ref={fieldNavigation.ref("alternatePhone")} label="رقم بديل" value={alternatePhone} onChangeText={setAlternatePhone} keyboardType="phone-pad" contentDirection="ltr" placeholder="اختياري" {...fieldNavigation.doneProps()} />
-        <AppText variant="label" weight="medium">طريقة التواصل المفضلة</AppText>
-        <View style={styles.chipsRow}><Chip label="اتصال" icon="call-outline" selected={preferredMethod === "phone"} onPress={() => setPreferredMethod("phone")} /><Chip label="واتساب" icon="logo-whatsapp" selected={preferredMethod === "whatsapp"} onPress={() => setPreferredMethod("whatsapp")} /></View>
+        <FormSection title="معلومات التواصل" subtitle="يستخدم النظام بيانات الحساب الموثقة ولا يخزن رقمًا مختلفًا داخل إعلان التبني.">
+          <Card disabled style={styles.contactCard}>
+            <View style={styles.flexCopy}>
+              <AppText variant="label" weight="bold">{account?.displayName || "بيانات الحساب"}</AppText>
+              <AppText variant="bodySmall" color={COLORS.textSecondary}>{account?.phone || "أضف رقم هاتف إلى ملفك الشخصي ليظهر بعد قبول الطلب."}</AppText>
+            </View>
+            <Button title="تعديل الملف" variant="outline" fullWidth={false} onPress={() => router.push(ROUTES.editProfile)} />
+          </Card>
         </FormSection>
 
         {error ? <AppText variant="bodySmall" color={COLORS.danger}>{error}</AppText> : null}
@@ -438,5 +454,6 @@ const styles = StyleSheet.create({
   noMargin: { marginBottom: 0 },
   checklist: { gap: SPACING.xs },
   checkRow: { minHeight: 46, flexDirection: "row", direction: "rtl", alignItems: "center", gap: SPACING.sm, paddingHorizontal: SPACING.md, borderRadius: RADIUS.md, backgroundColor: COLORS.surfaceSubtle, borderWidth: 1, borderColor: COLORS.border },
+  contactCard: { flexDirection: "row", direction: "rtl", alignItems: "center", gap: SPACING.md },
   pressed: { opacity: 0.82 },
 });

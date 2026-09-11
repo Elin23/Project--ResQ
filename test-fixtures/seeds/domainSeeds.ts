@@ -90,6 +90,7 @@ export const ADOPTION_SEED: AdoptionListing[] = [
     traits: ["هادئة", "أليفة", "معتادة على المنزل"],
     description: "قطة شيرازية هادئة، بعمر سنة تقريبًا ومعتادة على المنزل.",
     weight: 4.2, color: "أبيض ورمادي", size: "small", breed: "شيرازي",
+    healthStatus: "good",
     healthCondition: "حالة صحية جيدة ولا تحتاج علاجًا حاليًا.",
     healthChecklist: [
       { id: "vaccinated", label: "مطعّمة", checked: true },
@@ -111,6 +112,7 @@ export const ADOPTION_SEED: AdoptionListing[] = [
     traits: ["اجتماعي", "ودود", "نشيط"],
     description: "كلب اجتماعي ومطعّم ويبحث عن منزل دائم مناسب.",
     weight: 18, color: "بني", size: "medium", breed: "مختلط",
+    healthStatus: "good",
     healthCondition: "مطعّم وبحالة مستقرة.",
     healthChecklist: [
       { id: "vaccinated", label: "مطعّم", checked: true },

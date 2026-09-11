@@ -19,13 +19,10 @@ function toView(task: RescueTask): OrganizationTask {
     healthStatus: task.healthStatus,
     reporterNote: task.reporterNote,
     reportedAgo: "مهمة نشطة",
-    etaMinutes: task.etaMinutes,
     locationLabel: task.locationLabel,
-    locationDistance: task.locationDistance,
     reporterName: task.reporterName,
     reporterPhone: task.reporterPhone,
-    image: { uri: task.imageUri },
-    mapImage: { uri: task.mapImageUri },
+    imageUri: task.imageUri,
   };
 }
 
@@ -56,7 +53,7 @@ export function useOrganizationTaskDetails() {
   useEffect(() => { void load(); }, [load]);
 
   const task = useMemo(() => domainTask ? toView(domainTask) : undefined, [domainTask]);
-  const stage: OrganizationTaskStage = domainTask?.stage === "completed" ? "rescued" : (domainTask?.stage ?? "on-route");
+  const stage: OrganizationTaskStage = domainTask?.stage === "completed" ? "rescued" : (domainTask?.stage ?? "assigned");
   const checklist = domainTask?.checklist ?? { arrived: false, assessed: false, secured: false };
   const notes = domainTask?.notes ?? "";
   const images = domainTask?.evidenceUris ?? [];
@@ -64,22 +61,40 @@ export function useOrganizationTaskDetails() {
 
   const toggleChecklist = useCallback(async (key: RescueChecklistKey) => {
     if (!domainTask) return;
-    let updated = await repositories.rescue.toggleChecklist(domainTask.id, key);
-    if (key === "arrived" && updated.checklist.arrived) updated = await repositories.rescue.setStage(domainTask.id, "arrived");
-    if (key === "secured" && updated.checklist.secured) updated = await repositories.rescue.setStage(domainTask.id, "rescued");
-    setDomainTask(updated);
-  }, [domainTask]);
+    try {
+      const updated = await repositories.rescue.toggleChecklist(domainTask.id, key);
+      setDomainTask(updated);
+    } catch (cause) {
+      showFeedback({ title: "تعذر تحديث المهمة", message: cause instanceof Error ? cause.message : "حاول مرة أخرى.", tone: "error" });
+    }
+  }, [domainTask, showFeedback]);
 
   const openNavigation = useCallback(async () => {
     if (!domainTask) return;
-    const updated = await repositories.rescue.setStage(domainTask.id, "on-route");
-    setDomainTask(updated);
-    await Linking.openURL(`https://www.google.com/maps/search/?api=1&query=${domainTask.latitude},${domainTask.longitude}`);
-  }, [domainTask]);
+    try {
+      let updated = domainTask;
+      if (updated.stage === "assigned") updated = await repositories.rescue.setStage(updated.id, "accepted");
+      if (updated.stage === "accepted") updated = await repositories.rescue.setStage(updated.id, "on-route");
+      setDomainTask(updated);
+      if (!Number.isFinite(updated.latitude) || !Number.isFinite(updated.longitude) || (updated.latitude === 0 && updated.longitude === 0)) {
+        showFeedback({ title: "الموقع غير متاح", message: "لا يحتوي البلاغ على إحداثيات صالحة للملاحة.", tone: "warning" });
+        return;
+      }
+      await Linking.openURL(`https://www.google.com/maps/search/?api=1&query=${updated.latitude},${updated.longitude}`);
+    } catch (cause) {
+      showFeedback({ title: "تعذر بدء الملاحة", message: cause instanceof Error ? cause.message : "حاول مرة أخرى.", tone: "error" });
+    }
+  }, [domainTask, showFeedback]);
 
-  const callReporter = useCallback(async () => { await Linking.openURL(`tel:${domainTask?.reporterPhone ?? "+963900000000"}`); }, [domainTask]);
-  const callVet = useCallback(async () => { await Linking.openURL("tel:+963110000000"); }, []);
-  const callAssociation = useCallback(async () => { await Linking.openURL("tel:+963110000001"); }, []);
+  const callReporter = useCallback(async () => {
+    const phone = domainTask?.reporterPhone?.trim();
+    if (!phone) {
+      showFeedback({ title: "رقم المبلّغ غير متاح", message: "لم يشارك المبلّغ رقم هاتف صالحًا مع هذا البلاغ.", tone: "info" });
+      return;
+    }
+    try { await Linking.openURL(`tel:${phone}`); }
+    catch { showFeedback({ title: "تعذر فتح الاتصال", message: "تحقق من إمكانية إجراء المكالمات على الجهاز.", tone: "error" }); }
+  }, [domainTask, showFeedback]);
 
   const shareTask = useCallback(async () => {
     if (!task) return;
@@ -88,16 +103,21 @@ export function useOrganizationTaskDetails() {
 
   const pickImage = useCallback(async (camera: boolean) => {
     if (!domainTask) return;
-    const permission = camera ? await ImagePicker.requestCameraPermissionsAsync() : await ImagePicker.requestMediaLibraryPermissionsAsync();
-    if (!handlePermission(permission, { title: camera ? "صلاحية الكاميرا مطلوبة" : "صلاحية الصور مطلوبة", message: camera ? "يلزم السماح باستخدام الكاميرا لتوثيق المهمة." : "يلزم السماح بالوصول للصور." })) return;
-    const result = camera
-      ? await ImagePicker.launchCameraAsync({ mediaTypes: ["images"], quality: 0.8 })
-      : await ImagePicker.launchImageLibraryAsync({ mediaTypes: ["images"], quality: 0.8, allowsMultipleSelection: true });
-    if (!result.canceled) {
-      const updated = await repositories.rescue.addEvidence(domainTask.id, result.assets.map((asset) => asset.uri));
-      setDomainTask(updated);
+    try {
+      const permission = camera ? await ImagePicker.requestCameraPermissionsAsync() : await ImagePicker.requestMediaLibraryPermissionsAsync();
+      if (!handlePermission(permission, { title: camera ? "صلاحية الكاميرا مطلوبة" : "صلاحية الصور مطلوبة", message: camera ? "يلزم السماح باستخدام الكاميرا لتوثيق المهمة." : "يلزم السماح بالوصول للصور." })) return;
+      const result = camera
+        ? await ImagePicker.launchCameraAsync({ mediaTypes: ["images"], quality: 0.8 })
+        : await ImagePicker.launchImageLibraryAsync({ mediaTypes: ["images"], quality: 0.8, allowsMultipleSelection: true });
+      if (!result.canceled) {
+        const updated = await repositories.rescue.addEvidence(domainTask.id, result.assets.map((asset) => asset.uri));
+        setDomainTask(updated);
+        showFeedback({ title: "تم رفع الصور", message: "حُفظ توثيق المهمة على الخادم.", tone: "success" });
+      }
+    } catch (cause) {
+      showFeedback({ title: "تعذر رفع الصور", message: cause instanceof Error ? cause.message : "حاول مرة أخرى.", tone: "error" });
     }
-  }, [domainTask, handlePermission]);
+  }, [domainTask, handlePermission, showFeedback]);
 
   const setNotes = useCallback((value: string) => {
     if (!domainTask) return;
@@ -106,19 +126,29 @@ export function useOrganizationTaskDetails() {
 
   const saveUpdates = useCallback(async () => {
     if (!domainTask) return;
-    let updated = await repositories.rescue.saveNotes(domainTask.id, domainTask.notes);
-    if (allChecked) {
-      updated = await repositories.rescue.setStage(domainTask.id, "completed");
-      updated = await repositories.rescue.setProgress(domainTask.id, 100);
+    try {
+      let updated = await repositories.rescue.saveNotes(domainTask.id, domainTask.notes);
+      if (allChecked) {
+        if (updated.stage === "arrived") updated = await repositories.rescue.setStage(updated.id, "rescued");
+        if (updated.stage !== "rescued" && updated.stage !== "completed") {
+          showFeedback({ title: "أكمل مراحل المهمة بالترتيب", message: "يجب تسجيل الوصول ثم تأمين الحيوان قبل إكمال المهمة.", tone: "error" });
+          setDomainTask(updated);
+          return;
+        }
+        if (updated.stage !== "completed") updated = await repositories.rescue.setStage(updated.id, "completed");
+        updated = await repositories.rescue.setProgress(domainTask.id, 100);
+        setDomainTask(updated);
+        router.replace(organizationTaskCompletedRoute(domainTask.id));
+        return;
+      }
       setDomainTask(updated);
-      router.replace(organizationTaskCompletedRoute(domainTask.id));
-      return;
+      showFeedback({ title: "تم حفظ التحديثات", message: "تم حفظ الملاحظات وتقدم المهمة على الخادم.", tone: "success" });
+    } catch (cause) {
+      showFeedback({ title: "تعذر حفظ المهمة", message: cause instanceof Error ? cause.message : "حاول مرة أخرى.", tone: "error" });
     }
-    setDomainTask(updated);
-    showFeedback({ title: "تم حفظ التحديثات", message: "تم حفظ تقدم المهمة ويمكنك استكمال التوثيق لاحقًا.", tone: "success" });
   }, [allChecked, domainTask, router, showFeedback]);
 
   const goBack = useCallback(() => router.canGoBack() ? router.back() : router.replace(ROUTES.organizationDashboard), [router]);
 
-  return { task, stage, checklist, notes, images, allChecked, loading, error, reload: load, setNotes, toggleChecklist, openNavigation, callReporter, callVet, callAssociation, shareTask, openCamera: () => pickImage(true), openGallery: () => pickImage(false), saveUpdates, goBack };
+  return { task, stage, checklist, notes, images, allChecked, loading, error, reload: load, setNotes, toggleChecklist, openNavigation, callReporter, shareTask, openCamera: () => void pickImage(true), openGallery: () => void pickImage(false), saveUpdates, goBack };
 }

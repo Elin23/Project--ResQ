@@ -5,7 +5,7 @@ import AppText from "@/src/components/ui/AppText";
 import Card from "@/src/components/ui/Card";
 import { COLORS, RADIUS, SPACING } from "@/src/theme";
 
-export default function OrganizationSummaryCard() {
+export default function OrganizationSummaryCard({ totalRescueTasks }: { totalRescueTasks: number }) {
   return (
     <Card
       disabled
@@ -22,8 +22,8 @@ export default function OrganizationSummaryCard() {
           <Ionicons name="paw-outline" size={30} color={COLORS.white} />
         </View>
         <View style={styles.textWrap}>
-          <AppText variant="label" color={COLORS.brown}>إجمالي عمليات الإنقاذ</AppText>
-          <AppText variant="h1" weight="bold" color={COLORS.brownDark}>146 عملية</AppText>
+          <AppText variant="label" color={COLORS.brown}>إجمالي مهام الإنقاذ المحمّلة</AppText>
+          <AppText variant="h1" weight="bold" color={COLORS.brownDark}>{totalRescueTasks} مهمة</AppText>
         </View>
       </View>
       <Ionicons name="paw" size={92} color={COLORS.orgDashboardHeroMark} style={styles.mark} />

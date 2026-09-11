@@ -20,11 +20,14 @@ import IconButton from "@/src/components/ui/IconButton";
 import Screen from "@/src/components/ui/Screen";
 import ScreenHeader from "@/src/components/ui/ScreenHeader";
 import SelectionSheet from "@/src/components/ui/SelectionSheet";
+import Input from "@/src/components/ui/Input";
+import LocationLookupSelect from "@/src/components/location/LocationLookupSelect";
 import { useFeedback } from "@/src/components/ui/FeedbackProvider";
 import { useSession } from "@/src/features/session/SessionContext";
 import { ROUTES } from "@/src/navigation/routes";
 import { useSubmitReport } from "../hooks/useSubmitReport";
 import { usePermissionFeedback } from "@/src/hooks/usePermissionFeedback";
+import { useLocationLookups } from "@/src/hooks/useLocationLookups";
 import { COLORS, FONTS, LAYOUT, RADIUS, SPACING, TYPOGRAPHY } from "@/src/theme";
 import CreateReportLocationMap from "./CreateReportLocationMap";
 
@@ -104,10 +107,19 @@ export default function CreateReportForm() {
   const [description, setDescription] = useState("");
   const [selectedImages, setSelectedImages] = useState<string[]>([]);
   const [locating, setLocating] = useState(false);
+  const [governorateId, setGovernorateId] = useState("");
+  const [governorateName, setGovernorateName] = useState("");
+  const [regionId, setRegionId] = useState("");
+  const [regionName, setRegionName] = useState("");
+  const [address, setAddress] = useState("");
+  const [governorateSheetVisible, setGovernorateSheetVisible] = useState(false);
+  const [regionSheetVisible, setRegionSheetVisible] = useState(false);
+  const [formError, setFormError] = useState<string | null>(null);
+  const locationLookups = useLocationLookups(governorateId);
 
   const [region, setRegion] = useState({
-    latitude: 24.7136,
-    longitude: 46.6753,
+    latitude: 33.5138,
+    longitude: 36.2765,
     latitudeDelta: 0.01,
     longitudeDelta: 0.01,
   });
@@ -464,6 +476,58 @@ export default function CreateReportForm() {
           >
             الموقع
           </AppText>
+          <View style={styles.locationFields}>
+            <LocationLookupSelect
+              label="المحافظة"
+              placeholder="اختر المحافظة"
+              value={governorateId}
+              selectedLabel={governorateName}
+              options={locationLookups.governorateOptions}
+              visible={governorateSheetVisible}
+              required
+              loading={locationLookups.loadingGovernorates}
+              onOpen={() => setGovernorateSheetVisible(true)}
+              onClose={() => setGovernorateSheetVisible(false)}
+              onSelect={(value) => {
+                const selected = locationLookups.governorates.find((item) => item.id === value);
+                setGovernorateId(value);
+                setGovernorateName(selected?.name ?? "");
+                setRegionId("");
+                setRegionName("");
+                setGovernorateSheetVisible(false);
+                setFormError(null);
+              }}
+            />
+            <LocationLookupSelect
+              label="المنطقة"
+              placeholder={governorateId ? "اختر المنطقة" : "اختر المحافظة أولًا"}
+              value={regionId}
+              selectedLabel={regionName}
+              options={locationLookups.regionOptions}
+              visible={regionSheetVisible}
+              required
+              disabled={!governorateId}
+              loading={locationLookups.loadingRegions}
+              onOpen={() => setRegionSheetVisible(true)}
+              onClose={() => setRegionSheetVisible(false)}
+              onSelect={(value) => {
+                const selected = locationLookups.regions.find((item) => item.id === value);
+                setRegionId(value);
+                setRegionName(selected?.name ?? "");
+                setRegionSheetVisible(false);
+                setFormError(null);
+              }}
+            />
+            <Input
+              label="العنوان / أقرب معلم"
+              required
+              value={address}
+              onChangeText={(value) => { setAddress(value); setFormError(null); }}
+              placeholder="مثال: شارع بغداد - قرب الحديقة"
+            />
+            {locationLookups.error ? <AppText variant="bodySmall" color={COLORS.urgent}>{locationLookups.error}</AppText> : null}
+          </View>
+
           <View style={styles.mapCard}>
             <View style={styles.mapContainer}>
               <CreateReportLocationMap style={styles.map} region={region} onRegionChange={setRegion} />
@@ -542,20 +606,35 @@ export default function CreateReportForm() {
             disabled={submitting}
             onPress={async () => {
               const statusLabel = ANIMAL_STATUSES.find((item) => item.id === selectedStatus)?.label ?? "حالة حيوان";
+              if (!governorateId || !regionId || !address.trim()) {
+                setFormError("يرجى اختيار المحافظة والمنطقة وإدخال عنوان واضح للحالة.");
+                return;
+              }
+              if ((description.trim() || statusLabel).length < 5) {
+                setFormError("يرجى كتابة وصف أوضح للحالة.");
+                return;
+              }
+              setFormError(null);
               try {
-                await submit({
+                const createdReport = await submit({
                   title: `${statusLabel} • ${count > 1 ? `${count} حيوانات` : "حيوان واحد"}`,
                   description: description.trim() || statusLabel,
                   subtitle: description.trim() || `بلاغ ${statusLabel} • ${selectedAnimalType}`,
-                  animalType: selectedAnimalType === "قط" ? "cat" : selectedAnimalType === "طائر" ? "bird" : selectedAnimalType === "أخرى" ? "other" : "dog",
+                  animalType: selectedAnimalType === "قط" ? "cat" : selectedAnimalType === "طائر" ? "bird" : selectedAnimalType === "أرنب" ? "rabbit" : selectedAnimalType === "أخرى" ? "other" : "dog",
                   imageUrl: selectedImages[0],
-                  locationName: "الموقع المحدد على الخريطة",
+                  mediaLocalUris: selectedImages,
+                  locationName: regionName || governorateName || address.trim(),
+                  governorateId,
+                  governorateName,
+                  regionId,
+                  regionName,
+                  address: address.trim(),
                   latitude: region.latitude,
                   longitude: region.longitude,
                   priority: selectedSeverity === "critical" || selectedSeverity === "high" ? "urgent" : "normal",
                   userId: account?.id ?? "",
                 });
-                router.push(ROUTES.reportSuccess);
+                router.push({ pathname: ROUTES.reportSuccess, params: { id: createdReport.id, code: createdReport.code } });
               } catch {
                 // Error text is rendered below the button.
               }
@@ -576,6 +655,7 @@ export default function CreateReportForm() {
               {submitting ? "جاري الإرسال..." : "إرسال البلاغ"}
             </AppText>
           </TouchableOpacity>
+          {formError ? <AppText variant="bodySmall" color={COLORS.urgent} style={{ marginTop: SPACING.sm }}>{formError}</AppText> : null}
           {submitError ? <AppText variant="bodySmall" color={COLORS.urgent} style={{ marginTop: SPACING.sm }}>{submitError}</AppText> : null}
 
           <View style={{ height: 40 }} />
@@ -589,6 +669,7 @@ export default function CreateReportForm() {
           { value: "كلب", label: "كلب" },
           { value: "قط", label: "قط" },
           { value: "طائر", label: "طائر" },
+          { value: "أرنب", label: "أرنب" },
           { value: "أخرى", label: "أخرى" },
         ]}
         onSelect={setSelectedAnimalType}
@@ -665,6 +746,7 @@ const styles = StyleSheet.create({
   },
   uploadIconsRow: {
     flexDirection: "row",
+    direction: "rtl",
     alignItems: "center",
     justifyContent: "center",
     gap: 10,
@@ -751,6 +833,7 @@ const styles = StyleSheet.create({
     color: COLORS.text,
   },
   charCounter: { textAlign: "auto", marginTop: 6 },
+  locationFields: { gap: SPACING.md, marginBottom: SPACING.md },
   mapCard: {
     borderWidth: 1,
     borderColor: COLORS.border,

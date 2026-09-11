@@ -2,7 +2,7 @@ import type {
   FeedingPointDetails,
   FeedingPointSummary,
   StatusUpdate,
-} from '../features/feeding-points/types';
+} from '../src/features/feeding-points/types';
 
 const hoursAgo = (h: number) => new Date(Date.now() - h * 3_600_000).toISOString();
 

@@ -7,7 +7,7 @@ const warnings = [];
 const required = [
   "src/features/session/accessPolicy.test.ts",
   "src/navigation/workspaces.test.ts",
-  "src/data/repositories/__tests__/inMemoryRepositories.test.ts",
+  "test-fixtures/repositories/__tests__/inMemoryRepositories.test.ts",
   "src/application/rescue/__tests__/RescueOperationsService.test.ts",
   "PRODUCTION-READINESS.md",
   ".github/workflows/quality.yml",
@@ -26,7 +26,7 @@ for (const file of sourceFiles) {
   if (/console\.log\(/.test(text)) warnings.push(`console.log remains: ${rel}`);
 }
 
-for (const rel of ["src/domain", "src/data/repositories", "src/application"]) {
+for (const rel of ["src/domain", "test-fixtures/repositories", "src/application"]) {
   for (const file of walk(path.join(root, rel)).filter((item) => /\.tsx?$/.test(item))) {
     const text = fs.readFileSync(file, "utf8");
     if (/require\(["']@\/assets\//.test(text)) errors.push(`runtime asset require leaks into domain/data/application: ${path.relative(root, file)}`);

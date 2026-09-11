@@ -12,11 +12,11 @@ const required = [
 for (const file of required) {
   if (!fs.existsSync(path.join(root, file))) throw new Error(`Missing Package 40 file: ${file}`);
 }
-const repo = read("src/data/repositories/inMemoryAdoptionApplicationRepository.ts");
+const repo = read("test-fixtures/repositories/inMemoryAdoptionApplicationRepository.ts");
 for (const token of ["acceptForListingOwner", "rejectForListingOwner", '"not_selected"', "reserveOwned"]) {
   if (!repo.includes(token)) throw new Error(`Owner decision repository contract missing: ${token}`);
 }
-const listingRepo = read("src/data/repositories/inMemoryAdoptionRepository.ts");
+const listingRepo = read("test-fixtures/repositories/inMemoryAdoptionRepository.ts");
 if (!listingRepo.includes('status: "reserved"')) throw new Error("Accepted adoption must reserve the listing.");
 const routes = read("src/navigation/routes.ts");
 for (const token of ["adoptionListingApplicationsRoute", "adoptionListingApplicationDetailsRoute"]) {

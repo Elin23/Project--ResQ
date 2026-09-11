@@ -27,6 +27,10 @@ export type AuthenticatedAccount = {
   status: AccountStatus;
   displayName?: string;
   email?: string;
+  organizationId?: number;
+  normalUserId?: number;
+  phone?: string;
+  phoneVerified?: boolean;
   userAccountStatus?: UserAccountStatus;
   userVerificationStatus?: UserVerificationStatus;
   organizationAccountStatus?: OrganizationAccountStatus;

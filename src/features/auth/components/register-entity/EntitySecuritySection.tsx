@@ -69,7 +69,7 @@ export default function EntitySecuritySection({ form }: { form: RegisterEntityFo
 </View>
 
 <View style={styles.passwordBars}>
-  {[1, 2, 3].map((item) => (
+  {[1, 2, 3, 4].map((item) => (
     <View
       key={item}
       style={[

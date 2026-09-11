@@ -1,6 +1,6 @@
 import type { PublicContent, PublicContentKind } from "@/src/domain/content/content";
 import type { PublicContentRepository } from "@/src/domain/content/contentRepository";
-import { PUBLIC_CONTENT_SEED } from "@/src/data/publicContent.seed";
+import { PUBLIC_CONTENT_SEED } from "@/test-fixtures/publicContent.seed";
 
 export class InMemoryPublicContentRepository implements PublicContentRepository {
   private readonly items: PublicContent[] = PUBLIC_CONTENT_SEED.map((item) => ({ ...item, body: [...item.body] }));

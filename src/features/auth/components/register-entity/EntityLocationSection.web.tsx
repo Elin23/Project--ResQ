@@ -27,7 +27,6 @@ export default function EntityLocationSection({ form }: { form: RegisterEntityFo
     selectServiceGovernorate,
     selectServiceRegion,
     selectedLocation,
-    mapRegion,
     errors,
     openMapPicker,
     renderError,

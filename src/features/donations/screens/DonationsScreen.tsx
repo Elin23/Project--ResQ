@@ -93,8 +93,8 @@ export default function DonationsScreen() {
       [
         campaign.title,
         campaign.ownerDisplayName,
-        campaign.location.governorate,
-        campaign.location.city,
+        campaign.location?.governorate,
+        campaign.location?.city,
         campaign.shortDescription,
       ]
         .filter(Boolean)
