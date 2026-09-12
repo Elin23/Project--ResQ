@@ -14,6 +14,7 @@ import {
 import { ContentDirection, resolveInputDirection } from "@/src/i18n";
 import {
   ACCESSIBILITY,
+  ARABIC_LAYOUT,
   COLORS,
   CONTROL_SIZES,
   ICON_SIZES,
@@ -240,7 +241,8 @@ const styles = StyleSheet.create({
     fontSize: TYPOGRAPHY.label.fontSize,
     lineHeight: TYPOGRAPHY.label.lineHeight,
     color: COLORS.text,
-    textAlign: "right",
+    textAlign: ARABIC_LAYOUT.textAlign,
+    writingDirection: ARABIC_LAYOUT.direction,
   },
   required: {
     flexShrink: 0,

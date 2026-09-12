@@ -84,6 +84,7 @@ export default function DonationsScreen() {
   const [showSearch, setShowSearch] = useState(false);
   const [showFilters, setShowFilters] = useState(true);
   const [query, setQuery] = useState("");
+  const [showAllNeeded, setShowAllNeeded] = useState(false);
   const { isNarrow } = useResponsiveLayout();
 
   const filtered = useMemo(() => {
@@ -102,12 +103,15 @@ export default function DonationsScreen() {
     );
   }, [query, state.campaigns]);
 
-  const mostNeeded = useMemo(() => {
-    if (!query.trim()) return state.mostNeeded;
-    return [...filtered]
-      .filter((campaign) => campaign.status === "active")
-      .sort((a, b) => Number(b.urgent) - Number(a.urgent) || progressFor(a) - progressFor(b))[0];
-  }, [filtered, query, state.mostNeeded]);
+  const rankedByNeed = useMemo(
+    () =>
+      [...filtered]
+        .filter((campaign) => campaign.status === "active")
+        .sort((a, b) => Number(b.urgent) - Number(a.urgent) || progressFor(a) - progressFor(b)),
+    [filtered],
+  );
+  const mostNeeded = rankedByNeed[0];
+  const canExpandNeeded = rankedByNeed.length > 1;
 
   const activeCampaigns = useMemo(
     () => filtered.filter((campaign) => campaign.status === "active" && campaign.id !== mostNeeded?.id),
@@ -217,13 +221,30 @@ export default function DonationsScreen() {
           </ScrollView>
         ) : null}
 
-        <SectionHeader title="الأكثر احتياجًا" actionLabel="عرض الكل" onActionPress={() => { setQuery(""); state.setCategory("all"); }} />
+        <SectionHeader
+          title="الأكثر احتياجًا"
+          actionLabel={canExpandNeeded ? (showAllNeeded ? "عرض أقل" : "عرض الكل") : undefined}
+          onActionPress={canExpandNeeded ? () => setShowAllNeeded((value) => !value) : undefined}
+        />
         {mostNeeded ? (
-          <PrimaryCampaignCard
-            compact={isNarrow}
-            campaign={mostNeeded}
-            onPress={() => router.push(donationCampaignDetailsRoute(mostNeeded.id, accountKind))}
-          />
+          <>
+            <PrimaryCampaignCard
+              compact={isNarrow}
+              campaign={mostNeeded}
+              onPress={() => router.push(donationCampaignDetailsRoute(mostNeeded.id, accountKind))}
+            />
+            {showAllNeeded ? (
+              <View style={styles.compactList}>
+                {rankedByNeed.slice(1).map((campaign) => (
+                  <CompactCampaignCard
+                    key={campaign.id}
+                    campaign={campaign}
+                    onPress={() => router.push(donationCampaignDetailsRoute(campaign.id, accountKind))}
+                  />
+                ))}
+              </View>
+            ) : null}
+          </>
         ) : (
           <EmptyState
             title="لا توجد حملات مطابقة"
@@ -231,7 +252,7 @@ export default function DonationsScreen() {
           />
         )}
 
-        {activeCampaigns.length ? (
+        {activeCampaigns.length && !showAllNeeded ? (
           <>
             <SectionHeader title="الحملات النشطة" subtitle="حملات مفتوحة للمساهمة الآن" />
             <View style={styles.compactList}>

@@ -258,7 +258,8 @@ export default function DonationCampaignDetailsScreen() {
             placeholder="أدخل مبلغًا آخر"
             keyboardType="numeric"
             icon="cash-outline"
-            contentDirection="ltr"
+            contentDirection="rtl"
+            inputStyle={styles.rtlInput}
           />
 
           <Input
@@ -268,7 +269,8 @@ export default function DonationCampaignDetailsScreen() {
             placeholder="اكتب رسالة قصيرة لدعم الحملة..."
             multiline
             numberOfLines={4}
-            inputStyle={styles.messageInput}
+            contentDirection="rtl"
+            inputStyle={[styles.rtlInput, styles.messageInput]}
           />
         </ReadingSection>
 
@@ -339,6 +341,7 @@ const styles = StyleSheet.create({
   amountGrid: { flexDirection: "row", direction: "rtl", flexWrap: "wrap", gap: SPACING.sm },
   amountChoice: { width: "48%", flexGrow: 1, minHeight: 58, paddingHorizontal: SPACING.md, borderWidth: 1, borderColor: COLORS.borderStrong, borderRadius: RADIUS.lg, backgroundColor: COLORS.background, alignItems: "center", justifyContent: "center" },
   amountChoiceSelected: { borderWidth: 2, borderColor: COLORS.primaryStrong, backgroundColor: COLORS.primarySoft },
+  rtlInput: { textAlign: "right", writingDirection: "rtl" },
   messageInput: { minHeight: 92, paddingVertical: SPACING.sm },
   closedCard: { flexDirection: "row", direction: "rtl", alignItems: "center", gap: SPACING.md },
   pressed: { opacity: 0.86, transform: [{ scale: 0.99 }] },
