@@ -1,5 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import { Stack, useRouter } from "expo-router";
+import { useState } from "react";
 import { Pressable, ScrollView, StyleSheet, TextInput, View } from "react-native";
 import AppText from "@/src/components/ui/AppText";
 import RemoteImage from "@/src/components/ui/RemoteImage";
@@ -16,18 +17,23 @@ import ErrorState from "@/src/components/ui/ErrorState";
 import { SkeletonList } from "@/src/components/ui/Skeleton";
 import type { Organization } from "../types/organization";
 
+const RECOMMENDED_PREVIEW_COUNT = 2;
+
 export default function OrganizationsScreen() {
   const router = useRouter();
   const recommendedCardWidth = useResponsiveCardWidth({ maxWidth: 300, minWidth: 228 });
   const controller = useOrganizations();
+  const [showAllRecommended, setShowAllRecommended] = useState(false);
+  const recommended = showAllRecommended ? controller.organizations : controller.organizations.slice(0, RECOMMENDED_PREVIEW_COUNT);
+  const canToggleRecommended = controller.organizations.length > RECOMMENDED_PREVIEW_COUNT;
   return <Screen padded={false} scroll={false} surface="app" safeAreaEdges={["top","left","right"]}>
     <Stack.Screen options={{ headerShown: false }} />
     <ScreenHeader title="الجمعيات والمنظمات" onBack={() => router.back()} />
     <ShellAwareScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.content}>
       <View style={styles.searchBox}><Ionicons name="search-outline" size={22} color={COLORS.textSecondary}/><TextInput value={controller.query} onChangeText={controller.setQuery} placeholder="ابحث عن جمعية أو مدينة..." placeholderTextColor={COLORS.placeholder} style={styles.searchInput}/></View>
-      <SectionHeader title="الجهات الموصى بها" actionLabel="عرض الكل" onActionPress={() => controller.setQuery("")} style={styles.sectionHeader} />
+      <SectionHeader title="الجهات الموصى بها" actionLabel={canToggleRecommended ? (showAllRecommended ? "عرض أقل" : "عرض الكل") : undefined} onActionPress={canToggleRecommended ? () => setShowAllRecommended((prev) => !prev) : undefined} style={styles.sectionHeader} />
       <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.recommendedRow}>
-        {controller.organizations.slice(0,2).map((item) => <Pressable key={item.id} onPress={() => controller.openOrganization(item.id)} style={[styles.recommendedCard, { width: recommendedCardWidth }]}>
+        {recommended.map((item) => <Pressable key={item.id} onPress={() => controller.openOrganization(item.id)} style={[styles.recommendedCard, { width: recommendedCardWidth }]}>
           <ImageCard item={item}/>
         </Pressable>)}
       </ScrollView>
