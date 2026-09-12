@@ -1,5 +1,5 @@
 import { usePathname, useRouter } from "expo-router";
-import { useEffect, useRef } from "react";
+import { useEffect } from "react";
 import { BackHandler, Platform } from "react-native";
 
 import { ROUTES } from "./routes";
@@ -19,67 +19,42 @@ const ORGANIZATION_TAB_ROOTS = new Set([
 /**
  * Android hardware-back boundary for the persistent workspaces.
  *
- * Detail screens keep the navigator's normal history. At a tab root, repeated
- * hardware-back presses are consumed so they cannot fall through into stale
- * auth/onboarding history. A short lock also prevents several physical back
- * events from racing while a tab-root replacement is still committing.
+ * Only tab-root presses are handled here. Detail/form screens are deliberately
+ * left to Expo Router / React Navigation so their stack transitions and guards
+ * finish normally without competing with a second manual back action.
  */
 export default function WorkspaceBackBoundary({ kind }: { kind: WorkspaceKind }) {
   const router = useRouter();
   const pathname = usePathname();
-  const transitionLockedRef = useRef(false);
-  const unlockTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  useEffect(() => {
-    transitionLockedRef.current = false;
-    if (unlockTimerRef.current) {
-      clearTimeout(unlockTimerRef.current);
-      unlockTimerRef.current = null;
-    }
-  }, [pathname]);
 
   useEffect(() => {
     if (Platform.OS !== "android") return;
 
     const subscription = BackHandler.addEventListener("hardwareBackPress", () => {
       const roots = kind === "organization" ? ORGANIZATION_TAB_ROOTS : USER_TAB_ROOTS;
-      if (transitionLockedRef.current) return true;
+
+      // Detail screens, forms and modals must use the navigator's native back
+      // handling. Returning false avoids racing a manual router.back() against
+      // React Navigation transitions / usePreventRemove dialogs.
+      if (!roots.has(pathname)) return false;
 
       const home = kind === "organization" ? ROUTES.organizationDashboard : ROUTES.userHome;
       const isHome = pathname === "/" || pathname === "/organization";
 
-      // Tab roots never fall through to stale auth/onboarding history.
-      if (roots.has(pathname)) {
-        if (!isHome) {
-          transitionLockedRef.current = true;
-          router.replace(home);
-          unlockTimerRef.current = setTimeout(() => {
-            transitionLockedRef.current = false;
-            unlockTimerRef.current = null;
-          }, 500);
-        }
+      // Never allow the workspace root to pop back into the hidden launch/auth
+      // stack. On Android the expected behavior from the app home is to leave
+      // the app instead of navigating to a stale screen behind the workspace.
+      if (isHome) {
+        BackHandler.exitApp();
         return true;
       }
 
-      // Detail screens also consume the physical event so a burst of Android
-      // back presses cannot enqueue several navigation removals at once.
-      transitionLockedRef.current = true;
-      if (router.canGoBack()) router.back();
-      else router.replace(home);
-      unlockTimerRef.current = setTimeout(() => {
-        transitionLockedRef.current = false;
-        unlockTimerRef.current = null;
-      }, 500);
+      // From another persistent tab, back means "go to workspace home".
+      router.replace(home);
       return true;
     });
 
-    return () => {
-      subscription.remove();
-      if (unlockTimerRef.current) {
-        clearTimeout(unlockTimerRef.current);
-        unlockTimerRef.current = null;
-      }
-    };
+    return () => subscription.remove();
   }, [kind, pathname, router]);
 
   return null;

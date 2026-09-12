@@ -1,5 +1,6 @@
 import { Ionicons } from "@expo/vector-icons";
 import { useLocalSearchParams, useRouter } from "expo-router";
+import { useState } from "react";
 import { StyleSheet, View } from "react-native";
 
 import ActionStack from "@/src/components/ui/ActionStack";
@@ -9,6 +10,7 @@ import Card from "@/src/components/ui/Card";
 import EmptyState from "@/src/components/ui/EmptyState";
 import ErrorState from "@/src/components/ui/ErrorState";
 import LoadingState from "@/src/components/ui/LoadingState";
+import Input from "@/src/components/ui/Input";
 import Screen from "@/src/components/ui/Screen";
 import ScreenHeader from "@/src/components/ui/ScreenHeader";
 import StatusBadge from "@/src/components/ui/StatusBadge";
@@ -54,6 +56,7 @@ export default function OwnedDonationCampaignStatusScreen() {
   const actions = useManageDonationCampaign();
   const { showFeedback } = useFeedback();
   const decision = useDecisionDialog();
+  const [rejectionReasons, setRejectionReasons] = useState<Record<string, string>>({});
 
   const reload = async () => {
     await Promise.all([state.reload(), transferState.reload()]);
@@ -122,6 +125,41 @@ export default function OwnedDonationCampaignStatusScreen() {
     }
   };
 
+  const confirmTransfer = (transferId: string) => decision.request(
+    { title: "تأكيد استلام الحوالة", message: "بعد التأكيد سيُحتسب مبلغ الحوالة ضمن المبلغ المحقق للحملة ويصل إشعار للمتبرع.", confirmLabel: "تأكيد الاستلام", destructive: false, icon: "checkmark-circle-outline" },
+    async () => {
+      try {
+        await transferState.verify(transferId);
+        await state.reload();
+        showFeedback({ title: "تم تأكيد التبرع", message: "تم احتساب الحوالة ضمن الحملة وإبلاغ المتبرع.", tone: "success" });
+      } catch (error) {
+        showFeedback({ title: "تعذر تأكيد الحوالة", message: error instanceof Error ? error.message : "حاول مرة أخرى.", tone: "error" });
+        throw error;
+      }
+    },
+  );
+
+  const rejectTransfer = (transferId: string) => {
+    const reason = (rejectionReasons[transferId] ?? "").trim();
+    if (!reason) {
+      showFeedback({ title: "سبب الرفض مطلوب", message: "اكتب سبب عدم تأكيد استلام الحوالة قبل الرفض.", tone: "error" });
+      return;
+    }
+    decision.request(
+      { title: "رفض الحوالة", message: "لن يُحتسب مبلغ هذه الحوالة ضمن الحملة وسيظهر السبب للمتبرع.", confirmLabel: "رفض الحوالة", destructive: true, icon: "close-circle-outline" },
+      async () => {
+        try {
+          await transferState.reject(transferId, reason);
+          setRejectionReasons((current) => ({ ...current, [transferId]: "" }));
+          showFeedback({ title: "تم رفض الحوالة", message: "تم حفظ القرار وإبلاغ المتبرع.", tone: "success" });
+        } catch (error) {
+          showFeedback({ title: "تعذر رفض الحوالة", message: error instanceof Error ? error.message : "حاول مرة أخرى.", tone: "error" });
+          throw error;
+        }
+      },
+    );
+  };
+
   return (
     <Screen scroll padded={false}>
       <ScreenHeader
@@ -176,6 +214,74 @@ export default function OwnedDonationCampaignStatusScreen() {
             { key: "rejected", label: "مرفوضة", value: rejectedTransfers, icon: "close-circle-outline", color: COLORS.danger },
           ]}
         />
+
+        <View style={styles.transferSection}>
+          <View style={styles.transferSectionHeader}>
+            <AppText variant="h3" weight="bold">مراجعة حوالات التبرع</AppText>
+            <AppText variant="caption" color={COLORS.textSecondary}>
+              أكّد فقط الحوالات التي استلمتها الجمعية فعليًا. الحوالة تبقى قيد المراجعة حتى اتخاذ القرار.
+            </AppText>
+          </View>
+
+          {transferState.transfers.length === 0 ? (
+            <Card disabled style={styles.transferCard}>
+              <AppText variant="bodySmall" color={COLORS.textSecondary}>لا توجد حوالات مقدمة لهذه الحملة بعد.</AppText>
+            </Card>
+          ) : transferState.transfers.map((transfer) => {
+            const pending = transfer.status === "submitted" || transfer.status === "verifying";
+            const statusLabel = transfer.status === "approved" ? "تم تأكيد الاستلام" : transfer.status === "rejected" ? "مرفوضة" : transfer.status === "verifying" ? "قيد التحقق" : "قيد المراجعة";
+            const statusColor = transfer.status === "approved" ? COLORS.success : transfer.status === "rejected" ? COLORS.danger : transfer.status === "verifying" ? COLORS.info : COLORS.warning;
+            const busy = transferState.reviewingTransferId === transfer.id;
+            return (
+              <Card key={transfer.id} style={styles.transferCard}>
+                <View style={styles.transferTitleRow}>
+                  <View style={styles.flex}>
+                    <AppText variant="label" weight="bold">{transfer.senderFullName || "متبرع"}</AppText>
+                    <AppText variant="caption" color={COLORS.textSecondary}>رقم الحوالة: {transfer.transferNumber || "—"}</AppText>
+                  </View>
+                  <StatusBadge label={statusLabel} color={statusColor} />
+                </View>
+                <InfoRow label="المبلغ" value={money(transfer.amount)} />
+                <InfoRow label="شركة الحوالات" value={transfer.transferProviderName || "—"} />
+                <InfoRow label="رقم المرسل" value={transfer.senderMobile || "—"} />
+                <InfoRow label="تاريخ الإرسال" value={new Intl.DateTimeFormat("ar-SY", { dateStyle: "medium", timeStyle: "short" }).format(new Date(transfer.createdAt))} />
+                {transfer.supportMessage ? <InfoRow label="رسالة المتبرع" value={transfer.supportMessage} /> : null}
+                {transfer.rejectionReason ? <InfoRow label="سبب الرفض" value={transfer.rejectionReason} /> : null}
+
+                {pending ? (
+                  <View style={styles.transferReviewActions}>
+                    <Input
+                      label="سبب الرفض"
+                      placeholder="يُطلب فقط عند رفض الحوالة"
+                      value={rejectionReasons[transfer.id] ?? ""}
+                      onChangeText={(value) => setRejectionReasons((current) => ({ ...current, [transfer.id]: value }))}
+                      multiline
+                      disabled={busy}
+                    />
+                    <View style={styles.transferButtons}>
+                      <Button
+                        title="تأكيد الاستلام"
+                        icon="checkmark-circle-outline"
+                        loading={busy}
+                        disabled={busy}
+                        onPress={() => confirmTransfer(transfer.id)}
+                        style={styles.transferButton}
+                      />
+                      <Button
+                        title="رفض"
+                        icon="close-circle-outline"
+                        variant="danger"
+                        disabled={busy}
+                        onPress={() => rejectTransfer(transfer.id)}
+                        style={styles.transferButton}
+                      />
+                    </View>
+                  </View>
+                ) : null}
+              </Card>
+            );
+          })}
+        </View>
 
         <Card disabled style={styles.card}>
           <AppText variant="h3" weight="bold">بيانات الحملة</AppText>
@@ -290,5 +396,12 @@ const styles = StyleSheet.create({
   card: { gap: SPACING.sm },
   infoRow: { flexDirection: "row", direction: "rtl", alignItems: "flex-start", justifyContent: "space-between", gap: SPACING.md },
   noticeCard: { flexDirection: "row", direction: "rtl", alignItems: "flex-start", gap: SPACING.md },
+  transferSection: { gap: SPACING.sm },
+  transferSectionHeader: { gap: SPACING.xs },
+  transferCard: { gap: SPACING.sm },
+  transferTitleRow: { flexDirection: "row", direction: "rtl", alignItems: "flex-start", justifyContent: "space-between", gap: SPACING.md },
+  transferReviewActions: { gap: SPACING.sm, marginTop: SPACING.xs },
+  transferButtons: { flexDirection: "row", direction: "rtl", gap: SPACING.sm },
+  transferButton: { flex: 1 },
   flex: { flex: 1 },
 });

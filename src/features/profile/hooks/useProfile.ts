@@ -73,11 +73,26 @@ export function useProfile() {
 
   const name = remote?.fullName ?? account?.displayName ?? "";
   const parts = splitName(name);
+  const location = [remote?.regionName, remote?.governorateName]
+    .map((value) => value?.trim())
+    .filter((value): value is string => Boolean(value))
+    .filter((value, index, values) => values.indexOf(value) === index)
+    .join("، ");
+
+  const memberSince = (() => {
+    if (!remote?.createdAt) return "";
+    const createdAt = new Date(remote.createdAt);
+    if (Number.isNaN(createdAt.getTime())) return "";
+    return `عضو منذ ${new Intl.DateTimeFormat("ar-SY", { month: "long", year: "numeric" }).format(createdAt)}`;
+  })();
+
   const profile = {
     ...parts,
     email: remote?.email ?? account?.email ?? "",
     phone: remote?.phone ?? account?.phone ?? "",
     avatarUri: remote?.avatarUrl ?? "",
+    location,
+    memberSince,
   };
 
   return {

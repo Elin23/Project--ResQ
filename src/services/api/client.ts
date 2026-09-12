@@ -192,7 +192,7 @@ export async function apiRequest<T>(path: string, options: RequestOptions = {}):
     return (await response.json()) as T;
   } catch (error) {
     if (error instanceof ApiError) throw error;
-    if (error instanceof Error && error.name === "AbortError") throw new ApiError("استغرق الاتصال بالخادم وقتًا أطول من المتوقع. حاول مرة أخرى.");
+    if (error instanceof Error && error.name === "AbortError") throw new ApiError("استغرق الخادم وقتًا طويلًا في الرد. يرجى التحقق من اتصالك بالإنترنت ثم حاول مرة أخرى.");
     throw new ApiError("تعذر الاتصال بالخادم. تحقق من اتصال الإنترنت ثم حاول مرة أخرى.");
   } finally {
     clearTimeout(timeout);

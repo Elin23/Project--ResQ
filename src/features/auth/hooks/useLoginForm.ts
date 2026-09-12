@@ -1,4 +1,5 @@
 import { type Href, useLocalSearchParams, useRouter } from "expo-router";
+import { useFocusEffect } from "@react-navigation/native";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Animated, Easing, Keyboard } from "react-native";
 import { useSession } from "@/src/features/session/SessionContext";
@@ -44,6 +45,16 @@ export function useLoginForm() {
     clearTimeout(timer);
     navigationTimer.current = null;
   }, []);
+
+  // The login screen remains mounted when another auth route is pushed.
+  // Reset the navigation lock whenever this screen becomes active again so
+  // Android hardware-back cannot leave the form controls disabled.
+  useFocusEffect(
+    useCallback(() => {
+      clearNavigationTimer();
+      setIsNavigating(false);
+    }, [clearNavigationTimer]),
+  );
 
   useEffect(() => {
     const entranceAnimation = Animated.sequence([

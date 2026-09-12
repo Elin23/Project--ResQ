@@ -95,6 +95,8 @@ export const API_ENDPOINTS = {
     resume: (id: string) => `/api/donation-campaigns/${encodeURIComponent(id)}/resume`,
     close: (id: string) => `/api/donation-campaigns/${encodeURIComponent(id)}/close`,
     campaignTransfers: (id: string) => `/api/donation-campaigns/${encodeURIComponent(id)}/transfers`,
+    verifyCampaignTransfer: (campaignId: string, transferId: string) => `/api/donation-campaigns/${encodeURIComponent(campaignId)}/transfers/${encodeURIComponent(transferId)}/verify`,
+    rejectCampaignTransfer: (campaignId: string, transferId: string) => `/api/donation-campaigns/${encodeURIComponent(campaignId)}/transfers/${encodeURIComponent(transferId)}/reject`,
     transfers: "/api/donation-transfers",
     myTransfers: "/api/donation-transfers/mine",
     transferById: (id: string) => `/api/donation-transfers/${encodeURIComponent(id)}`,

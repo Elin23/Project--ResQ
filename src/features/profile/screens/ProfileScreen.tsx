@@ -31,7 +31,13 @@ export default function ProfileScreen() {
 
   return (
     <Screen scroll padded={false} surface="app" contentContainerStyle={styles.screen}>
-      <ProfileHeader avatarUri={profile.avatarUri} name={`${profile.firstName} ${profile.lastName}`} onEdit={edit} />
+      <ProfileHeader
+        avatarUri={profile.avatarUri}
+        name={`${profile.firstName} ${profile.lastName}`}
+        location={profile.location}
+        memberSince={profile.memberSince}
+        onEdit={edit}
+      />
       <View style={styles.content}>
         {PROFILE_SECTIONS.map((section) => (
           <ProfileMenuSection key={section.title} section={section} onPress={handleItemPress} />

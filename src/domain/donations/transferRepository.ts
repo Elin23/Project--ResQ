@@ -13,6 +13,17 @@ export interface DonationTransferRepository {
     campaignId: string,
     ownerAccountId: string,
   ): Promise<DonationTransfer[]>;
+  verifyByCampaignOwner(
+    campaignId: string,
+    transferId: string,
+    ownerAccountId: string,
+  ): Promise<DonationTransfer>;
+  rejectByCampaignOwner(
+    campaignId: string,
+    transferId: string,
+    ownerAccountId: string,
+    reason: string,
+  ): Promise<DonationTransfer>;
 
   /** Reserved for the future Admin Web Dashboard. */
   markVerifying(id: string, reviewerId: string): Promise<DonationTransfer>;

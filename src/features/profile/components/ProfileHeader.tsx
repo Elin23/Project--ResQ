@@ -6,9 +6,15 @@ import AppText from "@/src/components/ui/AppText";
 import ScreenHeader from "@/src/components/ui/ScreenHeader";
 import { COLORS, ICON_SIZES, LAYOUT, RADIUS, SPACING } from "@/src/theme";
 
-type Props = { avatarUri: string; name: string; onEdit: () => void };
+type Props = {
+  avatarUri: string;
+  name: string;
+  location?: string;
+  memberSince?: string;
+  onEdit: () => void;
+};
 
-export default function ProfileHeader({ avatarUri, name, onEdit }: Props) {
+export default function ProfileHeader({ avatarUri, name, location, memberSince, onEdit }: Props) {
   return (
     <>
       <ScreenHeader
@@ -38,13 +44,17 @@ export default function ProfileHeader({ avatarUri, name, onEdit }: Props) {
 
           <View style={styles.identityText}>
             <AppText variant="h2" weight="bold" numberOfLines={2} style={styles.fullWidth}>{name}</AppText>
-            <AppText variant="bodySmall" color={COLORS.textSecondary} style={styles.fullWidth}>دمشق، سوريا</AppText>
+            {location ? (
+              <AppText variant="bodySmall" color={COLORS.textSecondary} style={styles.fullWidth}>{location}</AppText>
+            ) : null}
             <View style={styles.metaRow}>
               <View style={styles.badge}>
                 <Ionicons name="shield-checkmark-outline" size={ICON_SIZES.xs} color={COLORS.successDark} />
                 <AppText variant="caption" weight="medium" color={COLORS.successDark}>عضو موثوق</AppText>
               </View>
-              <AppText variant="caption" color={COLORS.textSecondary}>عضو منذ مارس 2025</AppText>
+              {memberSince ? (
+                <AppText variant="caption" color={COLORS.textSecondary}>{memberSince}</AppText>
+              ) : null}
             </View>
           </View>
         </View>

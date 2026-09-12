@@ -9,7 +9,8 @@ module.exports = () => {
     [
       "expo-location",
       {
-        locationWhenInUsePermission: "يستخدم ResQ موقعك لتحديد البلاغات ونقاط الإطعام والخدمات القريبة بدقة.",
+        locationWhenInUsePermission:
+          "يستخدم ResQ موقعك لتحديد البلاغات ونقاط الإطعام والخدمات القريبة بدقة.",
       },
     ],
   ];
@@ -33,32 +34,38 @@ module.exports = () => {
     icon: "./assets/images/icon.png",
     userInterfaceStyle: "automatic",
     newArchEnabled: true,
+
     ios: {
       supportsTablet: true,
     },
+
     android: {
-      adaptiveIcon: {
-        backgroundColor: "#E6F4FE",
-        foregroundImage: "./assets/images/android-icon-foreground.png",
-        backgroundImage: "./assets/images/android-icon-background.png",
-        monochromeImage: "./assets/images/android-icon-monochrome.png",
-      },
+      package: "com.ellinshaia.resq",
+      icon: "./assets/images/android-app-icon.png",
       edgeToEdgeEnabled: true,
       predictiveBackGestureEnabled: false,
     },
+
     web: {
       output: "static",
       favicon: "./assets/images/favicon.png",
     },
+
     plugins,
+
     experiments: {
       typedRoutes: true,
       reactCompiler: true,
     },
+
     extra: {
       supportsRTL: true,
       forcesRTL: true,
+      eas: {
+        projectId: "a2b9b740-0f52-4618-a4a6-a4de64aedbd3",
+      },
     },
+
     locales: {},
   };
 };

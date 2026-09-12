@@ -479,6 +479,8 @@ export class ApiDonationTransferWriteRepository implements DonationTransferRepos
   async getByDonor(id:string,_donor:string){ try{const dto=await apiRequest<DonationTransferDto>(API_ENDPOINTS.donations.transferById(id));return donationTransferDtoToDomain(dto,dto.campaignTitle ?? "");}catch(error){if(error instanceof ApiError&&error.isNotFound)return undefined;throw error;} }
   async getByVerificationCode(code:string){ const items=await this.listByDonor(""); return items.find((x)=>x.verificationCode.toLowerCase()===code.trim().toLowerCase()); }
   async listByCampaignOwner(campaignId:string,_owner:string){ const payload=await apiRequest<PagedResultDto<DonationTransferDto>|DonationTransferDto[]>(withQuery(API_ENDPOINTS.donations.campaignTransfers(campaignId),{page:1,pageSize:100})); return pageItems(payload).map((x)=>donationTransferDtoToDomain(x,x.campaignTitle ?? "")); }
+  async verifyByCampaignOwner(campaignId:string,transferId:string,_owner:string){ const dto=await apiRequest<DonationTransferDto>(API_ENDPOINTS.donations.verifyCampaignTransfer(campaignId,transferId),{method:"POST"}); return donationTransferDtoToDomain(dto,dto.campaignTitle ?? ""); }
+  async rejectByCampaignOwner(campaignId:string,transferId:string,_owner:string,reason:string){ const dto=await apiRequest<DonationTransferDto>(API_ENDPOINTS.donations.rejectCampaignTransfer(campaignId,transferId),{method:"POST",body:JSON.stringify({reason:reason.trim()})}); return donationTransferDtoToDomain(dto,dto.campaignTitle ?? ""); }
   async markVerifying(): Promise<DonationTransfer> { throw new ApiError("مراجعة الحوالات متاحة للإدارة فقط.", 403); }
   async review(): Promise<DonationTransfer> { throw new ApiError("مراجعة الحوالات متاحة للإدارة فقط.", 403); }
 }

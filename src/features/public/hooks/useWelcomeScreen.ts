@@ -1,4 +1,5 @@
 import { useRouter } from "expo-router";
+import { useFocusEffect } from "@react-navigation/native";
 import { useCallback, useEffect, useRef, useState } from "react";
 import { Animated, Easing, useWindowDimensions } from "react-native";
 import { useSession } from "@/src/features/session/SessionContext";
@@ -20,6 +21,16 @@ export function useWelcomeScreen() {
     clearTimeout(timer);
     navigationTimer.current = null;
   }, []);
+
+  // This screen stays mounted when another route is pushed on top of it.
+  // Reset the navigation lock every time it becomes active again, otherwise
+  // the buttons remain disabled after Android hardware-back returns here.
+  useFocusEffect(
+    useCallback(() => {
+      clearNavigationTimer();
+      setIsNavigating(false);
+    }, [clearNavigationTimer]),
+  );
 
   const screenOpacity = useRef(new Animated.Value(0)).current;
 

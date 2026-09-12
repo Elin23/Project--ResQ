@@ -117,6 +117,16 @@ export default function CreateReportForm() {
   const [formError, setFormError] = useState<string | null>(null);
   const locationLookups = useLocationLookups(governorateId);
 
+  const informationComplete =
+    Boolean(selectedAnimalType) &&
+    Boolean(selectedStatus) &&
+    Boolean(selectedSeverity) &&
+    count > 0 &&
+    description.trim().length >= 5;
+  const locationComplete =
+    Boolean(governorateId) && Boolean(regionId) && address.trim().length > 0;
+  const currentStep = !informationComplete ? 1 : !locationComplete ? 2 : 3;
+
   const [region, setRegion] = useState({
     latitude: 33.5138,
     longitude: 36.2765,
@@ -201,42 +211,55 @@ export default function CreateReportForm() {
 
         {/* Stepper / شريط الخطوات */}
         <View style={styles.stepperContainer}>
-          <View style={styles.stepItem}>
-            <View style={[styles.stepCircle, styles.stepCircleActive]}>
-              <AppText variant="label" color={COLORS.white} weight="bold">
-                1
-              </AppText>
-            </View>
-            <AppText variant="caption" color={COLORS.brown} weight="bold">
-              المعلومات
-            </AppText>
-          </View>
+          {[
+            { number: 1, label: "المعلومات", complete: informationComplete },
+            { number: 2, label: "الموقع", complete: locationComplete },
+            { number: 3, label: "المراجعة", complete: false },
+          ].map((step, index, steps) => {
+            const active = currentStep === step.number;
+            const reached = currentStep >= step.number;
 
-          <View style={styles.stepLine} />
+            return (
+              <React.Fragment key={step.number}>
+                <View style={styles.stepItem}>
+                  <View
+                    style={[
+                      styles.stepCircle,
+                      (active || step.complete) && styles.stepCircleActive,
+                    ]}
+                  >
+                    {step.complete ? (
+                      <Ionicons name="checkmark" size={17} color={COLORS.white} />
+                    ) : (
+                      <AppText
+                        variant="label"
+                        color={reached ? COLORS.white : COLORS.textSecondary}
+                        weight={active ? "bold" : undefined}
+                      >
+                        {step.number}
+                      </AppText>
+                    )}
+                  </View>
+                  <AppText
+                    variant="caption"
+                    color={reached ? COLORS.brown : COLORS.textSecondary}
+                    weight={active ? "bold" : undefined}
+                  >
+                    {step.label}
+                  </AppText>
+                </View>
 
-          <View style={styles.stepItem}>
-            <View style={styles.stepCircle}>
-              <AppText variant="label" color={COLORS.textSecondary}>
-                2
-              </AppText>
-            </View>
-            <AppText variant="caption" color={COLORS.textSecondary}>
-              الموقع
-            </AppText>
-          </View>
-
-          <View style={styles.stepLine} />
-
-          <View style={styles.stepItem}>
-            <View style={styles.stepCircle}>
-              <AppText variant="label" color={COLORS.textSecondary}>
-                3
-              </AppText>
-            </View>
-            <AppText variant="caption" color={COLORS.textSecondary}>
-              المراجع
-            </AppText>
-          </View>
+                {index < steps.length - 1 ? (
+                  <View
+                    style={[
+                      styles.stepLine,
+                      currentStep > step.number && styles.stepLineActive,
+                    ]}
+                  />
+                ) : null}
+              </React.Fragment>
+            );
+          })}
         </View>
 
         <ScrollView
@@ -715,6 +738,7 @@ const styles = StyleSheet.create({
     marginHorizontal: 8,
     marginBottom: 16,
   },
+  stepLineActive: { backgroundColor: COLORS.brown },
   formScrollView: { flex: 1 },
   selectedImagesRow: {
     flexDirection: "row",

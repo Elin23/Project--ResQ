@@ -15,6 +15,7 @@ export type MyProfileDto = {
   regionName?: string | null;
   bio?: string | null;
   avatarUrl?: string | null;
+  createdAt?: string | null;
 };
 
 export type UpdateMyProfileRequest = {
